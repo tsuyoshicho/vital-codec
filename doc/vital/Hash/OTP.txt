@@ -1,0 +1,59 @@
+*vital/Hash/OTP.txt*		OTP:One-time Password Generation library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Hash.OTP-contents*
+
+INTRODUCTION		                |Vital.Hash.OTP-introduction|
+INTERFACE		                |Vital.Hash.OTP-interface|
+  Functions                             |Vital.Hash.OTP-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.Hash.OTP-introduction*
+
+*Vital.Hash.OTP* is an OTP:One-time Password Generation library.
+It provides functions to return the OTP value from key secret.
+Support HOTP/TOTP.
+
+Usage: >
+  let default = s:OTP.default()
+  return s:OTP.totp(secret, default.TOTP.period, g:V.import('Hash.' . default.TOTP.algo), default.TOTP.digit)
+<
+
+==============================================================================
+INTERFACE				*Vital.Hash.OTP-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Hash.OTP-functions*
+
+htop({key},{counter},{algo},{digit})	*Vital.Hash.OTP.htop()*
+	Return HOTP value.
+	need secret bytes list {key}, and bytes list {counter} alue,
+	Hash {algo}, return values' number of {digit}.
+	Hash {algo}, need same as |Vital.Hash.HMAC.hash()| API.
+	ex |Vital.Hash.MD5|
+
+totp({key},{period},{algo},{digit})	*Vital.Hash.OTP.totp()*
+	Return TOTP value.
+	Interface same as |Vital.Hash.OTP.htop()|.
+        {period} are TOTP value renew interval sec.
+
+default()				*Vital.Hash.OTP.default()*
+	Return default parameter |Dictionary|.
+	Currently below: >
+  let s:DEFAULT = {
+      \ 'HOTP' : {
+      \   'digit'   : 6,
+      \   'algo'    : 'SHA1',
+      \   'counter' : 8,
+      \ },
+      \ 'TOTP' : {
+      \   'digit'   : 6,
+      \   'algo'    : 'SHA1',
+      \   'period'  : 30,
+      \ },
+      \}
+<
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
