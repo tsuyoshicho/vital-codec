@@ -1,4 +1,4 @@
-" Utilities for Base32. RFC 4648 type
+" Utilities for Base64. RFC 4648 type
 " RFC 4648 http://tools.ietf.org/html/rfc4648.html
 
 let s:save_cpo = &cpo
@@ -6,32 +6,31 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
-  let s:Base32util = s:V.import('Data.Base32.Base32')
+  let s:Base64util = s:V.import('Data.Base64.Base64')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Data.Base32.Base32']
+  return ['Data.Base64.Base64']
 endfunction
 
 function! s:encode(data) abort
-  let b32 = s:Base32util.b32encode(s:_str2bytes(a:data),
+  let b64 = s:Base64util.b64encode(s:_str2bytes(a:data),
         \ s:rfc4648_encode_table,
         \ s:is_padding,
         \ s:padding_symbol)
-  return join(b32, '')
+  return join(b64, '')
 endfunction
 
 function! s:encodebin(data) abort
-  let b32 = s:Base32util.b32encode(s:_binstr2bytes(a:data),
+  let b64 = s:Base64util.b64encode(s:_binstr2bytes(a:data),
         \ s:rfc4648_encode_table,
         \ s:is_padding,
         \ s:padding_symbol)
-  return join(b32, '')
+  return join(b64, '')
 endfunction
 
 function! s:decode(data) abort
-  let data = toupper(a:data) " case insensitive
-  let bytes = s:Base32util.b32decode(filter(split(data, '\zs'), {c -> !s:is_ignore_symbol(c)}),
+  let bytes = s:Base64util.b64decode(filter(split(a:data, '\zs'), '!s:is_ignore_symbol(v:val)'),
         \ s:rfc4648_decode_map,
         \ s:is_padding,
         \ s:is_padding_symbol)
@@ -44,10 +43,10 @@ let s:is_padding_symbol = {c -> c == s:padding_symbol}
 let s:is_ignore_symbol = {c -> 0}
 
 let s:rfc4648_encode_table = [
-      \ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-      \ 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-      \ 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-      \ 'Y', 'Z', '2', '3', '4', '5', '6', '7' ]
+      \ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
+      \ 'Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f',
+      \ 'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
+      \ 'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/']
 
 let s:rfc4648_decode_map = {}
 for i in range(len(s:rfc4648_encode_table))
