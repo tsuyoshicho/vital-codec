@@ -39,7 +39,7 @@ endfunction
 
 let s:is_padding = 0
 let s:padding_symbol = ''
-let s:is_padding_symbol = {c -> c == s:padding_symbol}
+let s:is_padding_symbol = {c -> 0}
 let s:is_ignore_symbol = {c -> 0}
 
 let s:urlsafe_encode_table = [
