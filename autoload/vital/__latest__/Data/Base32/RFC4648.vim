@@ -49,7 +49,6 @@ let s:rfc4648_encode_table = [
       \ 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
       \ 'Y', 'Z', '2', '3', '4', '5', '6', '7' ]
 
-
 let s:rfc4648_decode_map = {}
 for i in range(len(s:rfc4648_encode_table))
   let s:rfc4648_decode_map[s:rfc4648_encode_table[i]] = i
