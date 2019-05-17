@@ -23,8 +23,8 @@ function! s:generate() abort
 endfunction
 
 function! s:_ulid() abort
-  let timelist   = s:List.new(6,  0)
-  let randomlist = s:List.new(10, 0)
+  let timelist   = s:List.new(6,  {-> 0})
+  let randomlist = s:List.new(10, {-> 0})
 
   if has('reltime')
     " implement yet
