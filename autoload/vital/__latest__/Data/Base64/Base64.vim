@@ -23,6 +23,14 @@ function! s:b64encode(bytes, table, is_padding, pad) abort
     if len(a:bytes) % 3 == 2
       let b64[-1] = a:pad
     endif
+  else
+    if len(a:bytes) % 3 == 1
+        unlet b64[-1]
+        unlet b64[-1]
+    endif
+    if len(a:bytes) % 3 == 2
+        unlet b64[-1]
+    endif
   endif
   return b64
 endfunction
@@ -30,13 +38,19 @@ endfunction
 function! s:b64decode(b64, map, is_padding, padcheck) abort
   let bytes = []
   for i in range(0, len(a:b64) - 1, 4)
-    let n = a:map[a:b64[i]] * 0x40000
-          \ + a:map[a:b64[i + 1]] * 0x1000
-          \ + (a:b64[i + 2] == a:pad ? 0 : a:map[a:b64[i + 2]]) * 0x40
-          \ + (a:b64[i + 3] == a:pad ? 0 : a:map[a:b64[i + 3]])
-    call add(bytes, n / 0x10000)
-    call add(bytes, n / 0x100 % 0x100)
-    call add(bytes, n % 0x100)
+    let pack = repeat([0], 4)
+    for j in range(4)
+      if (len(a:b64) > (i + j)) && !a:padcheck(a:b64[i + j])
+        let pack[j] = a:map[a:b64[i + j]]
+      endif
+    endfor
+    let n = pack[0]   * 0x40000
+          \ + pack[1] * 0x1000
+          \ + pack[2] * 0x40
+          \ + pack[3]
+    call add(bytes, n / 0x10000        )
+    call add(bytes, n /   0x100 % 0x100)
+    call add(bytes, n           % 0x100)
     if !a:is_padding && ((len(a:b64) - 1) <  (i + 4))
       " manual nondata byte cut
       let nulldata = (i + 4) - (len(a:b64) - 1)

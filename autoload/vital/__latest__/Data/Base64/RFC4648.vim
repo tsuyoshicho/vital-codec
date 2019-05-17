@@ -30,8 +30,7 @@ function! s:encodebin(data) abort
 endfunction
 
 function! s:decode(data) abort
-  let data = toupper(a:data) " case insensitive
-  let bytes = s:Base64util.b64decode(filter(split(data, '\zs'), '!s:is_ignore_symbol(v:val)'),
+  let bytes = s:Base64util.b64decode(filter(split(a:data, '\zs'), '!s:is_ignore_symbol(v:val)'),
         \ s:rfc4648_decode_map,
         \ s:is_padding,
         \ s:is_padding_symbol)
