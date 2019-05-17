@@ -1,5 +1,5 @@
-" Utilities for Base32. Crockford's type
-" https://www.crockford.com/base32.html
+" Utilities for ULID
+" ulid/spec: The canonical spec for ulid https://github.com/ulid/spec
 
 let s:save_cpo = &cpo
 set cpo&vim
