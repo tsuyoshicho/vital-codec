@@ -63,10 +63,10 @@ function! s:b64decode(b64, map, is_padding, padcheck) abort
     endif
   endfor
   if a:is_padding
-    if a:b64[-1] == a:pad
+    if a:padcheck(a:b64[-1])
       unlet bytes[-1]
     endif
-    if a:b64[-2] == a:pad
+    if a:padcheck(a:b64[-2])
       unlet bytes[-1]
     endif
   endif
