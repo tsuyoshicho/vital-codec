@@ -14,15 +14,15 @@ function! s:_vital_depends() abort
 endfunction
 
 function! s:encode(data) abort
-  let b64 = s:Base64util.b64encode(s:_str2bytes(a:data),
-        \ s:rfc4648_encode_table,
-        \ s:is_padding,
-        \ s:padding_symbol)
-  return join(b64, '')
+  return s:encodebytes(s:_str2bytes(a:data))
 endfunction
 
 function! s:encodebin(data) abort
-  let b64 = s:Base64util.b64encode(s:_binstr2bytes(a:data),
+  return s:encodebytes(s:_binstr2bytes(a:data))
+endfunction
+
+function! s:encodebytes(data) abort
+  let b64 = s:Base64util.b64encode(a:data,
         \ s:rfc4648_encode_table,
         \ s:is_padding,
         \ s:padding_symbol)
@@ -30,11 +30,15 @@ function! s:encodebin(data) abort
 endfunction
 
 function! s:decode(data) abort
+  return s:_bytes2str(s:decoderaw(a:data))
+endfunction
+
+function! s:decoderaw(data) abort
   let bytes = s:Base64util.b64decode(filter(split(a:data, '\zs'), '!s:is_ignore_symbol(v:val)'),
         \ s:rfc4648_decode_map,
         \ s:is_padding,
         \ s:is_padding_symbol)
-  return s:_bytes2str(bytes)
+  return bytes
 endfunction
 
 let s:is_padding = 1

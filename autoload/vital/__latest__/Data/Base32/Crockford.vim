@@ -14,15 +14,15 @@ function! s:_vital_depends() abort
 endfunction
 
 function! s:encode(data) abort
-  let b32 = s:Base32util.b32encode(s:_str2bytes(a:data),
-        \ s:crockford_encode_table,
-        \ s:is_padding,
-        \ s:padding_symbol)
-  return join(b32, '')
+  return s:encodebytes(s:_str2bytes(a:data))
 endfunction
 
 function! s:encodebin(data) abort
-  let b32 = s:Base32util.b32encode(s:_binstr2bytes(a:data),
+  return s:encodebytes(s:_binstr2bytes(a:data))
+endfunction
+
+function! s:encodebytes(data) abort
+  let b32 = s:Base32util.b32encode(a:data,
         \ s:crockford_encode_table,
         \ s:is_padding,
         \ s:padding_symbol)
@@ -30,12 +30,16 @@ function! s:encodebin(data) abort
 endfunction
 
 function! s:decode(data) abort
+  return s:_bytes2str(s:decoderaw(a:data))
+endfunction
+
+function! s:decoderaw(data) abort
   let data = toupper(a:data) " case insensitive
   let bytes = s:Base32util.b32decode(filter(split(data, '\zs'), '!s:is_ignore_symbol(v:val)'),
         \ s:crockford_decode_map,
         \ s:is_padding,
         \ s:is_padding_symbol)
-  return s:_bytes2str(bytes)
+  return bytes
 endfunction
 
 let s:is_padding = 0
