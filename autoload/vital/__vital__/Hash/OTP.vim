@@ -36,7 +36,7 @@ function! s:hotp(key, counter, algo, digit) abort
   if s:DEFAULT.HOTP.counter == len(a:counter)
     let counter = copy(a:counter)
   elseif s:DEFAULT.HOTP.counter > len(a:counter)
-    let counter = s:List.new(s:DEFAULT.HOTP.counter,0)
+    let counter = s:List.new(s:DEFAULT.HOTP.counter, {-> 0})
     for i in range(s:DEFAULT.HOTP.counter)
       if 0 <= (i - (s:DEFAULT.HOTP.counter - len(a:counter)))
         let counter[i] = a:counter[i - (s:DEFAULT.HOTP.counter - len(a:counter))]
