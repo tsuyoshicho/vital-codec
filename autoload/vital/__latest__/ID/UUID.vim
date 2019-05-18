@@ -63,6 +63,7 @@ let s:UUID = {}
 "  bit 10x RFC4122
 "  bit 110 Microsoft COM GUID Compatible
 "  bit 111 Reserved
+"  value 8 no care
 " version (RFC4122)
 "  bit 0001 v1 MAC and timestamp
 "  bit 0010 v2 MAC and DCE local domain/local user, timestamp
@@ -274,6 +275,10 @@ function! s:_variant_embedded(uuid) abort
 
   if 0 > uuid.variant
     call s:_throw('undefined variant')
+  endif
+  if 8 == uuid.variant
+    " no care
+    return
   endif
 
   " clock high byte msb 0..2 (5bit >>, remain 3bit)

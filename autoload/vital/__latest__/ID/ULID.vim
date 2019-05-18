@@ -5,21 +5,31 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:_vital_loaded(V) abort
-  let s:V = a:V
+  let s:V        = a:V
+  let s:bitwise  = s:V.import('Bitwise')
+  let s:Random   = s:V.import('Random')
+  let s:List     = s:V.import('Data.List')
+  let s:BigNum   = s:V.import('Data.BigNum')
   let s:Base32cf = s:V.import('Data.Base32.Crockford')
-  let s:List = s:V.import('Data.List')
-  let s:Random = s:V.import('Random')
-  let s:bitwise = s:V.import('Bitwise')
-  let s:BigNum = s:V.import('Data.BigNum')
+  let s:UUID     = s:V.import('ID.UUID')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Data.Base32.Crockford', 'Data.List',
-        \'Random', 'Bitwise', 'Data.BigNum']
+  return ['Bitwise', 'Random', 'Data.List',
+        \ 'Data.BigNum' 'Data.Base32.Crockford',
+        \ 'ID.UUID']
 endfunction
 
 function! s:generate() abort
-  return  s:Base32cf.encodebytes(s:_ulid())
+  return s:Base32cf.encodebytes(s:_ulid())
+endfunction
+
+function! s:generateUUID() abort
+  return s:_bytes2uuid(s:_ulid())
+endfunction
+
+function! s:ULID2UUID(ulid) abort
+  return s:_bytes2uuid(s:Base32cf.decoderaw(a:ulid))
 endfunction
 
 function! s:_ulid() abort
@@ -60,6 +70,18 @@ function! s:_ulid() abort
   endfor
 
   return timelist + randomlist
+endfunction
+
+function! s:_bytes2uuid(bytes) abort
+  let uuid = s:UUID.new()
+
+  let uuid.bytes = a:bytes
+  let uuid.endian  = 1
+  let self.variant = 8 " no care
+  let self.version = 0
+
+  call uuid.byte_encode()
+  return uuid.uuid_hex
 endfunction
 
 function! s:_uint8(n) abort
