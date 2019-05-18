@@ -76,9 +76,9 @@ function! s:_bytes2uuid(bytes) abort
   let uuid = s:UUID.new()
 
   let uuid.bytes = a:bytes
-  let uuid.endian  = 1
-  let self.variant = 8 " no care
-  let self.version = 0
+  let uuid.endian  = 1 " big endian
+  let uuid.variant = 8 " no care
+  let uuid.version = 0
 
   call uuid.byte_encode()
   return uuid.uuid_hex
