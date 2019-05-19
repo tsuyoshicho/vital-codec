@@ -34,11 +34,10 @@ function! s:decode(data) abort
 endfunction
 
 function! s:decoderaw(data) abort
-  let bytes = s:Base64util.b64decode(filter(split(a:data, '\zs'), '!s:is_ignore_symbol(v:val)'),
+  return s:Base64util.b64decode(filter(split(a:data, '\zs'), '!s:is_ignore_symbol(v:val)'),
         \ s:rfc4648_decode_map,
         \ s:is_padding,
         \ s:is_padding_symbol)
-  return bytes
 endfunction
 
 let s:is_padding = 1

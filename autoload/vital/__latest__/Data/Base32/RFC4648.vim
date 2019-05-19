@@ -35,11 +35,10 @@ endfunction
 
 function! s:decoderaw(data) abort
   let data = toupper(a:data) " case insensitive
-  let bytes = s:Base32util.b32decode(filter(split(data, '\zs'), {c -> !s:is_ignore_symbol(c)}),
+  return s:Base32util.b32decode(filter(split(data, '\zs'), {c -> !s:is_ignore_symbol(c)}),
         \ s:rfc4648_decode_map,
         \ s:is_padding,
         \ s:is_padding_symbol)
-  return bytes
 endfunction
 
 let s:is_padding = 1
