@@ -93,9 +93,9 @@ function! s:v1(mac) abort
   return uuid.uuid_hex
 endfunction
 
-function! s:v3(data, is_hash) abort
+function! s:v3(ns, data) abort
   let uuid = deepcopy(s:UUID)
-  call uuid.generatev3(a:data, a:is_hash)
+  call uuid.generatev3(a:ns, a:data)
   return uuid.uuid_hex
 endfunction
 
@@ -105,9 +105,9 @@ function! s:v4() abort
   return uuid.uuid_hex
 endfunction
 
-function! s:v5(data, is_hash) abort
+function! s:v5(ns, data) abort
   let uuid = deepcopy(s:UUID)
-  call uuid.generatev5(a:data, a:is_hash)
+  call uuid.generatev5(a:ns, a:data)
   return uuid.uuid_hex
 endfunction
 
@@ -116,16 +116,22 @@ function! s:UUID.generatev1(mac) dict abort
   " TODO
 endfunction
 
-function! s:UUID.generatev3(data, is_hash) dict abort
+function! s:UUID.generatev3(ns, data) dict abort
+  " NS
+  let ns_uuid = deepcopy(s:UUID)
+  let ns_uuid.uuid_hex = a:ns
+  let ns_uuid.endian   = 1
+
+  call ns_uuid.hex_decode()
+
   " MD5 hash
-  if a:is_hash
-    let hash = a:data
-    if 16 != len(hash)
-      call s:_throw('bytes length error')
-    endif
+  let data = a:data
+  if type(a:data) == type("")
+    let data = s:_str2bytes(a:data)
   else
-    let hash = s:MD5.digest_raw(a:data)
+    let data = a:data
   endif
+  let hash = s:MD5.digest_raw(ns_uuid.bytes + data)
 
   let self.bytes   = hash[0:15]
   let self.endian  = 1
@@ -150,16 +156,22 @@ function! s:UUID.generatev4() dict abort
   call self.byte_encode()
 endfunction
 
-function! s:UUID.generatev5(data, is_hash) dict abort
+function! s:UUID.generatev5(ns, data) dict abort
+  " NS
+  let ns_uuid = deepcopy(s:UUID)
+  let ns_uuid.uuid_hex = a:ns
+  let ns_uuid.endian   = 1
+
+  call ns_uuid.hex_decode()
+
   " SHA1 hash
-  if a:is_hash
-    let hash = a:data
-    if 16 != len(hash)
-      call s:_throw('bytes length error')
-    endif
+  let data = a:data
+  if type(a:data) == type("")
+    let data = s:_str2bytes(a:data)
   else
-    let hash = s:SHA1.digest_raw(a:data)
+    let data = a:data
   endif
+  let hash = s:SHA1.digest_raw(ns_uuid.bytes + data)
 
   let self.bytes   = hash[0:15]
   let self.endian  = 1
@@ -206,7 +218,7 @@ endfunction
 function! s:UUID.build() dict abort
   if 0 == self.endian
     " little endian string: swapped data
-    let self.string.time_low             = s:_bytes2str(s:_swap_dword(self.value.time_low)
+    let self.string.time_low             = s:_bytes2str(s:_swap_dword(self.value.time_low))
     let self.string.time_mid             = s:_bytes2str(s:_swap_word(self.value.time_mid))
     let self.string.time_hi_and_version  = s:_bytes2str(s:_swap_word(self.value.time_hi_and_version))
   else
@@ -347,6 +359,10 @@ endfunction
 
 function! s:_binstr2bytes(str) abort
   return map(range(len(a:str)/2), 'str2nr(a:str[v:val*2 : v:val*2+1], 16)')
+endfunction
+
+function! s:_str2bytes(str) abort
+  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
 endfunction
 
 function! s:_bytes2str(bytes) abort
