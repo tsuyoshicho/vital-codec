@@ -118,11 +118,15 @@ endfunction
 
 function! s:UUID.generatev3(ns, data) dict abort
   " NS
-  let ns_uuid = deepcopy(s:UUID)
-  let ns_uuid.uuid_hex = a:ns
-  let ns_uuid.endian   = 1
+  if type(a:ns) == type("")
+    let ns_uuid = deepcopy(s:UUID)
+    let ns_uuid.uuid_hex = a:ns
+    let ns_uuid.endian   = 1
 
-  call ns_uuid.hex_decode()
+    call ns_uuid.hex_decode()
+  else
+    let ns_uuid = a:ns
+  endif
 
   " MD5 hash
   let data = a:data
@@ -158,11 +162,15 @@ endfunction
 
 function! s:UUID.generatev5(ns, data) dict abort
   " NS
-  let ns_uuid = deepcopy(s:UUID)
-  let ns_uuid.uuid_hex = a:ns
-  let ns_uuid.endian   = 1
+  if type(a:ns) == type("")
+    let ns_uuid = deepcopy(s:UUID)
+    let ns_uuid.uuid_hex = a:ns
+    let ns_uuid.endian   = 1
 
-  call ns_uuid.hex_decode()
+    call ns_uuid.hex_decode()
+  else
+    let ns_uuid = a:ns
+  endif
 
   " SHA1 hash
   let data = a:data
