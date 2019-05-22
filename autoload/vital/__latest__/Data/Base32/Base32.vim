@@ -65,7 +65,7 @@ function! s:b32decode(b32, map, is_padding, padcheck) abort
     call add(bytes, n               % 0x100)
     if !a:is_padding && ((len(a:b32) - 1) <  (i + 8))
       " manual nondata byte cut
-      let nulldata = (i + 8) - (len(a:b32) - 1)
+      let nulldata = (i + 7) - (len(a:b32) - 1)
       if 1 == nulldata
         unlet bytes[-1]
       elseif 3 == nulldata

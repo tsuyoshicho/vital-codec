@@ -53,7 +53,7 @@ function! s:b64decode(b64, map, is_padding, padcheck) abort
     call add(bytes, n           % 0x100)
     if !a:is_padding && ((len(a:b64) - 1) <  (i + 4))
       " manual nondata byte cut
-      let nulldata = (i + 4) - (len(a:b64) - 1)
+      let nulldata = (i + 3) - (len(a:b64) - 1)
       if 1 == nulldata
         unlet bytes[-1]
       elseif 2 == nulldata
