@@ -42,6 +42,10 @@ function! s:_bytes2binstr(bytes) abort
   return join(map(copy(a:bytes), 'printf(''%02x'', v:val)'), '')
 endfunction	endfunction
 
+function! s:_bytes2str(bytes) abort
+  return eval('"' . join(map(copy(a:bytes), 'printf(''\x%02x'', v:val)'), '') . '"')
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
