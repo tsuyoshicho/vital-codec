@@ -7,12 +7,11 @@ set cpo&vim
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:Base64util = s:V.import('Data.Base64.Base64')
-  let s:Base16 = s:V.import('Data.Base16')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Data.Base64.Base64', 'Data.Base16', 'Data.List.Byte']
+  return ['Data.Base64.Base64', 'Data.List.Byte']
 endfunction
 
 function! s:encode(data) abort
@@ -20,7 +19,7 @@ function! s:encode(data) abort
 endfunction
 
 function! s:encodebin(data) abort
-  return s:encodebytes(s:Base16.decoderaw(a:data))
+  return s:encodebytes(s:ByteArray.from_hexstring(a:data))
 endfunction
 
 function! s:encodebytes(data) abort
