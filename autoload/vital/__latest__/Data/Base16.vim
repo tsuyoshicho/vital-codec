@@ -4,9 +4,18 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! s:_vital_loaded(V) abort
+  let s:V = a:V
+  let s:ByteArray = s:V.import('Data.List.Byte')
+endfunction
+
+function! s:_vital_depends() abort
+  return ['Data.List.Byte']
+endfunction
+
 function! s:encode(data) abort
   " 'abc' -> [xx, yy, zz](in hex) -> 'xxyyzz'
-  return s:encodebytes(s:_str2bytes(a:data))
+  return s:encodebytes(s:ByteArray.from_string(a:data))
 endfunction
 
 function! s:encodebin(data) abort
@@ -16,34 +25,18 @@ endfunction
 
 function! s:encodebytes(data) abort
   " [xx, yy, zz](in hex) -> 'xxyyzz'
-  return s:_bytes2binstr(a:data)
+  return s:ByteArray.to_hexstring(a:data)
 endfunction
 
 function! s:decode(data) abort
   " 'xxyyzz' -> [xx, yy, zz](in hex) -> 'abc'
-  return s:_bytes2str(s:decoderaw(a:data))
+  return s:ByteArray.to_string(s:decoderaw(a:data))
 endfunction
 
 function! s:decoderaw(data) abort
   " 'xxyyzz' -> [xx, yy, zz](in hex)
-  let data = toupper(a:data) " case insensitive
-  return s:_binstr2bytes(data)
-endfunction
-
-function! s:_binstr2bytes(str) abort
-  return map(range(len(a:str)/2), 'str2nr(a:str[v:val*2 : v:val*2+1], 16)')
-endfunction
-
-function! s:_str2bytes(str) abort
-  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
-endfunction
-
-function! s:_bytes2binstr(bytes) abort
-  return join(map(copy(a:bytes), 'printf(''%02x'', v:val)'), '')
-endfunction	endfunction
-
-function! s:_bytes2str(bytes) abort
-  return eval('"' . join(map(copy(a:bytes), 'printf(''\x%02x'', v:val)'), '') . '"')
+  " case insensitive / no affect
+  return s:ByteArray.from_hexstring(a:data)
 endfunction
 
 let &cpo = s:save_cpo

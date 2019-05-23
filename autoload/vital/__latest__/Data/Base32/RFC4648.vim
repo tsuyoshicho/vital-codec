@@ -7,18 +7,20 @@ set cpo&vim
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:Base32util = s:V.import('Data.Base32.Base32')
+  let s:Base16 = s:V.import('Data.Base16')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Data.Base32.Base32']
+  return ['Data.Base32.Base32', 'Data.Base16', 'Data.List.Byte']
 endfunction
 
 function! s:encode(data) abort
-  return s:encodebytes(s:_str2bytes(a:data))
+  return s:encodebytes(s:ByteArray.from_string(a:data))
 endfunction
 
 function! s:encodebin(data) abort
-  return s:encodebytes(s:_binstr2bytes(a:data))
+  return s:encodebytes(s:Base16.decoderaw(a:data))
 endfunction
 
 function! s:encodebytes(data) abort
@@ -30,7 +32,7 @@ function! s:encodebytes(data) abort
 endfunction
 
 function! s:decode(data) abort
-  return s:_bytes2str(s:decoderaw(a:data))
+  return s:ByteArray.to_string(s:decoderaw(a:data))
 endfunction
 
 function! s:decoderaw(data) abort
@@ -56,18 +58,6 @@ let s:rfc4648_decode_map = {}
 for i in range(len(s:rfc4648_encode_table))
   let s:rfc4648_decode_map[s:rfc4648_encode_table[i]] = i
 endfor
-
-function! s:_binstr2bytes(str) abort
-  return map(range(len(a:str)/2), 'str2nr(a:str[v:val*2 : v:val*2+1], 16)')
-endfunction
-
-function! s:_str2bytes(str) abort
-  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
-endfunction
-
-function! s:_bytes2str(bytes) abort
-  return eval('"' . join(map(copy(a:bytes), 'printf(''\x%02x'', v:val)'), '') . '"')
-endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
