@@ -23,11 +23,10 @@ function! s:encodebin(data) abort
 endfunction
 
 function! s:encodebytes(data) abort
-  let b64 = s:Base64util.b64encode(a:data,
+  return s:Base64util.b64encode(a:data,
         \ s:urlsafe_encode_table,
         \ s:is_padding,
         \ s:padding_symbol)
-  return join(b64, '')
 endfunction
 
 function! s:decode(data) abort
@@ -35,7 +34,7 @@ function! s:decode(data) abort
 endfunction
 
 function! s:decoderaw(data) abort
-  return s:Base64util.b64decode(filter(split(a:data, '\zs'), '!s:is_ignore_symbol(v:val)'),
+  return s:Base64util.b64decode(filter(split(data, '\zs'), {idx, c -> !s:is_ignore_symbol(c)}),
         \ s:urlsafe_decode_map,
         \ s:is_padding,
         \ s:is_padding_symbol)
