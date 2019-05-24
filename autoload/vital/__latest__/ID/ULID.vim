@@ -25,7 +25,7 @@ function! s:generate() abort
 endfunction
 
 function! s:generateUUID() abort
-  return s:_bytes2uuid(s:_ulid())
+  return s:_bytes2uuid(s:_ulid()).uuid_hex
 endfunction
 
 function! s:ULID2UUID(ulid) abort
@@ -81,7 +81,7 @@ function! s:_bytes2uuid(bytes) abort
   let uuid.version = 0
 
   call uuid.byte_encode()
-  return uuid.uuid_hex
+  return uuid
 endfunction
 
 function! s:_uint8(n) abort
