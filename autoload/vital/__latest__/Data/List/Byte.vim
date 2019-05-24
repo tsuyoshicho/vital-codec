@@ -5,7 +5,7 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
-  let s:List = s:V.import('Data.list')
+  let s:List = s:V.import('Data.List')
   let s:Base16 = s:V.import('Data.Base16')
 endfunction
 
