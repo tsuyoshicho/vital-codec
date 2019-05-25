@@ -4,16 +4,25 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! s:_vital_loaded(V) abort
+  let s:V = a:V
+  let s:bitwise = s:V.import('Bitwise')
+endfunction
+
+function! s:_vital_depends() abort
+  return ['Bitwise']
+endfunction
+
 function! s:b32encode(bytes, table, is_padding, pad) abort
   let b32 = []
   for i in range(0, len(a:bytes) - 1, 5)
     if 5 <= ((len(a:bytes) - 1) - i)
-      let n = a:bytes[i]               * 0x100000000
-            \ + get(a:bytes, i + 1, 0) *   0x1000000
-            \ + get(a:bytes, i + 2, 0) *     0x10000
-            \ + get(a:bytes, i + 3, 0) *       0x100
-            \ + get(a:bytes, i + 4, 0)
-      let bitstring = printf('%040b',n)
+      let bitstring = ''
+            \ . printf('%08b',     a:bytes[i]        )
+            \ . printf('%08b', get(a:bytes, i + 1, 0))
+            \ . printf('%08b', get(a:bytes, i + 2, 0))
+            \ . printf('%08b', get(a:bytes, i + 3, 0))
+            \ . printf('%08b', get(a:bytes, i + 4, 0))
     else
       let length = len(a:bytes) - i
       let n = a:bytes[i]
@@ -50,19 +59,53 @@ function! s:b32decode(b32, map, is_padding, padcheck) abort
         let pack[j] = a:map[a:b32[i + j]]
       endif
     endfor
-    let n = pack[0]   * 0x800000000
-          \ + pack[1] *  0x40000000
-          \ + pack[2] *   0x2000000
-          \ + pack[3] *    0x100000
-          \ + pack[4] *      0x8000
-          \ + pack[5] *       0x400
-          \ + pack[6] *        0x20
+    "              1         2         3
+    "    0123456789012345678901234567890123456789
+    "    |------||------||------||------||------|
+    "  0 +---+
+    "  1      +---+
+    "  2           +---+
+    "  3                +---+
+    "  4                     +---+
+    "  5                          +---+
+    "  6                               +---+
+    "  7                                    +---+
+    "
+    " high 1byte
+    "
+    "    01234567
+    "    |------|
+    "  0 +---+
+    "  1      +--
+    "
+    " low  4byte
+    "              1         2         3
+    "            89012345678901234567890123456789
+    "            |------||------||------||------|
+    "  1         -+
+    "  2           +---+
+    "  3                +---+
+    "  4                     +---+
+    "  5                          +---+
+    "  6                               +---+
+    "  7                                    +---+
+    let n_hi = s:bitwise.or(
+          \ s:bitwise.and(s:bitwise.lshift(pack[0], 3), 0b11111000),
+          \ s:bitwise.and(s:bitwise.rshift(pack[1], 2), 0b00000111)
+          \ )
+
+    let n_lo = s:bitwise.and(pack[1], 0b11) * 0x40000000
+          \ + pack[2]                       *  0x2000000
+          \ + pack[3]                       *   0x100000
+          \ + pack[4]                       *     0x8000
+          \ + pack[5]                       *      0x400
+          \ + pack[6]                       *       0x20
           \ + pack[7]
-    call add(bytes, n / 0x100000000        )
-    call add(bytes, n /   0x1000000 % 0x100)
-    call add(bytes, n /     0x10000 % 0x100)
-    call add(bytes, n /       0x100 % 0x100)
-    call add(bytes, n               % 0x100)
+    call add(bytes, n_hi                    )
+    call add(bytes, n_lo / 0x1000000 % 0x100)
+    call add(bytes, n_lo /   0x10000 % 0x100)
+    call add(bytes, n_lo /     0x100 % 0x100)
+    call add(bytes, n_lo             % 0x100)
     if !a:is_padding && ((len(a:b32) - 1) <  (i + 8))
       " manual nondata byte cut
       let nulldata = (i + 7) - (len(a:b32) - 1)
