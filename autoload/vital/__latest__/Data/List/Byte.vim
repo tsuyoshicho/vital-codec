@@ -6,7 +6,6 @@ set cpo&vim
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:List = s:V.import('Data.List')
-  let s:Base16 = s:V.import('Data.Base16')
 endfunction
 
 function! s:_vital_depends() abort
@@ -14,7 +13,7 @@ function! s:_vital_depends() abort
 endfunction
 
 function! s:from_blob(b) abort
-  return s:List.new(len(a:b),{i -> a:b[i]})
+  return s:List.new(len(a:b), {i -> a:b[i]})
 endfunction
 
 function! s:to_blob(bytes) abort
@@ -22,11 +21,19 @@ function! s:to_blob(bytes) abort
 endfunction
 
 function! s:from_string(str) abort
-  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
+  return s:List.new(len(a:str), {i -> char2nr(a:str[i])})
 endfunction
 
 function! s:to_string(bytes) abort
   return eval('"' . join(map(copy(a:bytes), 'printf(''\x%02x'', v:val)'), '') . '"')
+endfunction
+
+function! s:from_hexstring(hexstr) abort
+  return s:List.new(len(a:hexstr)/2, {i -> str2nr(a:hexstr[i*2 : i*2+1], 16)})
+endfunction
+
+function! s:to_hexstring(bytes) abort
+  return join(map(copy(a:bytes), 'printf(''%02x'', v:val)'), '')
 endfunction
 
 let &cpo = s:save_cpo
