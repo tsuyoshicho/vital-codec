@@ -36,22 +36,36 @@ function! s:_ulid() abort
   let timelist   = s:List.new(6,  {-> 0})
   let randomlist = s:List.new(10, {-> 0})
 
-  " localtime is Unix epoch second timestanp, need msec; generate x1000
-  let now = s:BigNum.mul(localtime(), 1000)
 
   " 48bit timestamp
-  let timelist_mod = s:List.new(6, {-> now}) " index is No. x byte
-  let timelist_div = s:List.new(6, {-> now}) " index is remain 6-x byte(cut x byte) block, 0 is now
-  let [timelist_div[1], timelist_mod[5]] = s:BigNum.div_mod(timelist_div[0], 0x100)
-  let [timelist_div[2], timelist_mod[4]] = s:BigNum.div_mod(timelist_div[1], 0x100)
-  let [timelist_div[3], timelist_mod[3]] = s:BigNum.div_mod(timelist_div[2], 0x100)
-  let [timelist_div[4], timelist_mod[2]] = s:BigNum.div_mod(timelist_div[3], 0x100)
-  let [timelist_div[5], timelist_mod[1]] = s:BigNum.div_mod(timelist_div[4], 0x100)
-  let                   timelist_mod[0]  = s:BigNum.mod(    timelist_div[5], 0x100)
+  let timelist_mod = s:List.new(6, {-> {}}) " index is No. x byte
+  let timelist_div = s:List.new(6, {-> {}}) " index is remain ,0 is now 5 is last divided value
+
+  " localtime is Unix epoch second timestanp, need msec; generate x1000
+  let now_timestamp = localtime()
+
+  let timelist_div[0] = s:BigNum.mul(now_timestamp, 1000)
+
+  " byte 1-5 generate
+  for i in range(6 - 1)
+    " div +1 next byte's source  / mod offset
+    let [timelist_div[i + 1], timelist_mod[6 - (i + 1)]] = s:BigNum.div_mod(timelist_div[i], 0x100)
+  endfor
+  " byte 0
+  let timelist_mod[0] = s:BigNum.mod(timelist_div[5], 0x100)
 
   for i in range(6)
     let timelist[i] = str2nr(s:BigNum.to_string(timelist_mod[i]), 10)
   endfor
+
+  " " debug
+  " if has('num64')
+  "   echomsg 'timestamp:'          . string(now_timestamp)
+  "   echomsg 'timestamp msec:'     . string(s:BigNum.to_string(now))
+  "   echomsg 'timestamp msec hex:' . printf('%012x', str2nr(s:BigNum.to_string(now)))
+  "   echomsg 'bytelist:' . string(timelist)
+  "   echomsg 'bytelist hex:' . join(map(copy(timelist), 'printf(''%02x'', v:val)'), '')
+  " endif
 
   " 80bit random (8bit = 1byte) x 10
   let r = s:Random.new()
