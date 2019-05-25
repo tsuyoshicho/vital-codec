@@ -36,27 +36,18 @@ function! s:_ulid() abort
   let timelist   = s:List.new(6,  {-> 0})
   let randomlist = s:List.new(10, {-> 0})
 
-  if has('reltime')
-    " implement yet
-    " let [sec,msec] = reltime()
-    " millisecond correction
-
-    " localtime is Unix epoch second timestanp, need msec; generate x1000
-    let now = s:BigNum.mul(localtime(), 1000)
-  else
-    " localtime is Unix epoch second timestanp, need msec; generate x1000
-    let now = s:BigNum.mul(localtime(), 1000)
-  endif
+  " localtime is Unix epoch second timestanp, need msec; generate x1000
+  let now = s:BigNum.mul(localtime(), 1000)
 
   " 48bit timestamp
   let timelist_mod = s:List.new(6, {-> now}) " index is No. x byte
   let timelist_div = s:List.new(6, {-> now}) " index is remain 6-x byte(cut x byte) block, 0 is now
-  let [timelist_div[1], timelist_mod[5]] = s:BigNum.div_mod(timelist_div[0], 0xFF)
-  let [timelist_div[2], timelist_mod[4]] = s:BigNum.div_mod(timelist_div[1], 0xFF)
-  let [timelist_div[3], timelist_mod[3]] = s:BigNum.div_mod(timelist_div[2], 0xFF)
-  let [timelist_div[4], timelist_mod[2]] = s:BigNum.div_mod(timelist_div[3], 0xFF)
-  let [timelist_div[5], timelist_mod[1]] = s:BigNum.div_mod(timelist_div[4], 0xFF)
-  let                   timelist_mod[0]  = s:BigNum.mod(    timelist_div[5], 0xFF)
+  let [timelist_div[1], timelist_mod[5]] = s:BigNum.div_mod(timelist_div[0], 0x100)
+  let [timelist_div[2], timelist_mod[4]] = s:BigNum.div_mod(timelist_div[1], 0x100)
+  let [timelist_div[3], timelist_mod[3]] = s:BigNum.div_mod(timelist_div[2], 0x100)
+  let [timelist_div[4], timelist_mod[2]] = s:BigNum.div_mod(timelist_div[3], 0x100)
+  let [timelist_div[5], timelist_mod[1]] = s:BigNum.div_mod(timelist_div[4], 0x100)
+  let                   timelist_mod[0]  = s:BigNum.mod(    timelist_div[5], 0x100)
 
   for i in range(6)
     let timelist[i] = str2nr(s:BigNum.to_string(timelist_mod[i]), 10)
