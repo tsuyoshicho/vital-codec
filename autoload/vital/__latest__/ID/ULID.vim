@@ -21,21 +21,23 @@ function! s:_vital_depends() abort
 endfunction
 
 function! s:generate() abort
-  return s:Base32cf.encodebytes(s:_ulid())
+  let ulid = s:_ulid_generate()
+  return s:_ulid_encode(ulid)
 endfunction
 
 function! s:generateUUID() abort
-  return s:_bytes2uuid(s:_ulid()).uuid_hex
+  let ulid = s:_ulid_generate()
+  return s:_bytes2uuid(ulid.bytes).uuid_hex
 endfunction
 
-function! s:ULID2UUID(ulid) abort
-  return s:_bytes2uuid(s:Base32cf.decoderaw(a:ulid))
+function! s:ULID2UUID(ulid_b32) abort
+  let ulid = s:_ulid_decode(a:ulid_b32)
+  return s:_bytes2uuid(ulid.bytes)
 endfunction
 
-function! s:_ulid() abort
+function! s:_ulid_generate() abort
   let timelist   = s:List.new(6,  {-> 0})
   let randomlist = s:List.new(10, {-> 0})
-
 
   " 48bit timestamp
   let timelist_mod = s:List.new(6, {-> {}}) " index is No. x byte
@@ -58,15 +60,6 @@ function! s:_ulid() abort
     let timelist[i] = str2nr(s:BigNum.to_string(timelist_mod[i]), 10)
   endfor
 
-  " " debug
-  " if has('num64')
-  "   echomsg 'timestamp:'          . string(now_timestamp)
-  "   echomsg 'timestamp msec:'     . string(s:BigNum.to_string(now))
-  "   echomsg 'timestamp msec hex:' . printf('%012x', str2nr(s:BigNum.to_string(now)))
-  "   echomsg 'bytelist:' . string(timelist)
-  "   echomsg 'bytelist hex:' . join(map(copy(timelist), 'printf(''%02x'', v:val)'), '')
-  " endif
-
   " 80bit random (8bit = 1byte) x 10
   let r = s:Random.new()
   call r.seed(s:Random.next())
@@ -74,7 +67,43 @@ function! s:_ulid() abort
     let randomlist[i] = r.range(256)
   endfor
 
-  return timelist + randomlist
+  let retval = {
+        \ 'bytes'     : timelist + randomlist,
+        \ 'timestamp' : timelist,
+        \ 'random'    : randomlist,
+        \ }
+
+  return retval
+endfunction
+
+function! s:_ulid_encode(ulid) abort
+  " timestamp 6byte,8bitx5bit lcm 40bit -> left dummy need 10-6 = 4byte
+  let timestamp_dummy =  s:List.new(4,  {-> 0})
+  let timestamp_b32_w_dummy = s:Base32cf.encodebytes(timestamp_dummy + a:ulid.timestamp)
+  " cut 6char (10byte->16char, tamptamp 10char)
+  let timestamp_b32 = strpart(timestamp_b32_w_dummy, 6)
+
+  " random 10byte -> no dummy need
+  let random_b32 = s:Base32cf.encodebytes(a:ulid.random)
+
+  return timestamp_b32 . random_b32
+endfunction
+
+function! s:_ulid_decode(ulid_b32) abort
+  let timestamp_b32 = strpart(a:ulid_b32, 0, 10)
+  let timelist = s:Base32cf.decoderaw(timestamp_b32)
+
+  " random 10byte -> no dummy need
+  let random_b32 = strpart(a:ulid_b32, 10)
+  let randomlist = s:Base32cf.decoderaw(random_b32)
+
+  let retval = {
+        \ 'bytes'     : timelist + randomlist,
+        \ 'timestamp' : timelist,
+        \ 'random'    : randomlist,
+        \ }
+
+  return retval
 endfunction
 
 function! s:_bytes2uuid(bytes) abort
