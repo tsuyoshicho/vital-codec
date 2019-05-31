@@ -21,42 +21,40 @@ function! s:_vital_depends() abort
 endfunction
 
 function! s:generate() abort
-  return s:Base32cf.encodebytes(s:_ulid())
+  let ulid = s:_ulid_generate()
+  return s:_ulid_encode(ulid)
 endfunction
 
 function! s:generateUUID() abort
-  return s:_bytes2uuid(s:_ulid()).uuid_hex
+  let ulid = s:_ulid_generate()
+  return s:_bytes2uuid(ulid.bytes).uuid_hex
 endfunction
 
-function! s:ULID2UUID(ulid) abort
-  return s:_bytes2uuid(s:Base32cf.decoderaw(a:ulid))
+function! s:ULID2UUID(ulid_b32) abort
+  let ulid = s:_ulid_decode(a:ulid_b32)
+  return s:_bytes2uuid(ulid.bytes)
 endfunction
 
-function! s:_ulid() abort
+function! s:_ulid_generate() abort
   let timelist   = s:List.new(6,  {-> 0})
   let randomlist = s:List.new(10, {-> 0})
 
-  if has('reltime')
-    " implement yet
-    " let [sec,msec] = reltime()
-    " millisecond correction
-
-    " localtime is Unix epoch second timestanp, need msec; generate x1000
-    let now = s:BigNum.mul(localtime(), 1000)
-  else
-    " localtime is Unix epoch second timestanp, need msec; generate x1000
-    let now = s:BigNum.mul(localtime(), 1000)
-  endif
-
   " 48bit timestamp
-  let timelist_mod = s:List.new(6, {-> now}) " index is No. x byte
-  let timelist_div = s:List.new(6, {-> now}) " index is remain 6-x byte(cut x byte) block, 0 is now
-  let [timelist_div[1], timelist_mod[5]] = s:BigNum.div_mod(timelist_div[0], 0xFF)
-  let [timelist_div[2], timelist_mod[4]] = s:BigNum.div_mod(timelist_div[1], 0xFF)
-  let [timelist_div[3], timelist_mod[3]] = s:BigNum.div_mod(timelist_div[2], 0xFF)
-  let [timelist_div[4], timelist_mod[2]] = s:BigNum.div_mod(timelist_div[3], 0xFF)
-  let [timelist_div[5], timelist_mod[1]] = s:BigNum.div_mod(timelist_div[4], 0xFF)
-  let                   timelist_mod[0]  = s:BigNum.mod(    timelist_div[5], 0xFF)
+  let timelist_mod = s:List.new(6, {-> {}}) " index is No. x byte
+  let timelist_div = s:List.new(6, {-> {}}) " index is remain ,0 is now 5 is last divided value
+
+  " localtime is Unix epoch second timestanp, need msec; generate x1000
+  let now_timestamp = localtime()
+
+  let timelist_div[0] = s:BigNum.mul(now_timestamp, 1000)
+
+  " byte 1-5 generate
+  for i in range(6 - 1)
+    " div +1 next byte's source  / mod offset
+    let [timelist_div[i + 1], timelist_mod[6 - (i + 1)]] = s:BigNum.div_mod(timelist_div[i], 0x100)
+  endfor
+  " byte 0
+  let timelist_mod[0] = s:BigNum.mod(timelist_div[5], 0x100)
 
   for i in range(6)
     let timelist[i] = str2nr(s:BigNum.to_string(timelist_mod[i]), 10)
@@ -69,7 +67,43 @@ function! s:_ulid() abort
     let randomlist[i] = r.range(256)
   endfor
 
-  return timelist + randomlist
+  let retval = {
+        \ 'bytes'     : timelist + randomlist,
+        \ 'timestamp' : timelist,
+        \ 'random'    : randomlist,
+        \ }
+
+  return retval
+endfunction
+
+function! s:_ulid_encode(ulid) abort
+  " timestamp 6byte,8bitx5bit lcm 40bit -> left dummy need 10-6 = 4byte
+  let timestamp_dummy =  s:List.new(4,  {-> 0})
+  let timestamp_b32_w_dummy = s:Base32cf.encodebytes(timestamp_dummy + a:ulid.timestamp)
+  " cut 6char (10byte->16char, tamptamp 10char)
+  let timestamp_b32 = strpart(timestamp_b32_w_dummy, 6)
+
+  " random 10byte -> no dummy need
+  let random_b32 = s:Base32cf.encodebytes(a:ulid.random)
+
+  return timestamp_b32 . random_b32
+endfunction
+
+function! s:_ulid_decode(ulid_b32) abort
+  let timestamp_b32 = strpart(a:ulid_b32, 0, 10)
+  let timelist = s:Base32cf.decoderaw(timestamp_b32)
+
+  " random 10byte -> no dummy need
+  let random_b32 = strpart(a:ulid_b32, 10)
+  let randomlist = s:Base32cf.decoderaw(random_b32)
+
+  let retval = {
+        \ 'bytes'     : timelist + randomlist,
+        \ 'timestamp' : timelist,
+        \ 'random'    : randomlist,
+        \ }
+
+  return retval
 endfunction
 
 function! s:_bytes2uuid(bytes) abort
