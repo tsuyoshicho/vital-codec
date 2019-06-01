@@ -226,18 +226,18 @@ endfunction
 function! s:UUID.build() dict abort
   if 0 == self.endian
     " little endian string: swapped data
-    let self.string.time_low             = s:_bytes2str(s:_swap_dword(self.value.time_low))
-    let self.string.time_mid             = s:_bytes2str(s:_swap_word(self.value.time_mid))
-    let self.string.time_hi_and_version  = s:_bytes2str(s:_swap_word(self.value.time_hi_and_version))
+    let self.string.time_low             = s:_bytes2binstr(s:_swap_dword(self.value.time_low))
+    let self.string.time_mid             = s:_bytes2binstr(s:_swap_word(self.value.time_mid))
+    let self.string.time_hi_and_version  = s:_bytes2binstr(s:_swap_word(self.value.time_hi_and_version))
   else
     " big endian string
-    let self.string.time_low             = s:_bytes2str(self.value.time_low)
-    let self.string.time_mid             = s:_bytes2str(self.value.time_mid)
-    let self.string.time_hi_and_version  = s:_bytes2str(self.value.time_hi_and_version)
+    let self.string.time_low             = s:_bytes2binstr(self.value.time_low)
+    let self.string.time_mid             = s:_bytes2binstr(self.value.time_mid)
+    let self.string.time_hi_and_version  = s:_bytes2binstr(self.value.time_hi_and_version)
   endif
-  let self.string.clock                = s:_bytes2str(self.value.clk_seq_hi_res
+  let self.string.clock                = s:_bytes2binstr(self.value.clk_seq_hi_res
         \ + self.value.clk_seq_low)
-  let self.string.node                 = s:_bytes2str(self.value.node)
+  let self.string.node                 = s:_bytes2binstr(self.value.node)
 
   let self.uuid_hex  = self.string.time_low . '-'
         \ . self.string.time_mid            . '-'
@@ -373,7 +373,7 @@ function! s:_str2bytes(str) abort
   return map(range(len(a:str)), 'char2nr(a:str[v:val])')
 endfunction
 
-function! s:_bytes2str(bytes) abort
+function! s:_bytes2binstr(bytes) abort
   return join(map(copy(a:bytes), 'printf(''%02x'', v:val)'), '')
 endfunction
 
