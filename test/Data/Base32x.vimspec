@@ -1,6 +1,6 @@
-Describe Data.Base32
+Describe Data.Base32x
   Before all
-    let B = vital#vital#new().import('Data.Base32')
+    let B = vital#vital#new().import('Data.Base32x')
   End
 
   Describe .encode()
