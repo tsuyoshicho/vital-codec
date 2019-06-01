@@ -11,6 +11,7 @@ function! s:_vital_loaded(V) abort
   let s:bitwise = s:V.import('Bitwise')
   let s:Random  = s:V.import('Random')
   let s:List    = s:V.import('Data.List')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 
   let s:UUID = extend(s:UUID, {
         \ 'uuid_hex': '',
@@ -37,7 +38,7 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Hash.MD5', 'Hash.SHA1', 'Bitwise', 'Random', 'Data.List']
+  return ['Hash.MD5', 'Hash.SHA1', 'Bitwise', 'Random', 'Data.List', 'Data.List.Byte']
 endfunction
 
 "  UUID
@@ -131,7 +132,7 @@ function! s:UUID.generatev3(ns, data) dict abort
   " MD5 hash
   let data = a:data
   if type(a:data) == type("")
-    let data = s:_str2bytes(a:data)
+    let data = s:ByteArray.from_string(a:data)
   else
     let data = a:data
   endif
@@ -175,7 +176,7 @@ function! s:UUID.generatev5(ns, data) dict abort
   " SHA1 hash
   let data = a:data
   if type(a:data) == type("")
-    let data = s:_str2bytes(a:data)
+    let data = s:ByteArray.from_string(a:data)
   else
     let data = a:data
   endif
@@ -204,9 +205,9 @@ function! s:UUID.hex_decode() dict abort
   " self.uuid_hex[23] = '-'
   let self.string.node                 = self.uuid_hex[24:36]
 
-  let self.value.time_low             = s:_binstr2bytes(self.string.time_low)
-  let self.value.time_mid             = s:_binstr2bytes(self.string.time_mid)
-  let self.value.time_hi_and_version  = s:_binstr2bytes(self.string.time_hi_and_version)
+  let self.value.time_low             = s:ByteArray.from_hexstring(self.string.time_low)
+  let self.value.time_mid             = s:ByteArray.from_hexstring(self.string.time_mid)
+  let self.value.time_hi_and_version  = s:ByteArray.from_hexstring(self.string.time_hi_and_version)
   if 0 == self.endian
     " little endian data: swap
     let self.value.time_low             = s:_swap_dword(self.value.time_low)
@@ -214,9 +215,9 @@ function! s:UUID.hex_decode() dict abort
     let self.value.time_hi_and_version  = s:_swap_word(self.value.time_hi_and_version)
   endif
 
-  let self.value.clk_seq_hi_res       = s:_binstr2bytes(self.string.clock[0:1])
-  let self.value.clk_seq_low          = s:_binstr2bytes(self.string.clock[2:3])
-  let self.value.node                 = s:_binstr2bytes(self.string.node)
+  let self.value.clk_seq_hi_res = s:ByteArray.from_hexstring(self.string.clock[0:1])
+  let self.value.clk_seq_low    = s:ByteArray.from_hexstring(self.string.clock[2:3])
+  let self.value.node           = s:ByteArray.from_hexstring(self.string.node)
 
   call s:_generate_bytes(self)
 
@@ -226,18 +227,18 @@ endfunction
 function! s:UUID.build() dict abort
   if 0 == self.endian
     " little endian string: swapped data
-    let self.string.time_low             = s:_bytes2binstr(s:_swap_dword(self.value.time_low))
-    let self.string.time_mid             = s:_bytes2binstr(s:_swap_word(self.value.time_mid))
-    let self.string.time_hi_and_version  = s:_bytes2binstr(s:_swap_word(self.value.time_hi_and_version))
+    let self.string.time_low             = s:ByteArray.to_hexstring(s:_swap_dword(self.value.time_low))
+    let self.string.time_mid             = s:ByteArray.to_hexstring(s:_swap_word(self.value.time_mid))
+    let self.string.time_hi_and_version  = s:ByteArray.to_hexstring(s:_swap_word(self.value.time_hi_and_version))
   else
     " big endian string
-    let self.string.time_low             = s:_bytes2binstr(self.value.time_low)
-    let self.string.time_mid             = s:_bytes2binstr(self.value.time_mid)
-    let self.string.time_hi_and_version  = s:_bytes2binstr(self.value.time_hi_and_version)
+    let self.string.time_low             = s:ByteArray.to_hexstring(self.value.time_low)
+    let self.string.time_mid             = s:ByteArray.to_hexstring(self.value.time_mid)
+    let self.string.time_hi_and_version  = s:ByteArray.to_hexstring(self.value.time_hi_and_version)
   endif
-  let self.string.clock                = s:_bytes2binstr(self.value.clk_seq_hi_res
+  let self.string.clock = s:ByteArray.to_hexstring(self.value.clk_seq_hi_res
         \ + self.value.clk_seq_low)
-  let self.string.node                 = s:_bytes2binstr(self.value.node)
+  let self.string.node  = s:ByteArray.to_hexstring(self.value.node)
 
   let self.uuid_hex  = self.string.time_low . '-'
         \ . self.string.time_mid            . '-'
@@ -363,18 +364,6 @@ endfunction
 
 function! s:_swap_dword(data) abort
   return reverse(a:data[0:3])
-endfunction
-
-function! s:_binstr2bytes(str) abort
-  return map(range(len(a:str)/2), 'str2nr(a:str[v:val*2 : v:val*2+1], 16)')
-endfunction
-
-function! s:_str2bytes(str) abort
-  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
-endfunction
-
-function! s:_bytes2binstr(bytes) abort
-  return join(map(copy(a:bytes), 'printf(''%02x'', v:val)'), '')
 endfunction
 
 function! s:_throw(msg) abort
