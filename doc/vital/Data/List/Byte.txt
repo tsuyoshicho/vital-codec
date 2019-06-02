@@ -1,0 +1,47 @@
+*vital/Data/List/Byte.txt*		bytes-list utilities library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Data.List.Byte-contents*
+
+INTRODUCTION			|Vital.Data.List.Byte-introduction|
+INTERFACE			|Vital.Data.List.Byte-interface|
+  Functions			  |Vital.Data.List.Byte-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.Data.List.Byte-introduction*
+
+*Vital.Data.List.Byte* is bytes |List| and other bytes-list like data converter.
+
+==============================================================================
+INTERFACE				*Vital.Data.List.Byte-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Data.List.Byte-functions*
+
+
+from_string({str})		         *Vital.Data.List.Byte.from_string()*
+	Return bytes-list from {str}.
+	bytes-list like: character cast to byte.
+
+to_string({bytes})		         *Vital.Data.List.Byte.to_string()*
+	Return string that is {bytes} cast to character.
+
+from_hexstring({str})		         *Vital.Data.List.Byte.from_hexstring()*
+	Return bytes-list from {str}.
+	bytes-list like: two hex characters decode to byte.
+	Also known as |Vital.Data.Base16|.
+
+to_hexstring({bytes})		         *Vital.Data.List.Byte.to_hexstring()*
+	Return hex string that is {bytes} encode to two hex characters.
+
+from_blob({blob})		         *Vital.Data.List.Byte.from_blob()*
+	Return bytes-list from {blob}.
+	bytes-list like: |Blob| data object.
+
+to_blob({bytes})		         *Vital.Data.List.Byte.to_blob()*
+	Return blob that is {bytes} stored to blob structure.
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
