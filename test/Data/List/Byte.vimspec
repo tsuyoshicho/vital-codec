@@ -33,7 +33,7 @@ Describe Data.List.Byte
     End
   End
 
-  Describe .to_string()
+  Describe .to_blob()
     It from blob to hex string.
       Assert Equals(ByteArray.to_blob([0x61, 0x62, 0x63]), 0z616263)
     End
