@@ -9,7 +9,7 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Data.list', 'Data.Base16']
+  return ['Data.List']
 endfunction
 
 function! s:from_blob(blob) abort
