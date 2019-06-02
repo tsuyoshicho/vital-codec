@@ -1,0 +1,43 @@
+set encoding=utf-8
+
+call themis#option('recursive', 1)
+call themis#option('exclude', ['test/_testdata/', 'test/README.md'])
+if !has('nvim') && v:version < 800
+  call themis#option('exclude', ['test/Async/Promise.vimspec'])
+endif
+
+let g:Expect = themis#helper('expect')
+call themis#helper('command').with(themis#helper('assert')).with({'Expect': g:Expect})
+
+let g:root = fnamemodify(expand('<sfile>'), ':h:h')
+let g:testplugin_name = 'testplugin'
+let g:testplugin_root = g:root . '/test/_testdata/vital/' . g:testplugin_name . '/'
+let g:cyclic_module_root = g:root . '/test/_testdata/vital/cyclic/'
+let g:symlinkplugin_root = g:root . '/test/_testdata/vital/symlink_root/symlink/'
+call themis#option('runtimepath', g:testplugin_root)
+call themis#option('runtimepath', g:cyclic_module_root)
+call themis#option('runtimepath', g:symlinkplugin_root)
+
+if $THEMIS_PROFILE !=# ''
+  execute 'profile' 'start' $THEMIS_PROFILE
+  profile! file ./autoload/*
+endif
+
+" Show environmental information for debugging
+if $CI !=# ''
+  call themis#log('***********************************************************')
+  if has('win32')
+    call themis#log('Code page:      ' . substitute(system('chcp'), '\D', '', 'g'))
+  endif
+  call themis#log('$LANG:          ' . $LANG)
+  call themis#log('&encoding:      ' . &encoding)
+  call themis#log('&termencoding:  ' . &termencoding)
+  call themis#log('&fileencodings: ' . &fileencodings)
+  call themis#log('&fileformats:   ' . &fileformats)
+  call themis#log('&shellslash:    ' . (exists('&shellslash') ? &shellslash : -1))
+  call themis#log('&runtimepath:')
+  for s:runtimepath in split(&runtimepath, ',')
+    call themis#log('  ' . s:runtimepath)
+  endfor
+  call themis#log('***********************************************************')
+endif

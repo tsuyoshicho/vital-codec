@@ -1,0 +1,42 @@
+*vital/Data/Base64x.txt*		base64 utilities library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Data.Base64x-contents*
+
+INTRODUCTION			|Vital.Data.Base64x-introduction|
+INTERFACE			|Vital.Data.Base64x-interface|
+  Functions			  |Vital.Data.Base64x-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.Data.Base64x-introduction*
+
+*Vital.Data.Base64x* is Base64 wrapping interface for |Vital.Data.Base64.RFC4648|.
+It provides base64 standard converter.
+
+==============================================================================
+INTERFACE				*Vital.Data.Base64x-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Data.Base64x-functions*
+
+
+encode({str})				*Vital.Data.Base64x.encode()*
+	Return base64 RFC4648 encoded string from {str}.
+
+encodebin({str})			*Vital.Data.Base64x.encodebin()*
+	Return base64 RFC4648 encoded string from {str}. {str} is hex encoded string
+	figured as bytes.
+
+encodebytes({bytes})			*Vital.Data.Base64x.encodebytes()*
+	Return base64 RFC4648 encoded string from {bytes}.
+
+decode({str})				*Vital.Data.Base64x.decode()*
+	Return decoded string from {str} that's base64 RFC4648 encoded.
+
+decoderaw({str})			*Vital.Data.Base64x.decoderaw()*
+	Return decoded bytes-list from {str} that's base64 RFC4648 encoded.
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
