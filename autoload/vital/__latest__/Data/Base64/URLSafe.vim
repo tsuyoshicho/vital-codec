@@ -34,7 +34,7 @@ function! s:decode(data) abort
 endfunction
 
 function! s:decoderaw(data) abort
-  return s:Base64util.b64decode(filter(split(data, '\zs'), {idx, c -> !s:is_ignore_symbol(c)}),
+  return s:Base64util.b64decode(filter(split(a:data, '\zs'), {idx, c -> !s:is_ignore_symbol(c)}),
         \ s:urlsafe_decode_map,
         \ s:is_padding,
         \ s:is_padding_symbol)
