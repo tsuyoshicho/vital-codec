@@ -1,0 +1,43 @@
+*vital/Data/Base32x.txt*		base32 utilities library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Data.Base32x-contents*
+
+INTRODUCTION			|Vital.Data.Base32x-introduction|
+INTERFACE			|Vital.Data.Base32x-interface|
+  Functions			  |Vital.Data.Base32x-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.Data.Base32x-introduction*
+
+*Vital.Data.Base32x* is Base32 wrapping interface for |Vital.Data.Base32.RFC4648|.
+It provides base32 standard converter.
+
+==============================================================================
+INTERFACE				*Vital.Data.Base32x-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Data.Base32x-functions*
+
+
+encode({str})				*Vital.Data.Base32x.encode()*
+	Return base32 RFC4648 encoded string from {str}.
+
+encodebin({str})			*Vital.Data.Base32x.encodebin()*
+	Return base32 RFC4648 encoded string from {str}. {str} is hex encoded string
+	figured as bytes.
+
+encodebytes({bytes})			*Vital.Data.Base32x.encodebytes()*
+	Return base32 RFC4648 encoded string from {bytes}.
+
+decode({str})				*Vital.Data.Base32x.decode()*
+	Return decoded string from {str} that's base32 RFC4648 encoded.
+	{str} are case insensitive.
+
+decoderaw({str})			*Vital.Data.Base32x.decoderaw()*
+	Return decoded bytes-list from {str} that's base32 RFC4648 encoded.
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
