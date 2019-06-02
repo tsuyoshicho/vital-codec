@@ -28,22 +28,24 @@ Describe Data.List.Byte
   End
 
   Describe .from_blob()
-    if !has('patch-8.1.0735')
-        Skip 'skip no avaliable blob type.'
-    else
-      It from hex string to blob.
-        Assert Equals(ByteArray.from_blob(0z616263), [0x61, 0x62, 0x63])
-      End
-    endif
+    Before each
+      if !has('patch-8.1.0735')
+        Skip no avaliable blob type.
+      endif
+    End
+    It from hex string to blob.
+      Assert Equals(ByteArray.from_blob(0z616263), [0x61, 0x62, 0x63])
+    End
   End
 
   Describe .to_blob()
-    if !has('patch-8.1.0735')
-      Skip 'skip no avaliable blob type.'
-    else
-      It from blob to hex string.
-        Assert Equals(ByteArray.to_blob([0x61, 0x62, 0x63]), 0z616263)
-      End
-    endif
+    Before each
+      if !has('patch-8.1.0735')
+        Skip no avaliable blob type.
+      endif
+    End
+    It from blob to hex string.
+      Assert Equals(ByteArray.to_blob([0x61, 0x62, 0x63]), 0z616263)
+    End
   End
 End
