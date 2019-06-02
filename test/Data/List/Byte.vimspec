@@ -29,9 +29,10 @@ Describe Data.List.Byte
 
   Describe .from_blob()
     Before each
-      if !has('patch-8.1.0735')
-        Skip no avaliable blob type.
-      endif
+      Skip blob type do not support in vital.vim.
+      " if !has('patch-8.1.0735')
+      "   Skip no avaliable blob type.
+      " endif
     End
     It from hex string to blob.
       Assert Equals(ByteArray.from_blob(0z616263), [0x61, 0x62, 0x63])
@@ -40,9 +41,10 @@ Describe Data.List.Byte
 
   Describe .to_blob()
     Before each
-      if !has('patch-8.1.0735')
-        Skip no avaliable blob type.
-      endif
+      Skip blob type do not support in vital.vim.
+      " if !has('patch-8.1.0735')
+      "   Skip no avaliable blob type.
+      " endif
     End
     It from blob to hex string.
       Assert Equals(ByteArray.to_blob([0x61, 0x62, 0x63]), 0z616263)
