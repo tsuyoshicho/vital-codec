@@ -34,7 +34,7 @@ Describe Data.List.Byte
       "   Skip no avaliable blob type.
       " endif
     End
-    It from hex string to blob.
+    It from blob to bytes-list.
       Assert Equals(ByteArray.from_blob(0z616263), [0x61, 0x62, 0x63])
     End
   End
@@ -46,7 +46,7 @@ Describe Data.List.Byte
       "   Skip no avaliable blob type.
       " endif
     End
-    It from blob to hex string.
+    It from bytes-list to blob.
       Assert Equals(ByteArray.to_blob([0x61, 0x62, 0x63]), 0z616263)
     End
   End
