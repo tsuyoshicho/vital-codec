@@ -1,0 +1,41 @@
+Describe Data.List.Byte
+  Before all
+    let ByteArray = vital#vital#new().import('Data.List.Byte')
+  End
+
+  Describe .from_string()
+    It from string to bytes-list.
+      Assert Equals(ByteArray.from_string('abc'), [0x61, 0x62, 0x63])
+    End
+  End
+
+  Describe .to_string()
+    It from bytes-list to string.
+      Assert Equals(ByteArray.to_string([0x61, 0x62, 0x63]), 'abc')
+    End
+  End
+
+  Describe .from_hexstring()
+    It from hex string to bytes-list.
+      Assert Equals(ByteArray.from_hexstring('616263'), [0x61, 0x62, 0x63])
+    End
+  End
+
+  Describe .to_string()
+    It from bytes-list to hex string.
+      Assert Equals(ByteArray.to_hexstring([0x61, 0x62, 0x63]), '616263')
+    End
+  End
+
+  Describe .from_blob()
+    It from hex string to blob.
+      Assert Equals(ByteArray.from_blob(0z616263), [0x61, 0x62, 0x63])
+    End
+  End
+
+  Describe .to_string()
+    It from blob to hex string.
+      Assert Equals(ByteArray.to_blob([0x61, 0x62, 0x63]), 0z616263)
+    End
+  End
+End
