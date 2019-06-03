@@ -47,7 +47,7 @@ function! s:b32encode(bytes, table, is_padding, pad) abort
       endfor
     endif
   endif
-  return b32
+  return join(b32, '')
 endfunction
 
 function! s:b32decode(b32, map, is_padding, padcheck) abort

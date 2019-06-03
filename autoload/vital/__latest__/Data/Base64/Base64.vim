@@ -32,7 +32,7 @@ function! s:b64encode(bytes, table, is_padding, pad) abort
         unlet b64[-1]
     endif
   endif
-  return b64
+  return join(b64, '')
 endfunction
 
 function! s:b64decode(b64, map, is_padding, padcheck) abort

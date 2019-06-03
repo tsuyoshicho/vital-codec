@@ -7,34 +7,34 @@ set cpo&vim
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:Base64util = s:V.import('Data.Base64.Base64')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Data.Base64.Base64']
+  return ['Data.Base64.Base64', 'Data.List.Byte']
 endfunction
 
 function! s:encode(data) abort
-  return s:encodebytes(s:_str2bytes(a:data))
+  return s:encodebytes(s:ByteArray.from_string(a:data))
 endfunction
 
 function! s:encodebin(data) abort
-  return s:encodebytes(s:_binstr2bytes(a:data))
+  return s:encodebytes(s:ByteArray.from_hexstring(a:data))
 endfunction
 
 function! s:encodebytes(data) abort
-  let b64 = s:Base64util.b64encode(a:data,
+  return s:Base64util.b64encode(a:data,
         \ s:urlsafe_encode_table,
         \ s:is_padding,
         \ s:padding_symbol)
-  return join(b64, '')
 endfunction
 
 function! s:decode(data) abort
-  return s:_bytes2str(s:decoderaw(a:data))
+  return s:ByteArray.to_string(s:decoderaw(a:data))
 endfunction
 
 function! s:decoderaw(data) abort
-  return s:Base64util.b64decode(filter(split(a:data, '\zs'), '!s:is_ignore_symbol(v:val)'),
+  return s:Base64util.b64decode(filter(split(a:data, '\zs'), {idx, c -> !s:is_ignore_symbol(c)}),
         \ s:urlsafe_decode_map,
         \ s:is_padding,
         \ s:is_padding_symbol)
@@ -55,18 +55,6 @@ let s:urlsafe_decode_map = {}
 for i in range(len(s:urlsafe_encode_table))
   let s:urlsafe_decode_map[s:urlsafe_encode_table[i]] = i
 endfor
-
-function! s:_binstr2bytes(str) abort
-  return map(range(len(a:str)/2), 'str2nr(a:str[v:val*2 : v:val*2+1], 16)')
-endfunction
-
-function! s:_str2bytes(str) abort
-  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
-endfunction
-
-function! s:_bytes2str(bytes) abort
-  return eval('"' . join(map(copy(a:bytes), 'printf(''\x%02x'', v:val)'), '') . '"')
-endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
