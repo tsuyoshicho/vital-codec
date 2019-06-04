@@ -37,7 +37,8 @@ HMAC Object				*Vital.Hash.HMAC-HMAC*
 HMAC.hash({hashobj})			*Vital.Hash.HMAC-HMAC.hash()*
 	Set HMAC {hashobj} hash algorithm.
 	{hashobj} must 'digest_raw' method(input/output {bytes} list).
-	Such as Hash.MD5,SHA1.
+	Such as vital.vim Hash.* module interfaces
+	ex. |Vital.Hash.MD5|, |Vital.Hash.SHA1|.
 
 HMAC.key({str|bytes})				*Vital.Hash.HMAC-HMAC.key()*
 	Set HMAC secret key {str|bytes}. key is string or bytes list.
