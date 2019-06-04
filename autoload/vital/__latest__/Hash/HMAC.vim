@@ -4,12 +4,13 @@
 function! s:_vital_loaded(V) abort
   let s:V = a:V
 
-  let s:List = s:V.import('Data.List')
   let s:bitwise = s:V.import('Bitwise')
+  let s:List = s:V.import('Data.List')
+  let s:ByteList = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Data.List']
+  return ['Bitwise', 'Data.List', 'Data.List.Byte']
 endfunction
 
 let s:HMAC = {
@@ -40,7 +41,7 @@ function! s:HMAC.key(key) abort
   if type(a:key) is# type([])
     let self._dict['key'] = a:key
   elseif type(a:key) is# type('')
-    let self._dict['key'] = s:_str2bytes(a:key)
+    let self._dict['key'] = s:ByteList.from_string(a:key)
   else
     call s:_throw('given argument is not key data')
   endif
@@ -60,7 +61,7 @@ function! s:HMAC.calc(data) abort
   if type(a:data) is# type([])
     let data = a:data
   elseif type(a:data) is# type('')
-    let data = s:_str2bytes(a:data)
+    let data = s:ByteList.from_string(a:data)
   else
     call s:_throw('given argument is not valid data')
   endif
@@ -96,15 +97,7 @@ function! s:HMAC.calc(data) abort
 endfunction
 
 function! s:HMAC.hmac(data) abort
-  return s:_bytes2str(self.calc(a:data))
-endfunction
-
-function! s:_str2bytes(str) abort
-  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
-endfunction
-
-function! s:_bytes2str(bytes) abort
-  return join(map(a:bytes, 'printf(''%02x'', v:val)'), '')
+  return s:ByteList.to_hexstring(self.calc(a:data))
 endfunction
 
 function! s:_throw(message) abort
