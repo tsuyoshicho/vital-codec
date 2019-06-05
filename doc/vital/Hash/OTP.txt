@@ -7,7 +7,8 @@ CONTENTS				*Vital.Hash.OTP-contents*
 
 INTRODUCTION		                |Vital.Hash.OTP-introduction|
 INTERFACE		                |Vital.Hash.OTP-interface|
-  Functions                             |Vital.Hash.OTP-functions|
+  Constants                               |Vital.Hash.OTP-constants|
+  Functions                               |Vital.Hash.OTP-functions|
 
 ==============================================================================
 INTRODUCTION				*Vital.Hash.OTP-introduction*
@@ -24,6 +25,31 @@ Usage: >
 ==============================================================================
 INTERFACE				*Vital.Hash.OTP-interface*
 ------------------------------------------------------------------------------
+CONSTANTS				*Vital.Hash.OTP-constants*
+
+defaults				*Vital.Hash.OTP-defaults*
+	A dictionary that has the default parameter.
+	Currently below: >
+      {
+      \ 'HOTP' : {
+      \   'digit'   : 6,
+      \   'algo'    : 'SHA1',
+      \   'counter' : 8,
+      \ },
+      \ 'TOTP' : {
+      \   'digit'   : 6,
+      \   'algo'    : 'SHA1',
+      \   'period'  : 30,
+      \ },
+      \}
+<
+	digit is otp number of digits.
+	algo is otp digest algorithm.
+	counter is hotp counter value length.
+	period is totp caltratation interval.
+
+
+------------------------------------------------------------------------------
 FUNCTIONS				*Vital.Hash.OTP-functions*
 
 htop({key},{counter},{algo},{digit})	*Vital.Hash.OTP.htop()*
@@ -38,22 +64,6 @@ totp({key},{period},{algo},{digit})	*Vital.Hash.OTP.totp()*
 	Interface same as |Vital.Hash.OTP.htop()|.
         {period} are TOTP value renew interval sec.
 
-default()				*Vital.Hash.OTP.default()*
-	Return default parameter |Dictionary|.
-	Currently below: >
-  let s:DEFAULT = {
-      \ 'HOTP' : {
-      \   'digit'   : 6,
-      \   'algo'    : 'SHA1',
-      \   'counter' : 8,
-      \ },
-      \ 'TOTP' : {
-      \   'digit'   : 6,
-      \   'algo'    : 'SHA1',
-      \   'period'  : 30,
-      \ },
-      \}
-<
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl

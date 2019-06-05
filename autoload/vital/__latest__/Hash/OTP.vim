@@ -5,7 +5,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:DEFAULT = {
+let s:DEFAULTS = {
       \ 'HOTP' : {
       \   'digit'   : 6,
       \   'algo'    : 'SHA1',
@@ -17,6 +17,10 @@ let s:DEFAULT = {
       \   'period'  : 30,
       \ },
       \}
+
+function! s:_vital_created(module) abort
+  let a:module.defaults =  s:DEFAULTS
+endfunction
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
@@ -33,13 +37,13 @@ endfunction
 
 function! s:hotp(key, counter, algo, digit) abort
   let hmac = s:HMAC.new(a:algo, a:key)
-  if s:DEFAULT.HOTP.counter == len(a:counter)
+  if s:DEFAULTS.HOTP.counter == len(a:counter)
     let counter = copy(a:counter)
-  elseif s:DEFAULT.HOTP.counter > len(a:counter)
-    let counter = s:List.new(s:DEFAULT.HOTP.counter, {-> 0})
-    for i in range(s:DEFAULT.HOTP.counter)
-      if 0 <= (i - (s:DEFAULT.HOTP.counter - len(a:counter)))
-        let counter[i] = a:counter[i - (s:DEFAULT.HOTP.counter - len(a:counter))]
+  elseif s:DEFAULTS.HOTP.counter > len(a:counter)
+    let counter = s:List.new(s:DEFAULTS.HOTP.counter, {-> 0})
+    for i in range(s:DEFAULTS.HOTP.counter)
+      if 0 <= (i - (s:DEFAULTS.HOTP.counter - len(a:counter)))
+        let counter[i] = a:counter[i - (s:DEFAULTS.HOTP.counter - len(a:counter))]
       endif
     endfor
   else
@@ -68,10 +72,6 @@ function! s:totp(key, period, algo, digit) abort
   endif
 
   return s:hotp(a:key, counter, a:algo, a:digit)
-endfunction
-
-function! s:default() abort
-  return deepcopy(s:DEFAULT)
 endfunction
 
 "---------------------------------------------------------------------

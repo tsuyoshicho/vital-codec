@@ -12,7 +12,7 @@ function! s:suite.after()
 endfunction
 
 function! s:suite.htop() abort
-  let default = s:OTP.default()
+  let defaults = s:OTP.defaults
 
   " HOTP test data
   " https://tools.ietf.org/html/rfc4226
@@ -51,8 +51,8 @@ function! s:suite.htop() abort
     call s:assert.equal(s:OTP.hotp(
           \ secval,
           \ [i],
-          \ vital#vital#new().import('Hash.' . default.HOTP.algo),
-          \ default.HOTP.digit
+          \ vital#vital#new().import('Hash.' . defaults.HOTP.algo),
+          \ defaults.HOTP.digit
           \), result[i])
   endfor
 
