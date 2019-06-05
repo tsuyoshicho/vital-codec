@@ -81,18 +81,6 @@ function! s:_uint8(n) abort
   return s:bitwise.and(a:n, 0xFF)
 endfunction
 
-function! s:_uint32(n) abort
-  return s:bitwise.and(a:n, 0xFFFFFFFF)
-endfunction
-
-function! s:_str2bytes(str) abort
-  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
-endfunction
-
-function! s:_bytes2str(bytes) abort
-  return join(map(a:bytes, 'printf(''%02x'', v:val)'), '')
-endfunction
-
 function! s:_bytes2int32_be(bytes) abort
   return  s:bitwise.or(s:bitwise.lshift(a:bytes[0], 24),
         \ s:bitwise.or(s:bitwise.lshift(a:bytes[1], 16),
