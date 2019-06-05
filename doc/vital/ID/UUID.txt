@@ -1,0 +1,148 @@
+*vital/ID/UUID.txt*		UUID:Universally Unique Identifier library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.ID.UUID-contents*
+
+INTRODUCTION		                |Vital.ID.UUID-introduction|
+INTERFACE		                |Vital.ID.UUID-interface|
+  Functions                               |Vital.ID.UUID-functions|
+OBJECTS					|Vital.ID.UUID-objects|
+  UUID Object				|Vital.ID.UUID-UUID|
+
+==============================================================================
+INTRODUCTION				*Vital.ID.UUID-introduction*
+
+*Vital.ID.UUID* is an UUID:Universally Unique Identifier library.
+It provides functions manipulate UUID data object.
+
+UUID defined in RFC 4122
+
+https://tools.ietf.org/html/rfc4122
+
+
+==============================================================================
+INTERFACE				*Vital.ID.UUID-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.ID.UUID-functions*
+
+new()                                     *Vital.ID.UUID.new()*
+	Return UUID non-data object.
+
+decode({uuid str})                        *Vital.ID.UUID.decode()*
+	Return UUID decoded object.
+
+v1({mac})                                    *Vital.ID.UUID.v1()*
+	{NOT IMPLEMENTED YES}.
+	Return UUID version 1 value.
+	This function wrapped |Vital.ID.UUID-UUID.generatev1()| .
+        Also known as: >
+        let result = UUID.new().generatev1({mac}).uuid_hex
+>
+
+v3({ns}, {value})                            *Vital.ID.UUID.v3()*
+	Return UUID version 3 value.
+	This function wrapped |Vital.ID.UUID-UUID.generatev3()| .
+        Also known as: >
+        let result = UUID.new().generatev3({ns}, {value}).uuid_hex
+>
+
+v4()                                         *Vital.ID.UUID.v4()*
+	Return UUID version 4 value.
+	This function wrapped |Vital.ID.UUID-UUID.generatev4()| .
+        Also known as: >
+        let result = UUID.new().generatev4().uuid_hex
+>
+
+v5({ns}, {value})                            *Vital.ID.UUID.v5()*
+	Return UUID version 5 value.
+	This function wrapped |Vital.ID.UUID-UUID.generatev5()| .
+        Also known as: >
+        let result = UUID.new().generatev5({ns}, {value}).uuid_hex
+>
+
+
+==============================================================================
+OBJECTS					*Vital.ID.UUID-objects*
+------------------------------------------------------------------------------
+UUID Object				   *Vital.ID.UUID-UUID*
+
+	UUID object is a dictionary that has parameters in below.
+>
+      {
+        \ 'uuid_hex': '',
+        \ 'string'  : {
+        \   'time_low'            : '',
+        \   'time_mid'            : '',
+        \   'time_hi_and_version' : '',
+        \   'clock'               : '',
+        \   'node'                : '',
+        \ },
+        \ 'endian': 0,
+        \ 'bytes' : [],
+        \ 'value'   : {
+        \   'time_low'            : [],
+        \   'time_mid'            : [],
+        \   'time_hi_and_version' : [],
+        \   'clk_seq_hi_res'      : [],
+        \   'clk_seq_low'         : [],
+        \   'node'                : [],
+        \ },
+        \ 'variant' : 0,
+        \ 'version' : 0,
+        \}
+<
+	uuid_hex is UUID hex format string.
+	string is inner params that split hex string to block.
+	endian is inner params that mean hex string data byte-endian.
+	bytes is decoded bytes-list; big-endian style.
+	value is inner params that split bytes-list to block.
+	varian is inner params that mean RFC defined vairant.
+	version is inner params that mean RFC variant's version.
+
+
+UUID.generatev1({mac})			*Vital.ID.UUID-UUID.generatev1()*
+	{NOT IMPLEMENTED YES}.
+        Generate and fill version 1 UUID data.
+        Version 1 is time-based, generated from mac identified value.
+
+UUID.generatev3({ns}, {value})	       	*Vital.ID.UUID-UUID.generatev3()*
+        Generate and fill version 3 UUID data.
+        Version 3 use |Vital.Hash.MD5| module.
+	{ns} as |ID.UUID.NS| defined value or other namespace UUID object or
+        hex string.
+	{value} as unique value.
+
+UUID.generatev4()                       *Vital.ID.UUID-UUID.generatev4()*
+        Generate and fill version 4 UUID data.
+        Version 4 use|Vital.Random| module.
+        Version 4 generated from all random value.
+
+UUID.generatev5({ns}, {value})	       	*Vital.ID.UUID-UUID.generatev5()*
+        Generate and fill version 5 UUID data.
+        Version 5 use |Vital.Hash.SHA1| module.
+	{ns} as |ID.UUID.NS| defined value or other namespace UUID object or
+        hex string.
+	{value} as unique value.
+
+
+UUID.hex_decode()	       	*Vital.ID.UUID-UUID.hex_decode()*
+        Decode UUID.uuid_hex, then fill UUID data.
+        Need UUID.uuid_hex fill legal string data.
+
+UUID.byte_encode()	       	*Vital.ID.UUID-UUID.byte_encode()*
+        Encode UUID.bytes, then fill UUID data.
+        Need UUID.bytes fill legal bytes-list data.
+
+UUID.value_encode()	       	*Vital.ID.UUID-UUID.value_encode()*
+        Encode UUID.value.*, then fill UUID data.
+        Need UUID.value.* fill legal bytes-list data.
+
+UUID.build()	               	*Vital.ID.UUID-UUID.build()*
+        Encode UUID internal methods.
+        Use only Vital module creators.
+        See direct code.
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
