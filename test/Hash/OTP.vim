@@ -175,7 +175,7 @@ function! s:suite.totp() abort
             \ secval,
             \ defaults.TOTP.period,
             \ vital#vital#new().import('Hash.' . testdata[i].algo),
-            \ defaults.TOTP.digit,
+            \ len(testdata[i].result),
             \ testdata[i].time,
             \), testdata[i].result)
       let datetime = s:DateTime.from_unix(testdata[i].time)
@@ -183,7 +183,7 @@ function! s:suite.totp() abort
             \ secval,
             \ defaults.TOTP.period,
             \ vital#vital#new().import('Hash.' . testdata[i].algo),
-            \ defaults.TOTP.digit,
+            \ len(testdata[i].result),
             \ datetime,
             \), testdata[i].result)
     endif
