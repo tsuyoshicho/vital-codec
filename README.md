@@ -7,7 +7,7 @@ vital module for Encode/Decode logics
 
 ### Badge
 
- [![Powered by vital-codec](https://img.shields.io/badge/powerd%20by-vital--codec-80273f.svg)](https://github.com/tsuyoshicho/vital-codec)
+[![Powered by vital-codec](https://img.shields.io/badge/powerd%20by-vital--codec-80273f.svg)](https://github.com/tsuyoshicho/vital-codec)
 
 ```markdown
 [![Powered by vital-codec](https://img.shields.io/badge/powerd%20by-vital--codec-80273f.svg)](https://github.com/tsuyoshicho/vital-codec)
