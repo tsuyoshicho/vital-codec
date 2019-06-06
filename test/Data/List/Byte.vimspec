@@ -55,36 +55,24 @@ Describe Data.List.Byte
   End
 
   Describe .from_blob()
-    It from blob to bytes-list.
-      if has('patch-8.1.0735')
-        let result =  ByteArray.from_blob(0z616263)
-        let data = [0x61, 0x62, 0x63]
-
-        Assert Equals(type(result), type(data))
-        Assert Equals(len(result), len(data))
-        for i in range(len(data))
-          Assert Equals(result[i], data[i])
-        endfor
-      else
-        Skip no avaliable blob type.
+    Before each
+      if !has('patch-8.1.0735')
+        Skip blob type do not support in vital.vim.
       endif
+    End
+    It from blob to bytes-list.
+      Assert Equals(ByteArray.from_blob(0z616263), [0x61, 0x62, 0x63])
     End
   End
 
   Describe .to_blob()
-    It from bytes-list to blob.
-      if has('patch-8.1.0735')
-        let result =  ByteArray.to_blob([0x61, 0x62, 0x63])
-        let data = 0z616263
-
-        Assert Equals(type(result), type(data))
-        Assert Equals(len(result), len(data))
-        for i in range(len(data))
-          Assert Equals(result[i], data[i])
-        endfor
-      else
-        Skip no avaliable blob type.
+    Before each
+      if !has('patch-8.1.0735')
+        Skip blob type do not support in vital.vim.
       endif
+    End
+    It from bytes-list to blob.
+      Assert Equals(ByteArray.to_blob([0x61, 0x62, 0x63]), 0z616263)
     End
   End
 
