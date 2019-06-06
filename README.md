@@ -2,8 +2,19 @@
 
 vital module for Encode/Decode logics
 
+### required
+[vital.vim](https://github.com/vim-jp/vital.vim) [![Powered by vital.vim](https://img.shields.io/badge/powered%20by-vital.vim-80273f.svg)](https://github.com/vim-jp/vital.vim)
+
+### Badge
+
+ [![Powered by vital-codec](https://img.shields.io/badge/powerd%20by-vital--codec-80273f.svg)](https://github.com/tsuyoshicho/vital-codec)
+
+```markdown
+[![Powered by vital-codec](https://img.shields.io/badge/powerd%20by-vital--codec-80273f.svg)](https://github.com/tsuyoshicho/vital-codec)
+```
+
 ## License
-CC0
+[CC0](http://creativecommons.org/publicdomain/zero/1.0/)
 
 ## CI setting/Test/Documents
 Copying from vital.vim except a part (non-formal)
