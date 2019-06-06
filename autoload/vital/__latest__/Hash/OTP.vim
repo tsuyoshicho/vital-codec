@@ -67,6 +67,7 @@ endfunction
 
 function! s:totp(key, period, algo, digit, ...) abort
   if a:0
+    let typeval = type(a:1)
     if typeval == s:type.types.number
       let datetime = s:DateTime.from_unix_time(a:1)
     elseif typeval == s:type.types.dict && 'DateTime' == get(a:1,'class','')
