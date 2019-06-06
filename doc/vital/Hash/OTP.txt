@@ -54,15 +54,20 @@ FUNCTIONS				*Vital.Hash.OTP-functions*
 
 htop({key},{counter},{algo},{digit})	*Vital.Hash.OTP.htop()*
 	Return HOTP value.
-	need secret bytes list {key}, and bytes list {counter} alue,
+	It need secret bytes list {key}, and bytes list {counter} value,
 	Hash {algo}, return values' number of {digit}.
 	Hash {algo}, need same as |Vital.Hash.HMAC.hash()| API.
-	ex |Vital.Hash.MD5|
+	ex |Vital.Hash.MD5| , |Vital.Hash.SHA1|
 
-totp({key},{period},{algo},{digit})	*Vital.Hash.OTP.totp()*
-	Return TOTP value.
-	Interface same as |Vital.Hash.OTP.htop()|.
+totp({key},{period},{algo},{digit},...)	*Vital.Hash.OTP.totp()*
+	Return current time TOTP value.
+	Interface like |Vital.Hash.OTP.htop()|, {key} and {algo}.
         {period} are TOTP value renew interval sec.
+	When you need test and/or other reason, use extra arguments that is
+	time source you specified.
+	Extra arguments one of the following support type can be set:
+	  Int value as epoch time seconds.
+	  |Vital.DateTime| object.
 
 
 ==============================================================================
