@@ -200,7 +200,7 @@ function! s:suite.totp() abort
         \ defaults.TOTP.period,
         \ vital#vital#new().import('Hash.' . defaults.TOTP.algo),
         \ defaults.TOTP.digit,
-        \), '\d{' . string(defaults.TOTP.digit) . '}')
+        \), '\v\d{' . string(defaults.TOTP.digit) . '}')
 
   " assert test : unsupport datetime object
   let result_dummy = ''
