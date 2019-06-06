@@ -149,28 +149,29 @@ function! s:suite.totp() abort
   let secval = "12345678901234567890"
 
   let testdata = [
-        \ { 'time': 0x00000001, 'result': '94287082', 'algo': 'SHA1'   },
-        \ { 'time': 0x00000001, 'result': '46119246', 'algo': 'SHA256' },
-        \ { 'time': 0x00000001, 'result': '90693936', 'algo': 'SHA512' },
-        \ { 'time': 0x023523EC, 'result': '07081804', 'algo': 'SHA1'   },
-        \ { 'time': 0x023523EC, 'result': '68084774', 'algo': 'SHA256' },
-        \ { 'time': 0x023523EC, 'result': '25091201', 'algo': 'SHA512' },
-        \ { 'time': 0x023523ED, 'result': '14050471', 'algo': 'SHA1'   },
-        \ { 'time': 0x023523ED, 'result': '67062674', 'algo': 'SHA256' },
-        \ { 'time': 0x023523ED, 'result': '99943326', 'algo': 'SHA512' },
-        \ { 'time': 0x0273EF07, 'result': '89005924', 'algo': 'SHA1'   },
-        \ { 'time': 0x0273EF07, 'result': '91819424', 'algo': 'SHA256' },
-        \ { 'time': 0x0273EF07, 'result': '93441116', 'algo': 'SHA512' },
-        \ { 'time': 0x03F940AA, 'result': '69279037', 'algo': 'SHA1'   },
-        \ { 'time': 0x03F940AA, 'result': '90698825', 'algo': 'SHA256' },
-        \ { 'time': 0x03F940AA, 'result': '38618901', 'algo': 'SHA512' },
-        \ { 'time': 0x27BC86AA, 'result': '65353130', 'algo': 'SHA1'   },
-        \ { 'time': 0x27BC86AA, 'result': '77737706', 'algo': 'SHA256' },
-        \ { 'time': 0x27BC86AA, 'result': '47863826', 'algo': 'SHA512' },
+        \ { 'time':          59, 'result': '94287082', 'algo': 'SHA1'   },
+        \ { 'time':          59, 'result': '46119246', 'algo': 'SHA256' },
+        \ { 'time':          59, 'result': '90693936', 'algo': 'SHA512' },
+        \ { 'time':  1111111109, 'result': '07081804', 'algo': 'SHA1'   },
+        \ { 'time':  1111111109, 'result': '68084774', 'algo': 'SHA256' },
+        \ { 'time':  1111111109, 'result': '25091201', 'algo': 'SHA512' },
+        \ { 'time':  1111111111, 'result': '14050471', 'algo': 'SHA1'   },
+        \ { 'time':  1111111111, 'result': '67062674', 'algo': 'SHA256' },
+        \ { 'time':  1111111111, 'result': '99943326', 'algo': 'SHA512' },
+        \ { 'time':  1234567890, 'result': '89005924', 'algo': 'SHA1'   },
+        \ { 'time':  1234567890, 'result': '91819424', 'algo': 'SHA256' },
+        \ { 'time':  1234567890, 'result': '93441116', 'algo': 'SHA512' },
+        \ { 'time':  2000000000, 'result': '69279037', 'algo': 'SHA1'   },
+        \ { 'time':  2000000000, 'result': '90698825', 'algo': 'SHA256' },
+        \ { 'time':  2000000000, 'result': '38618901', 'algo': 'SHA512' },
+        \ { 'time': 20000000000, 'result': '65353130', 'algo': 'SHA1'   },
+        \ { 'time': 20000000000, 'result': '77737706', 'algo': 'SHA256' },
+        \ { 'time': 20000000000, 'result': '47863826', 'algo': 'SHA512' },
         \]
 
+  let supportalgo = ['SHA1']
   for i in range(len(testdata))
-    if testdata[i].algo == defaults.TOTP.algo
+    if index(supportalgo, testdata[i].algo) >= 0
       call s:assert.equal(s:OTP.totp(
             \ secval,
             \ defaults.TOTP.period,
