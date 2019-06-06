@@ -25,14 +25,18 @@ endfunction
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
+  let s:type    = s:V.import('Vim.Type')
   let s:HMAC    = s:V.import('Hash.HMAC')
   let s:List    = s:V.import('Data.List')
+  let s:DateTime= s:V.import('DateTime')
 endfunction
 
 function! s:_vital_depends() abort
   return ['Bitwise',
+        \ 'Vim.Type',
         \ 'Hash.HMAC',
-        \ 'Data.List']
+        \ 'Data.List',
+        \ 'DateTime']
 endfunction
 
 function! s:hotp(key, counter, algo, digit) abort
@@ -61,8 +65,22 @@ function! s:hotp(key, counter, algo, digit) abort
   return printf('%0' . string(a:digit) . 'd', hotp_value)
 endfunction
 
-function! s:totp(key, period, algo, digit) abort
-  let now_sec = localtime()
+function! s:totp(key, period, algo, digit, ...) abort
+  if a:0
+    let typeval = type(a:1)
+    if typeval == s:type.types.number
+      let datetime = s:DateTime.from_unix_time(a:1)
+    elseif typeval == s:type.types.dict && 'DateTime' == get(a:1,'class','')
+      let datetime = a:1
+    else
+      call s:_throw('non-support extra datetime data (support only unix epoch int value or DateTime object)')
+    endif
+  endif
+  if !exists('datetime')
+    let datetime = s:DateTime.now()
+  endif
+
+  let now_sec = datetime.unix_time()
   let epoch_sec = 0
 
   if has('num64')
