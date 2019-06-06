@@ -179,7 +179,7 @@ function! s:suite.totp() abort
             \ len(testdata[i].result),
             \ testdata[i].time,
             \), testdata[i].result)
-      let datetime = s:DateTime.from_unix(testdata[i].time)
+      let datetime = s:DateTime.from_unix_time(testdata[i].time)
       call s:assert.equal(s:OTP.totp(
             \ secval,
             \ defaults.TOTP.period,
