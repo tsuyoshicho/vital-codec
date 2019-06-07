@@ -1,0 +1,82 @@
+*vital/Random/FixedData.txt*	random number generator using fixed data
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS					*Vital.Random.FixedData-contents*
+
+INTRODUCTION			|Vital.Random.FixedData-introduction|
+INTERFACE			|Vital.Random.FixedData-interface|
+  FUNCTIONS			|Vital.Random.FixedData-functions|
+
+
+
+==============================================================================
+INTRODUCTION				*Vital.Random.FixedData-introduction*
+
+*Vital.Random.FixedData* provides a Random Number Generator (RNG) at fixed data.
+That was used for debugging/testing.
+
+Usage:
+>
+	let s:V = vital#{plugin-name}#new()
+	let s:X = s:V.import("Random.FixedData")
+
+	call s:X.srand(1)
+	echo s:X.rand()
+	" -232950721
+	echo s:X.rand()
+	" 739248423
+	call s:X.srand(1)
+	echo s:X.rand()
+	" -232950721
+<
+
+
+==============================================================================
+INTERFACE				*Vital.Random.FixedData-interface*
+
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Random.FixedData-functions*
+
+srand([{seed}])				*Vital.Random.FixedData.srand()*
+	Initialize the global generator with the given seed number. Fixed Data
+	use in base data. 
+
+rand()					*Vital.Random.FixedData.rand()*
+	Generate a random number from the global generator.
+	Note: A return value is possibly negative.  This is because Vim script
+	doesn't have an unsigned integer type.
+
+new_generator()				*Vital.Random.FixedData.new_generator()*
+	Create a new Generator object(|Vital.Random.FixedData-Generator|).
+
+Note:
+config set/unset interface
+fixed data format
+instance signature and manage in global
+global / user / module x global RNG / instance RNG
+
+==============================================================================
+OBJECTS					*Vital.Random.FixedData-objects*
+
+------------------------------------------------------------------------------
+Generator Object		*Vital.Random.FixedData-Generator*
+
+Generator.next()		*Vital.Random.FixedData-Generator.next()*
+	Generate the next random number in the sequence.
+
+Generator.min()			*Vital.Random.FixedData-Generator.min()*
+	Get the smallest possible value in the output range.
+
+Generator.max()			*Vital.Random.FixedData-Generator.max()*
+	Get the largest possible value in the output range.
+
+Generator.seed({seeds})		*Vital.Random.FixedData-Generator.seed()*
+	Initialze the generator with the given seed list.
+
+Note:
+seed custom intance data table
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
