@@ -1,0 +1,23 @@
+Describe ID.ULID
+  Before all
+    let ULID = vital#vital#new().import('ID.ULID')
+  End
+
+  Describe .generate()
+    It generate ULID string.
+      Skip currently, test data nothing.
+    End
+  End
+
+  Describe .generateUUID()
+    It generate ULID UUID format string.
+      Skip currently, test data nothing.
+    End
+  End
+
+  Describe .ULID2UUID()
+    It convert ULID to UUID format string.
+      Skip currently, test data nothing.
+    End
+  End
+End

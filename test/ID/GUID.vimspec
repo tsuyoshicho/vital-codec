@@ -1,0 +1,17 @@
+Describe ID.GUID
+  Before all
+    let GUID = vital#vital#new().import('ID.GUID')
+  End
+
+  Describe .generate()
+    It generate GUID.
+      Skip currently, test data nothing.
+    End
+  End
+
+  Describe .decode()
+    It decode GUID string.
+      Skip currently, test data nothing.
+    End
+  End
+End
