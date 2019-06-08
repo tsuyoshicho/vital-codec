@@ -8,21 +8,24 @@ Describe Data.Base32.Hex
       Assert Equals(B.encode("hello, world!"), 'D1IMOR3F5GG7ERRIDHI22===')
     End
     It encode string RFC Test Vector 1.
-      Assert Equals(B.encode("f"     ), 'CO======'        )
+      Assert Equals(B.encode(""      ), ''                )
     End
     It encode string RFC Test Vector 2.
-      Assert Equals(B.encode("fo"    ), 'CPNG===='        )
+      Assert Equals(B.encode("f"     ), 'CO======'        )
     End
     It encode string RFC Test Vector 3.
-      Assert Equals(B.encode("foo"   ), 'CPNMU==='        )
+      Assert Equals(B.encode("fo"    ), 'CPNG===='        )
     End
     It encode string RFC Test Vector 4.
-      Assert Equals(B.encode("foob"  ), 'CPNMUOG='        )
+      Assert Equals(B.encode("foo"   ), 'CPNMU==='        )
     End
     It encode string RFC Test Vector 5.
-      Assert Equals(B.encode("fooba" ), 'CPNMUOJ1'        )
+      Assert Equals(B.encode("foob"  ), 'CPNMUOG='        )
     End
     It encode string RFC Test Vector 6.
+      Assert Equals(B.encode("fooba" ), 'CPNMUOJ1'        )
+    End
+    It encode string RFC Test Vector 7.
       Assert Equals(B.encode("foobar"), 'CPNMUOJ1E8======')
     End
   End
@@ -44,21 +47,24 @@ Describe Data.Base32.Hex
       Assert Equals(B.decode("D1IMOR3F5GG7ERRIDHI22==="), 'hello, world!')
     End
     It decode string RFC Test Vector 1.
-      Assert Equals(B.decode("CO======"        ), 'f'     )
+      Assert Equals(B.decode(""                ), ''      )
     End
     It decode string RFC Test Vector 2.
-      Assert Equals(B.decode("CPNG===="        ), 'fo'    )
+      Assert Equals(B.decode("CO======"        ), 'f'     )
     End
     It decode string RFC Test Vector 3.
-      Assert Equals(B.decode("CPNMU==="        ), 'foo'   )
+      Assert Equals(B.decode("CPNG===="        ), 'fo'    )
     End
     It decode string RFC Test Vector 4.
-      Assert Equals(B.decode("CPNMUOG="        ), 'foob'  )
+      Assert Equals(B.decode("CPNMU==="        ), 'foo'   )
     End
     It decode string RFC Test Vector 5.
-      Assert Equals(B.decode("CPNMUOJ1"        ), 'fooba' )
+      Assert Equals(B.decode("CPNMUOG="        ), 'foob'  )
     End
     It decode string RFC Test Vector 6.
+      Assert Equals(B.decode("CPNMUOJ1"        ), 'fooba' )
+    End
+    It decode string RFC Test Vector 7.
       Assert Equals(B.decode("CPNMUOJ1E8======"), 'foobar')
     End
   End

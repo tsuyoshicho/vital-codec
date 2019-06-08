@@ -8,21 +8,24 @@ Describe Data.Base32.Crockford
       Assert Equals(B.encode("hello, world!"), 'D1JPRV3F5GG7EVVJDHJ22')
     End
     It encode string RFC Test Vector 1.
-      Assert Equals(B.encode("f"     ), 'CR'        )
+      Assert Equals(B.encode(""      ), ''         )
     End
     It encode string RFC Test Vector 2.
-      Assert Equals(B.encode("fo"    ), 'CSQG'      )
+      Assert Equals(B.encode("f"     ), 'CR'        )
     End
     It encode string RFC Test Vector 3.
-      Assert Equals(B.encode("foo"   ), 'CSQPY'     )
+      Assert Equals(B.encode("fo"    ), 'CSQG'      )
     End
     It encode string RFC Test Vector 4.
-      Assert Equals(B.encode("foob"  ), 'CSQPYRG'   )
+      Assert Equals(B.encode("foo"   ), 'CSQPY'     )
     End
     It encode string RFC Test Vector 5.
-      Assert Equals(B.encode("fooba" ), 'CSQPYRK1'  )
+      Assert Equals(B.encode("foob"  ), 'CSQPYRG'   )
     End
     It encode string RFC Test Vector 6.
+      Assert Equals(B.encode("fooba" ), 'CSQPYRK1'  )
+    End
+    It encode string RFC Test Vector 7.
       Assert Equals(B.encode("foobar"), 'CSQPYRK1E8')
     End
   End
@@ -44,21 +47,24 @@ Describe Data.Base32.Crockford
       Assert Equals(B.decode("D1JPRV3F5GG7EVVJDHJ22"), 'hello, world!')
     End
     It decode string RFC Test Vector 1.
-      Assert Equals(B.decode("CR"        ), 'f'     )
+      Assert Equals(B.decode(""          ), ''      )
     End
     It decode string RFC Test Vector 2.
-      Assert Equals(B.decode("CSQG"      ), 'fo'    )
+      Assert Equals(B.decode("CR"        ), 'f'     )
     End
     It decode string RFC Test Vector 3.
-      Assert Equals(B.decode("CSQPY"     ), 'foo'   )
+      Assert Equals(B.decode("CSQG"      ), 'fo'    )
     End
     It decode string RFC Test Vector 4.
-      Assert Equals(B.decode("CSQPYRG"   ), 'foob'  )
+      Assert Equals(B.decode("CSQPY"     ), 'foo'   )
     End
     It decode string RFC Test Vector 5.
-      Assert Equals(B.decode("CSQPYRK1"  ), 'fooba' )
+      Assert Equals(B.decode("CSQPYRG"   ), 'foob'  )
     End
     It decode string RFC Test Vector 6.
+      Assert Equals(B.decode("CSQPYRK1"  ), 'fooba' )
+    End
+    It decode string RFC Test Vector 7.
       Assert Equals(B.decode("CSQPYRK1E8"), 'foobar')
     End
   End
