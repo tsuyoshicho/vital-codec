@@ -1,7 +1,7 @@
 Describe Hash.HMAC
   Before all
     let HMAC = vital#vital#new().import('Hash.HMAC')
-    let MD5  = vital#vital#new().import('Hash.MD5')
+    let MD5  = vital#vital#new().import('Hash.MD5x')
     let SHA1 = vital#vital#new().import('Hash.SHA1')
 
     " https://tools.ietf.org/html/rfc2202

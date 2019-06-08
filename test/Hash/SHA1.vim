@@ -9,6 +9,11 @@ function! s:suite.after()
   unlet! s:SHA1
 endfunction
 
+function! s:suite.prop() abort
+   call s:assert.is_string(s:SHA1.name)
+   call s:assert.is_number(s:SHA1.hash_length)
+endfunction
+
 function! s:suite.encode() abort
    call s:assert.equal(s:SHA1.sum(''), 'da39a3ee5e6b4b0d3255bfef95601890afd80709')
    call s:assert.equal(s:SHA1.sum('a'), '86f7e437faa5a7fce15d1ddcb9eaeaea377667b8')
