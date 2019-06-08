@@ -16,23 +16,24 @@ endfunction
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
+  let s:ByteList = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise']
+  return ['Bitwise', 'Data.List.Byte']
 endfunction
 
 function! s:sum(data) abort
-  let bytes = s:_str2bytes(a:data)
+  let bytes = s:ByteList.from_string(a:data)
   return s:sum_raw(bytes)
 endfunction
 
 function! s:sum_raw(bytes) abort
-  return s:_bytes2binstr(s:digest_raw(a:bytes))
+  return s:ByteList.to_hexstring(s:digest_raw(a:bytes))
 endfunction
 
 function! s:digest(data) abort
-  let bytes = s:_str2bytes(a:data)
+  let bytes = s:ByteList.from_string(a:data)
   return s:digest_raw(bytes)
 endfunction
 
@@ -332,14 +333,6 @@ endfunction
 
 function! s:_uint32(n) abort
   return s:bitwise.and(a:n, 0xFFFFFFFF)
-endfunction
-
-function! s:_str2bytes(str) abort
-  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
-endfunction
-
-function! s:_bytes2binstr(bytes) abort
-  return join(map(copy(a:bytes), 'printf(''%02x'', v:val)'), '')
 endfunction
 
 let &cpo = s:save_cpo
