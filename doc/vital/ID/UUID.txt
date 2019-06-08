@@ -31,35 +31,43 @@ new()                                     *Vital.ID.UUID.new()*
 	Return UUID non-data object.
 
 decode({uuid str})                        *Vital.ID.UUID.decode()*
-	Return UUID decoded object.
+	Return UUID {uuid str} decoded object.
 
 v1({mac})                                    *Vital.ID.UUID.v1()*
-	{NOT IMPLEMENTED YES}.
+	{NOT IMPLEMENTED YET}.
 	Return UUID version 1 value.
 	This function wrapped |Vital.ID.UUID-UUID.generatev1()| .
         Also known as: >
-        let result = UUID.new().generatev1({mac}).uuid_hex
+        let uuid = UUID.new()
+        call uuid.generatev1({mac})
+        let result = uuid.uuid_hex
 >
 
 v3({ns}, {value})                            *Vital.ID.UUID.v3()*
 	Return UUID version 3 value.
 	This function wrapped |Vital.ID.UUID-UUID.generatev3()| .
         Also known as: >
-        let result = UUID.new().generatev3({ns}, {value}).uuid_hex
+        let uuid = UUID.new()
+        call uuid.generatev3({ns}, {value})
+        let result = uuid.uuid_hex
 >
 
 v4()                                         *Vital.ID.UUID.v4()*
 	Return UUID version 4 value.
 	This function wrapped |Vital.ID.UUID-UUID.generatev4()| .
         Also known as: >
-        let result = UUID.new().generatev4().uuid_hex
+        let uuid = UUID.new()
+        call uuid.generatev4()
+        let result = uuid.uuid_hex
 >
 
 v5({ns}, {value})                            *Vital.ID.UUID.v5()*
 	Return UUID version 5 value.
 	This function wrapped |Vital.ID.UUID-UUID.generatev5()| .
         Also known as: >
-        let result = UUID.new().generatev5({ns}, {value}).uuid_hex
+        let uuid = UUID.new()
+        call uuid.generatev5({ns}, {value})
+        let result = uuid.uuid_hex
 >
 
 
@@ -95,7 +103,7 @@ UUID Object				   *Vital.ID.UUID-UUID*
 <
 	uuid_hex is UUID hex format string.
 	string is inner params that split hex string to block.
-	endian is inner params that mean hex string data byte-endian.
+	endian is inner params that mean hex string data byte's endianess.
 	bytes is decoded bytes-list; big-endian style.
 	value is inner params that split bytes-list to block.
 	varian is inner params that mean RFC defined vairant.
@@ -103,7 +111,7 @@ UUID Object				   *Vital.ID.UUID-UUID*
 
 
 UUID.generatev1({mac})			*Vital.ID.UUID-UUID.generatev1()*
-	{NOT IMPLEMENTED YES}.
+	{NOT IMPLEMENTED YET}.
         Generate and fill version 1 UUID data.
         Version 1 is time-based, generated from mac identified value.
 
