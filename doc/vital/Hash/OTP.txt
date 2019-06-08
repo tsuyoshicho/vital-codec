@@ -1,4 +1,4 @@
-*vital/Hash/OTP.txt*		OTP:One-time Password Generation library.
+*vital/Hash/OTP.txt*	OTP:One-time Password Generation library wrapper.
 
 Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
 
@@ -7,68 +7,19 @@ CONTENTS				*Vital.Hash.OTP-contents*
 
 INTRODUCTION		                |Vital.Hash.OTP-introduction|
 INTERFACE		                |Vital.Hash.OTP-interface|
-  Constants                               |Vital.Hash.OTP-constants|
-  Functions                               |Vital.Hash.OTP-functions|
 
 ==============================================================================
 INTRODUCTION				*Vital.Hash.OTP-introduction*
 
-*Vital.Hash.OTP* is an OTP:One-time Password Generation library.
-It provides functions to return the OTP value from key secret.
-Support HOTP/TOTP.
+*Vital.Hash.OTP* is an OTP:One-time Password Generation library wrapper.
+Wrapped |Vital.Crypt.Password.OTP|
 
-Usage: >
-  let default = s:OTP.default()
-  return s:OTP.totp(secret, default.TOTP.period, g:V.import('Hash.' . default.TOTP.algo), default.TOTP.digit)
-<
+Deprecated old module/interface.
 
 ==============================================================================
 INTERFACE				*Vital.Hash.OTP-interface*
-------------------------------------------------------------------------------
-CONSTANTS				*Vital.Hash.OTP-constants*
 
-defaults				*Vital.Hash.OTP-defaults*
-	A dictionary that has the default parameter.
-	Currently below: >
-      {
-      \ 'HOTP' : {
-      \   'digit'   : 6,
-      \   'algo'    : 'SHA1',
-      \   'counter' : 8,
-      \ },
-      \ 'TOTP' : {
-      \   'digit'   : 6,
-      \   'algo'    : 'SHA1',
-      \   'period'  : 30,
-      \ },
-      \}
-<
-	digit is otp number of digits.
-	algo is otp digest algorithm.
-	counter is hotp counter value length.
-	period is totp caltratation interval.
-
-
-------------------------------------------------------------------------------
-FUNCTIONS				*Vital.Hash.OTP-functions*
-
-htop({key},{counter},{algo},{digit})	*Vital.Hash.OTP.htop()*
-	Return HOTP value.
-	It need secret bytes list {key}, and bytes list {counter} value,
-	Hash {algo}, return values' number of {digit}.
-	Hash {algo}, need same as |Vital.Hash.HMAC.hash()| API.
-	ex |Vital.Hash.MD5| , |Vital.Hash.SHA1|
-
-totp({key},{period},{algo},{digit},...)	*Vital.Hash.OTP.totp()*
-	Return current time TOTP value.
-	Interface like |Vital.Hash.OTP.htop()|, {key} and {algo}.
-        {period} are TOTP value renew interval sec.
-	When you need test and/or other reason, use extra arguments that is
-	time source you specified.
-	Extra arguments one of the following support type can be set:
-	  Int value as epoch time seconds.
-	  |Vital.DateTime| object.
-
+See |Vital.Crypt.Password.OTP-interface|.
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
