@@ -19,7 +19,7 @@ let s:DEFAULTS = {
       \}
 
 function! s:_vital_created(module) abort
-  let a:module.defaults =  s:DEFAULTS
+  let a:module.defaults = s:DEFAULTS
 endfunction
 
 function! s:_vital_loaded(V) abort

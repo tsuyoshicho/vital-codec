@@ -5,13 +5,17 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+let s:DEFAULTS = {}
+
 function! s:_vital_created(module) abort
-  let a:module.defaults = s:OTP.defaults
+  let a:module.defaults = s:DEFAULTS
 endfunction
 
 function! s:_vital_loaded(V) abort
   let s:V   = a:V
   let s:OTP = s:V.import('Crypt.Password.OTP')
+
+  call extend(s:DEFAULTS, s:OTP.defaults)
 endfunction
 
 function! s:_vital_depends() abort
