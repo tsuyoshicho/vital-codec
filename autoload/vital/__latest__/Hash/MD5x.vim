@@ -4,6 +4,11 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! s:_vital_created(module) abort
+  let a:module.name = 'MD5'
+  let a:module.hash_length = 128
+endfunction
+
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
