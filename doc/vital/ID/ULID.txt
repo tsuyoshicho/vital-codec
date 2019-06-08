@@ -1,0 +1,39 @@
+*vital/ID/ULID.txt*		                              ULID library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.ID.ULID-contents*
+
+INTRODUCTION		                |Vital.ID.ULID-introduction|
+INTERFACE		                |Vital.ID.ULID-interface|
+  Functions                               |Vital.ID.ULID-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.ID.ULID-introduction*
+
+*Vital.ID.ULID* is an ULID library.
+It provides functions manipulate ULID.
+
+ULID is sortable timetamp + random data based ID.
+It has compatibility for |Vital.ID.UUID|.
+
+ulid/spec: The canonical spec for ulid
+https://github.com/ulid/sp
+
+==============================================================================
+INTERFACE				*Vital.ID.ULID-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.ID.ULID-functions*
+
+generate()                                *Vital.ID.ULID.generate()*
+	Return ULID native format. (|Vital.Data.Base32.Crockford| format)
+
+generateUUID()                            *Vital.ID.ULID.generateUUID()*
+	Return ULID UUID string format.
+
+ULID2UUID({ulid})                         *Vital.ID.ULID.ULID2UUID()*
+	Return UUID create from {ulid}. {ulid} is native format string.
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl

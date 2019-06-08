@@ -1,0 +1,99 @@
+Describe ID.UUID
+  Before all
+    let UUID = vital#vital#new().import('ID.UUID')
+    let NS = vital#vital#new().import('ID.UUID.Namespace')
+  End
+
+  Describe .new()
+    It create object.
+      " Assert Equals(UUID.new(), {})
+      Skip currently, object check nothing.
+    End
+  End
+
+  Describe .decode()
+    It decode UUID string.
+      Skip currently, test data nothing.
+    End
+  End
+
+  Describe .v1()
+    It timestamp and mac UUID generate.
+      Skip currently, not implement yet.
+    End
+  End
+  " Type 3 and 5 GUIDs | Water Juice https://waterjuiceweb.wordpress.com/2013/06/16/type-3-and-5-guids/
+  " Unfortunately RFC4122 contains an error in the example it provides for creating a type 3 GUID.
+  " Appendix B gives an example of a type 3 GUID from the DNS name “www.widgets.com”.
+  " It incorrectly displays the result as {e902893a-9d22-3c7e-a7b8-d6e313b71d9f}.
+  " This was corrected in errata 1428. The correct result is {3d813cbb-47fb-32ba-91df-831e1593ac29}.
+  " Unfortunately the incorrect value is often requoted on other sites on the internet.
+  Describe .v3()
+    It uniq mapping for MD5 UUID generate.
+      Assert Equals(UUID.v3(NS.DNS, "www.widgets.com"), '3d813cbb-47fb-32ba-91df-831e1593ac29')
+    End
+  End
+  Describe .v4()
+    It random UUID generate.
+      Skip currently, test random data do not work.
+    End
+  End
+  Describe .v5()
+    It uniq mapping for SHA1 UUID generate.
+      Assert Equals(UUID.v5(NS.DNS, "www.widgets.com"), '21f7f8de-8051-5b89-8680-0195ef798b6a')
+    End
+  End
+
+  Context UUID object
+    Describe .decode()
+      It decode UUID string.
+        Skip currently, test data nothing.
+      End
+    End
+
+    Describe .generatev1()
+      It decode UUID string.
+        Skip currently, test data nothing.
+      End
+    End
+    Describe .generatev3()
+      It decode UUID string.
+        let uuid = UUID.new()
+        call uuid.generatev3(NS.DNS, "www.widgets.com")
+        Assert Equals(uuid.uuid_hex, '3d813cbb-47fb-32ba-91df-831e1593ac29')
+      End
+    End
+    Describe .generatev4()
+      It decode UUID string.
+        Skip currently, test data nothing.
+      End
+    End
+    Describe .generatev5()
+      It decode UUID string.
+        let uuid = UUID.new()
+        call uuid.generatev5(NS.DNS, "www.widgets.com")
+        Assert Equals(uuid.uuid_hex, '21f7f8de-8051-5b89-8680-0195ef798b6a')
+      End
+    End
+    Describe .hex_decode()
+      It decode UUID string.
+        Skip currently, test data nothing.
+      End
+    End
+    Describe .byte_encode()
+      It decode UUID string.
+        Skip currently, test data nothing.
+      End
+    End
+    Describe .value_encode()
+      It decode UUID string.
+        Skip currently, test data nothing.
+      End
+    End
+    Describe .build()
+      It decode UUID string.
+        Skip this method is internal use.
+      End
+    End
+  End
+End

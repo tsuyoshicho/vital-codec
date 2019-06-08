@@ -1,0 +1,44 @@
+*vital/ID/UUID/Namespace.txt*		UUID Namespace constant library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.ID.UUID.Namespace-contents*
+
+INTRODUCTION		                |Vital.ID.UUID.Namespace-introduction|
+INTERFACE		                |Vital.ID.UUID.Namespace-interface|
+  Constants                               |Vital.ID.UUID.Namespace-constants|
+
+==============================================================================
+INTRODUCTION				*Vital.ID.UUID.Namespace-introduction*
+
+*Vital.ID.UUID.Namespace* is an UUID v3/v5 used Namespace defined library.
+
+UUID defined in RFC 4122
+
+https://tools.ietf.org/html/rfc4122
+
+
+==============================================================================
+INTERFACE				*Vital.ID.UUID.Namespace-interface*
+------------------------------------------------------------------------------
+CONSTANTS                               *Vital.ID.UUID.Namespace-constants*
+
+nil                                     *Vital.ID.UUID.Namespace-nil*
+        '00000000-0000-0000-0000-000000000000'
+
+DNS                                     *Vital.ID.UUID.Namespace-DNS*
+        '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
+
+URL                                     *Vital.ID.UUID.Namespace-URL*
+        '6ba7b811-9dad-11d1-80b4-00c04fd430c8'
+
+OID                                     *Vital.ID.UUID.Namespace-OID*
+        '6ba7b812-9dad-11d1-80b4-00c04fd430c8'
+
+X500                                    *Vital.ID.UUID.Namespace-X500*
+        '6ba7b814-9dad-11d1-80b4-00c04fd430c8'
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
