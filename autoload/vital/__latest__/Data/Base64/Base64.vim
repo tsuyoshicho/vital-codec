@@ -37,6 +37,10 @@ endfunction
 
 function! s:b64decode(b64, map, is_padding, padcheck) abort
   let bytes = []
+  if len(a:b64) < 2
+    " no data
+    return bytes
+  endif
   for i in range(0, len(a:b64) - 1, 4)
     let pack = repeat([0], 4)
     for j in range(4)
