@@ -90,6 +90,13 @@ function! s:_ulid_encode(ulid) abort
 endfunction
 
 function! s:_ulid_decode(ulid_b32) abort
+  let timestamp_top = strpart(a:ulid_b32, 0, 1)
+  " max 7ZZZZZZZZZZZZZZZZZZZZZZZZZ
+  if timestamp_top !~? '[0-7]'
+    " 8?... or higher
+    call s:_throw('48bit timestamp overflow')
+  endif
+
   let timestamp_b32 = strpart(a:ulid_b32, 0, 10)
   " dummy 6char 0
   let timestamp_b32_w_dummy = '000000' . timestamp_b32
@@ -124,6 +131,10 @@ endfunction
 
 function! s:_uint8(n) abort
   return s:bitwise.and(a:n, 0xFF)
+endfunction
+
+function! s:_throw(message) abort
+  throw 'vital: ID.ULID: ' . a:message
 endfunction
 
 let &cpo = s:save_cpo
