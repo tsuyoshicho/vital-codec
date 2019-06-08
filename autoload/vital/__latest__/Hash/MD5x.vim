@@ -12,10 +12,11 @@ endfunction
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
+  let s:ByteList = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise']
+  return ['Bitwise', 'Data.List.Byte']
 endfunction
 
 let s:shift = [
@@ -45,16 +46,16 @@ let s:table = [
       \ ]
 
 function! s:sum(data) abort
-  let bytes = s:_str2bytes(a:data)
+  let bytes = s:ByteList.from_string(a:data)
   return s:sum_raw(bytes)
 endfunction
 
 function! s:sum_raw(bytes) abort
-  return s:_bytes2binstr(s:digest_raw(a:bytes))
+  return s:ByteList.to_hexstring(s:digest_raw(a:bytes))
 endfunction
 
 function! s:digest(data) abort
-  let bytes = s:_str2bytes(a:data)
+  let bytes = s:ByteList.from_string(a:data)
   return s:digest_raw(bytes)
 endfunction
 
@@ -130,14 +131,6 @@ endfunction
 function! s:_leftrotate(x, c) abort
   let l:x = s:bitwise.and(a:x, 0xFFFFFFFF)
   return s:bitwise.and(s:bitwise.or(s:bitwise.lshift(l:x, a:c), s:bitwise.rshift(l:x, (32-a:c))), 0xFFFFFFFF)
-endfunction
-
-function! s:_bytes2binstr(bytes) abort
-  return join(map(copy(a:bytes), 'printf(''%02x'', v:val)'), '')
-endfunction
-
-function! s:_str2bytes(str) abort
-  return map(range(len(a:str)), 'char2nr(a:str[v:val])')
 endfunction
 
 function! s:_int2bytes(bits, int) abort
