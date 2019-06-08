@@ -8,21 +8,24 @@ Describe Data.Base32x
       Assert Equals(B.encode("hello, world!"), 'NBSWY3DPFQQHO33SNRSCC===')
     End
     It encode string RFC Test Vector 1.
-      Assert Equals(B.encode("f"     ), 'MY======'        )
+      Assert Equals(B.encode(""      ), ''                )
     End
     It encode string RFC Test Vector 2.
-      Assert Equals(B.encode("fo"    ), 'MZXQ===='        )
+      Assert Equals(B.encode("f"     ), 'MY======'        )
     End
     It encode string RFC Test Vector 3.
-      Assert Equals(B.encode("foo"   ), 'MZXW6==='        )
+      Assert Equals(B.encode("fo"    ), 'MZXQ===='        )
     End
     It encode string RFC Test Vector 4.
-      Assert Equals(B.encode("foob"  ), 'MZXW6YQ='        )
+      Assert Equals(B.encode("foo"   ), 'MZXW6==='        )
     End
     It encode string RFC Test Vector 5.
-      Assert Equals(B.encode("fooba" ), 'MZXW6YTB'        )
+      Assert Equals(B.encode("foob"  ), 'MZXW6YQ='        )
     End
     It encode string RFC Test Vector 6.
+      Assert Equals(B.encode("fooba" ), 'MZXW6YTB'        )
+    End
+    It encode string RFC Test Vector 7.
       Assert Equals(B.encode("foobar"), 'MZXW6YTBOI======')
     End
   End
@@ -44,21 +47,24 @@ Describe Data.Base32x
       Assert Equals(B.decode("NBSWY3DPFQQHO33SNRSCC==="), 'hello, world!')
     End
     It decode string RFC Test Vector 1.
-      Assert Equals(B.decode("MY======"        ), 'f'     )
+      Assert Equals(B.decode(""                ), ''      )
     End
     It decode string RFC Test Vector 2.
-      Assert Equals(B.decode("MZXQ===="        ), 'fo'    )
+      Assert Equals(B.decode("MY======"        ), 'f'     )
     End
     It decode string RFC Test Vector 3.
-      Assert Equals(B.decode("MZXW6==="        ), 'foo'   )
+      Assert Equals(B.decode("MZXQ===="        ), 'fo'    )
     End
     It decode string RFC Test Vector 4.
-      Assert Equals(B.decode("MZXW6YQ="        ), 'foob'  )
+      Assert Equals(B.decode("MZXW6==="        ), 'foo'   )
     End
     It decode string RFC Test Vector 5.
-      Assert Equals(B.decode("MZXW6YTB"        ), 'fooba' )
+      Assert Equals(B.decode("MZXW6YQ="        ), 'foob'  )
     End
     It decode string RFC Test Vector 6.
+      Assert Equals(B.decode("MZXW6YTB"        ), 'fooba' )
+    End
+    It decode string RFC Test Vector 7.
       Assert Equals(B.decode("MZXW6YTBOI======"), 'foobar')
     End
   End
