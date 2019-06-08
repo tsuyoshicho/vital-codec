@@ -1,0 +1,34 @@
+*vital/ID/GUID.txt*		                        Microsft GUID library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.ID.GUID-contents*
+
+INTRODUCTION		                |Vital.ID.GUID-introduction|
+INTERFACE		                |Vital.ID.GUID-interface|
+  Functions                               |Vital.ID.GUID-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.ID.GUID-introduction*
+
+*Vital.ID.GUID* is an Microsft GUID library.
+It provides functions manipulate GUID.
+
+GUID is |Vital.ID.UUID| variant.
+It is little-endian stored.
+
+==============================================================================
+INTERFACE				*Vital.ID.GUID-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.ID.GUID-functions*
+
+generate()                                *Vital.ID.GUID.generate()*
+	Return GUID that is random generate value.
+
+decode({guid str})                        *Vital.ID.GUID.generateUUID()*
+	Return GUID decoded UUID object.
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
