@@ -13,6 +13,13 @@ vital module for Encode/Decode logics
 [![Powered by vital-codec](https://img.shields.io/badge/powerd%20by-vital--codec-80273f.svg)](https://github.com/tsuyoshicho/vital-codec)
 ```
 
+## Module specific information
+
+* Hash.MD5x : Renamed to MD5 when merged in the future. MD5 enhanced.
+* Data.Base32x: Renamed to Base32 when merged in the future. Wrapper implementation.
+* Data.Base64x: Renamed to Base64 when merged in the future. Wrapper implementation.
+* Hash.OTP: Deprecated for past compatibility. Wrapper implementation.
+
 ## License
 [CC0](http://creativecommons.org/publicdomain/zero/1.0/)
 
