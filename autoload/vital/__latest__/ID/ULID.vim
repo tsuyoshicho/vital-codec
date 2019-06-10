@@ -21,12 +21,12 @@ function! s:_vital_depends() abort
 endfunction
 
 function! s:generate(...) abort
-  let ulid = call(s:_ulid_generate, a:000)
+  let ulid = call('s:_ulid_generate', a:000)
   return s:_ulid_encode(ulid)
 endfunction
 
 function! s:generateUUID() abort
-  let ulid = call(s:_ulid_generate, a:000)
+  let ulid = call('s:_ulid_generate', a:000)
   return s:_bytes2uuid(ulid.bytes).uuid_hex
 endfunction
 
