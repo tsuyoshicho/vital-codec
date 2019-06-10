@@ -20,13 +20,13 @@ function! s:_vital_depends() abort
         \ 'ID.UUID']
 endfunction
 
-function! s:generate() abort
-  let ulid = s:_ulid_generate()
+function! s:generate(...) abort
+  let ulid = call(s:_ulid_generate, a:000)
   return s:_ulid_encode(ulid)
 endfunction
 
 function! s:generateUUID() abort
-  let ulid = s:_ulid_generate()
+  let ulid = call(s:_ulid_generate, a:000)
   return s:_bytes2uuid(ulid.bytes).uuid_hex
 endfunction
 
@@ -35,7 +35,7 @@ function! s:ULID2UUID(ulid_b32) abort
   return s:_bytes2uuid(ulid.bytes)
 endfunction
 
-function! s:_ulid_generate() abort
+function! s:_ulid_generate(...) abort
   let timelist   = s:List.new(6,  {-> 0})
   let randomlist = s:List.new(10, {-> 0})
 
@@ -61,8 +61,7 @@ function! s:_ulid_generate() abort
   endfor
 
   " 80bit random (8bit = 1byte) x 10
-  let r = s:Random.new()
-  call r.seed(s:Random.next())
+  let r = call(s:Random.new, a:000)
   for i in range(10)
     let randomlist[i] = r.range(256)
   endfor
