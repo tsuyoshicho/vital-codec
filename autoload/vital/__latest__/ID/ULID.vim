@@ -7,17 +7,19 @@ set cpo&vim
 function! s:_vital_loaded(V) abort
   let s:V        = a:V
   let s:bitwise  = s:V.import('Bitwise')
+  let s:type     = s:V.import('Vim.Type')
   let s:Random   = s:V.import('Random')
   let s:List     = s:V.import('Data.List')
   let s:BigNum   = s:V.import('Data.BigNum')
   let s:Base32cf = s:V.import('Data.Base32.Crockford')
   let s:UUID     = s:V.import('ID.UUID')
+  let s:DateTime = s:V.import('DateTime')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Random', 'Data.List',
-        \ 'Data.BigNum' 'Data.Base32.Crockford',
-        \ 'ID.UUID']
+  return ['Bitwise', 'Vim.Type', 'Random', 'Data.List',
+        \ 'Data.BigNum', 'Data.Base32.Crockford', 'ID.UUID',
+        \ 'DateTime']
 endfunction
 
 function! s:generate(...) abort
@@ -39,14 +41,28 @@ function! s:_ulid_generate(...) abort
   let timelist   = s:List.new(6,  {-> 0})
   let randomlist = s:List.new(10, {-> 0})
 
+  " arg 0 or 1(random generator) , 2(random generator and seed) , 3(random generator and seed, fixed datetime)
+  let random_arglist = a:000[:1]
+  if a:0 > 2
+    let typeval = type(a:3)
+    if typeval == s:type.types.number
+      let datetime = s:DateTime.from_unix_time(a:3)
+    elseif typeval == s:type.types.dict && 'DateTime' == get(a:3,'class','')
+      let datetime = a:3
+    else
+      call s:_throw('non-support extra datetime data (support only unix epoch int value or DateTime object)')
+    endif
+  endif
+  if !exists('datetime')
+    let datetime = s:DateTime.now()
+  endif
+
   " 48bit timestamp
   let timelist_mod = s:List.new(6, {-> {}}) " index is No. x byte
   let timelist_div = s:List.new(6, {-> {}}) " index is remain ,0 is now 5 is last divided value
 
   " localtime is Unix epoch second timestanp, need msec; generate x1000
-  let now_timestamp = localtime()
-
-  let timelist_div[0] = s:BigNum.mul(now_timestamp, 1000)
+  let timelist_div[0] = s:BigNum.mul(datetime.unix_time(), 1000)
 
   " byte 1-5 generate
   for i in range(6 - 1)
@@ -61,7 +77,7 @@ function! s:_ulid_generate(...) abort
   endfor
 
   " 80bit random (8bit = 1byte) x 10
-  let r = call(s:Random.new, a:000)
+  let r = call(s:Random.new, random_arglist)
   for i in range(10)
     let randomlist[i] = r.range(256)
   endfor
