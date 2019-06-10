@@ -1,0 +1,103 @@
+Describe RandomEx.FixedData
+  Before all
+    let FixedData = vital#vital#new().import('RandomEx.FixedData')
+    let assert = themis#helper('assert')
+
+    let testdata = [0xFF,0x1234,0x00]
+  End
+
+  " core
+  " srand([{seed}])
+  " rand()
+  " new_generator()
+  Context Core
+    Describe .rand()
+      It global RNG default data 1-4 return value.
+        call FixedData.srand([0])
+        Assert Equals(FixedData.rand(), 0)
+        Assert Equals(FixedData.rand(), 0)
+        Assert Equals(FixedData.rand(), 0)
+        Assert Equals(FixedData.rand(), 0)
+      End
+      It global RNG test data 1-4 return value.
+        call FixedData.srand(testdata)
+        Assert Equals(FixedData.rand(), 0xFF)
+        Assert Equals(FixedData.rand(), 0x1234)
+        Assert Equals(FixedData.rand(), 0x00)
+        Assert Equals(FixedData.rand(), 0xFF)
+      End
+    End
+    Describe .srand()
+      It global RNG seed set.
+        call FixedData.srand(testdata)
+        Assert Equals(FixedData.rand(), 0xFF)
+      End
+    End
+    Describe .new_generator()
+      It generator constructer check
+        let g = FixedData.new_generator()
+        call assert.is_dictionary(g)
+      End
+    End
+  End
+
+  " Generator
+  " Generator.next()
+  " Generator.min()
+  " Generator.max()
+  " Generator.seed({seeds})
+  Context Generator
+    Before all
+      let g = FixedData.new_generator()
+    End
+    Describe .next()
+      It defalt data first return value.
+        Assert Equals(g.next(), 0)
+      End
+      It defalt data second return value.
+        Assert Equals(g.next(), 0)
+      End
+    End
+    Describe .min()
+      It defalt data min value.
+        Assert Equals(g.min(), 0)
+      End
+    End
+    Describe .max()
+      It defalt data max value.
+        Assert Equals(g.max(), 0)
+      End
+    End
+    Describe .seed()
+      It seed set operation.
+        call g.seed(testdata)
+        Assert Equals(g.next(), 0xFF)
+      End
+    End
+  End
+
+  Context Scenario
+    Before all
+      let g = FixedData.new_generator()
+      call g.seed(testdata)
+    End
+    Describe .min()
+      It test data min value.
+        Assert Equals(g.min(), 0x00)
+      End
+    End
+    Describe .max()
+      It test data max value.
+        Assert Equals(g.max(), 0x1234)
+      End
+    End
+    Describe .next()
+      It test data 1-4 return value.
+        Assert Equals(g.next(), 0xFF)
+        Assert Equals(g.next(), 0x1234)
+        Assert Equals(g.next(), 0x00)
+        Assert Equals(g.next(), 0xFF)
+      End
+    End
+  End
+End

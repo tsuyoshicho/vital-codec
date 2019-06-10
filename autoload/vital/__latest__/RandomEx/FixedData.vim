@@ -13,33 +13,36 @@ function! s:_vital_depends() abort
   return ['Vim.Type']
 endfunction
 
+
 let s:Generator = {
       \ 'data' : [0],
-      \ 'index': 0,
-      \ 'len'  : 1,
-      \ 'max'  : 0,
-      \ 'min'  : 0,
+      \ 'info' : {
+      \   'index': 0,
+      \   'len'  : 1,
+      \   'max'  : 0,
+      \   'min'  : 0,
+      \ }
       \}
 
-function! s:Generator.next() dict abort
+function! s:Generator.next() abort
   " current index
-  let index = self.index
+  let index = self.info.index
 
   " next index
-  let self.index = (index + 1) % self.len
+  let self.info.index = (index + 1) % self.info.len
 
-  return self.index[index]
+  return self.data[index]
 endfunction
 
-function! s:Generator.min() dict abort
-  return self.min
+function! s:Generator.min() abort
+  return self.info.min
 endfunction
 
-function! s:Generator.max() dict abort
-  return self.max
+function! s:Generator.max() abort
+  return self.info.max
 endfunction
 
-function! s:Generator.seed(...) dict abort
+function! s:Generator.seed(...) abort
   if a:0 > 0
     let typeval = type(a:1)
     if typeval == s:type.types.number
@@ -54,10 +57,10 @@ function! s:Generator.seed(...) dict abort
   endif
 
   let self.data = data
-  let self.index = 0
-  let self.len = len(data)
-  let self.max = max(data)
-  let self.min = min(data)
+  let self.info.index = 0
+  let self.info.len = len(data)
+  let self.info.max = max(data)
+  let self.info.min = min(data)
 endfunction
 
 " --------------------------------------------------
@@ -77,7 +80,7 @@ function! s:_common_generator() abort
 endfunction
 
 function! s:srand(...) abort
-  call s:_common_generator().seed(a:000)
+  call call(s:_common_generator().seed, a:000)
 endfunction
 
 function! s:rand() abort
@@ -87,5 +90,4 @@ endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-
 " vim:set et ts=2 sts=2 sw=2 tw=0:
