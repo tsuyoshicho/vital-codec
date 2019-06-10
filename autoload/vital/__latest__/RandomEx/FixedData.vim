@@ -5,30 +5,59 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:_vital_loaded(V) abort
-  let s:V = a:V
+  let s:V    = a:V
+  let s:type = s:V.import('Vim.Type')
 endfunction
 
 function! s:_vital_depends() abort
-  return []
+  return ['Vim.Type']
 endfunction
 
+let s:Generator = {
+      \ 'data' : [0],
+      \ 'index': 0,
+      \ 'len'  : 1,
+      \ 'max'  : 0,
+      \ 'min'  : 0,
+      \}
 
-let s:Generator = {}
+function! s:Generator.next() dict abort
+  " current index
+  let index = self.index
 
-function! s:Generator.next() abort
-  return 0
+  " next index
+  let self.index = (index + 1) % self.len
+
+  return self.index[index]
 endfunction
 
-function! s:Generator.min() abort
-  return 1
+function! s:Generator.min() dict abort
+  return self.min
 endfunction
 
-" 0x7FFFFFFF in 32bit/64bit
-function! s:Generator.max() abort
-  return 0
+function! s:Generator.max() dict abort
+  return self.max
 endfunction
 
-function! s:Generator.seed(seeds) abort
+function! s:Generator.seed(...) dict abort
+  if a:0 > 0
+    let typeval = type(a:1)
+    if typeval == s:type.types.number
+      let data = [a:1]
+    elseif typeval == s:type.types.list
+      let data = a:1
+    endif
+  endif
+
+  if !exists('data') || 0 == len(data)
+    let data = [0]
+  endif
+
+  let self.data = data
+  let self.index = 0
+  let self.len = len(data)
+  let self.max = max(data)
+  let self.min = min(data)
 endfunction
 
 " --------------------------------------------------
@@ -36,7 +65,7 @@ endfunction
 
 function! s:new_generator() abort
   let gen = deepcopy(s:Generator)
-  call gen.seed([])
+  call gen.seed([0])
   return gen
 endfunction
 
@@ -48,7 +77,7 @@ function! s:_common_generator() abort
 endfunction
 
 function! s:srand(...) abort
-  call s:_common_generator().seed([x])
+  call s:_common_generator().seed(a:000)
 endfunction
 
 function! s:rand() abort
