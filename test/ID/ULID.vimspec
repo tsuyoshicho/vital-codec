@@ -1,17 +1,25 @@
+
 Describe ID.ULID
   Before all
     let ULID = vital#vital#new().import('ID.ULID')
+    let assert = themis#helper('assert')
   End
 
   Describe .generate()
-    It generate ULID string.
-      Skip currently, test data nothing.
+    It generate ULID string. type
+      call assert.is_string(ULID.generate())
+    End
+    It generate ULID string. length
+      Assert Equals(len(ULID.generate()), 26)
     End
   End
 
   Describe .generateUUID()
-    It generate ULID UUID format string.
-      Skip currently, test data nothing.
+    It generate ULID UUID format string. type
+      call assert.is_string(ULID.generateUUID())
+    End
+    It generate ULID UUID format string. length
+      Assert Equals(len(ULID.generateUUID()), 36)
     End
   End
 

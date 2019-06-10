@@ -100,9 +100,9 @@ function! s:v3(ns, data) abort
   return uuid.uuid_hex
 endfunction
 
-function! s:v4() abort
+function! s:v4(...) abort
   let uuid = deepcopy(s:UUID)
-  call uuid.generatev4()
+  call call(uuid.generatev4, a:000)
   return uuid.uuid_hex
 endfunction
 
@@ -145,11 +145,11 @@ function! s:UUID.generatev3(ns, data) dict abort
   call self.byte_encode()
 endfunction
 
-function! s:UUID.generatev4() dict abort
+function! s:UUID.generatev4(...) dict abort
   " 128bit random
   let randomlist = s:List.new(16, {-> 0})
-  let r = s:Random.new()
-  call r.seed(s:Random.next())
+
+  let r = call(s:Random.new, a:000)
   for i in range(16)
     let randomlist[i] = r.range(256)
   endfor

@@ -2,6 +2,7 @@ Describe ID.UUID
   Before all
     let UUID = vital#vital#new().import('ID.UUID')
     let NS = vital#vital#new().import('ID.UUID.Namespace')
+    let assert = themis#helper('assert')
   End
 
   Describe .new()
@@ -34,8 +35,11 @@ Describe ID.UUID
     End
   End
   Describe .v4()
-    It random UUID generate.
-      Skip currently, test random data do not work.
+    It random UUID generate. type
+      call assert.is_string(UUID.v4())
+    End
+    It random UUID generate. length
+      Assert Equals(len(UUID.v4()), len(NS.nil))
     End
   End
   Describe .v5()
