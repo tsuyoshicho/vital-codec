@@ -6,15 +6,23 @@ Describe Random.System
 
   Describe .rand()
     It run global RNG
-      call X.srand(0)
-      Assert NotEquals(X.rand(), -1)
+      if has('patch-8.0.1630')
+        call X.srand(0)
+        Assert NotEquals(X.rand(), -1)
+      else
+        Skip not support
+      endif
     End
   End
 
   Describe .srand()
     It sets the seed
-      call X.srand(1)
-      Assert NotEquals(X.rand(), -1)
+      if has('patch-8.0.1630')
+        call X.srand(1)
+        Assert NotEquals(X.rand(), -1)
+      else
+        Skip not support
+      endif
     End
   End
 
@@ -27,9 +35,13 @@ Describe Random.System
 
   Describe Generator.next()
     It run instance RNG
-      let r = X.new_generator()
-      call r.seed(0)
-      Assert NotEquals(r.next(), -1)
+      if has('patch-8.0.1630')
+        let r = X.new_generator()
+        call r.seed(0)
+        Assert NotEquals(r.next(), -1)
+      else
+        Skip not support
+      endif
     End
   End
 
@@ -40,11 +52,22 @@ Describe Random.System
     End
   End
 
+  Describe Generator.max()
+    It instance RNG's max
+      let r = X.new_generator()
+      Assert True(r.max() > 0)
+    End
+  End
+
   Describe Generator.seed()
     It instance RNG's seed
-      let r = X.new_generator()
-      call r.seed(1)
-      Assert NotEquals(X.rand(), -1)
+      if has('patch-8.0.1630')
+        let r = X.new_generator()
+        call r.seed(1)
+        Assert NotEquals(r.next(), -1)
+      else
+        Skip not support
+      endif
     End
   End
 
