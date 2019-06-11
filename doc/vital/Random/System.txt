@@ -1,0 +1,76 @@
+*vital/Random/System.txt*	random number generator using system source.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS					*Vital.Random.System-contents*
+
+INTRODUCTION			|Vital.Random.System-introduction|
+INTERFACE			|Vital.Random.System-interface|
+  FUNCTIONS			|Vital.Random.System-functions|
+
+
+
+==============================================================================
+INTRODUCTION				*Vital.Random.System-introduction*
+
+*Vital.Random.System* provides a Random Number Generator (RNG) using an
+system random source.
+This module lower using priority other PRNG algorithm.
+
+>
+	let s:V = vital#{plugin-name}#new()
+	let s:X = s:V.import("Random.System")
+
+	call s:X.srand(1)
+	echo s:X.rand()
+	" 132
+	echo s:X.rand()
+	" 86
+	call s:X.srand(1)
+	echo s:X.rand()
+	" 1022
+<
+
+
+==============================================================================
+INTERFACE				*Vital.Random.System-interface*
+
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Random.System-functions*
+
+srand([{seed}])				*Vital.Random.System.srand()*
+	Initialize the global generator with the given seed number (not
+	affected).
+
+rand()					*Vital.Random.System.rand()*
+	Generate a random number from the global generator.
+	Note: A return value is possibly negative. This is because Vim script
+	doesn't have an unsigned integer type. (system source is 0-max)
+
+new_generator()				*Vital.Random.System.new_generator()*
+	Create a new Generator object(|Vital.Random.System-Generator|).
+
+
+
+==============================================================================
+OBJECTS					*Vital.Random.System-objects*
+
+------------------------------------------------------------------------------
+Generator Object		*Vital.Random.System-Generator*
+
+Generator.next()		*Vital.Random.System-Generator.next()*
+	Generate the next random number in the sequence.
+
+Generator.min()			*Vital.Random.System-Generator.min()*
+	Get the smallest possible value in the output range.
+
+Generator.max()			*Vital.Random.System-Generator.max()*
+	Get the largest possible value in the output range.
+
+Generator.seed({seeds})		*Vital.Random.System-Generator.seed()*
+	Initialze the generator with the given seed list (not affected).                                                  
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
