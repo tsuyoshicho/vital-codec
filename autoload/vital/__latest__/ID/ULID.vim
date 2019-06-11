@@ -94,17 +94,18 @@ function! s:_ulid_encode(ulid) abort
   " timestamp 6byte,8bitx5bit lcm 40bit -> left dummy need 10-6 = 4byte
   let timestamp_dummy = s:List.new(4,  {-> 0})
   let timestamp_b32_w_dummy = s:Base32cf.encodebytes(timestamp_dummy + a:ulid.timestamp)
-  " cut 6char (10byte->16char, tamptamp 10char)
-  let timestamp_b32 = strpart(timestamp_b32_w_dummy, 6)
+  " cut 6char (10byte->16char, timestamp 10char)
+  let timestamp_b32 = strcharpart(timestamp_b32_w_dummy, 6)
 
-  " random 10byte -> no dummy need
+  " random 10byte -> no dummy need (random 16char)
   let random_b32 = s:Base32cf.encodebytes(a:ulid.random)
 
+  " total 26char
   return timestamp_b32 . random_b32
 endfunction
 
 function! s:_ulid_decode(ulid_b32) abort
-  let timestamp_top = strpart(a:ulid_b32, 0, 1)
+  let timestamp_top = strcharpart(a:ulid_b32, 0, 1)
   " max 7ZZZZZZZZZZZZZZZZZZZZZZZZZ
   if timestamp_top !~? '[0-7]'
     " 8?... or higher
