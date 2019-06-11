@@ -38,9 +38,6 @@ function! s:ULID2UUID(ulid_b32) abort
 endfunction
 
 function! s:_ulid_generate(...) abort
-  let timelist   = s:List.new(6,  {-> 0})
-  let randomlist = s:List.new(10, {-> 0})
-
   " arg 0 or 1(random generator) , 2(random generator and seed) , 3(random generator and seed, fixed datetime)
   let random_arglist = a:000[:1]
   if a:0 > 2
@@ -72,15 +69,17 @@ function! s:_ulid_generate(...) abort
   " byte 0
   let timelist_mod[0] = s:BigNum.mod(timelist_div[5], 0x100)
 
-  for i in range(6)
-    let timelist[i] = str2nr(s:BigNum.to_string(timelist_mod[i]), 10)
-  endfor
+  let timelist = s:List.new(6,
+        \ { i,_ ->
+        \  str2nr(s:BigNum.to_string(timelist_mod[i]), 10)
+        \ }
+        \)
 
   " 80bit random (8bit = 1byte) x 10
   let r = call(s:Random.new, random_arglist)
-  for i in range(10)
-    let randomlist[i] = r.range(256)
-  endfor
+  let randomlist = s:List.new(10,
+        \ function(r.range,[256])
+        \)
 
   let retval = {
         \ 'bytes'     : timelist + randomlist,
@@ -93,7 +92,7 @@ endfunction
 
 function! s:_ulid_encode(ulid) abort
   " timestamp 6byte,8bitx5bit lcm 40bit -> left dummy need 10-6 = 4byte
-  let timestamp_dummy =  s:List.new(4,  {-> 0})
+  let timestamp_dummy = s:List.new(4,  {-> 0})
   let timestamp_b32_w_dummy = s:Base32cf.encodebytes(timestamp_dummy + a:ulid.timestamp)
   " cut 6char (10byte->16char, tamptamp 10char)
   let timestamp_b32 = strpart(timestamp_b32_w_dummy, 6)
