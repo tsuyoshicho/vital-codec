@@ -112,7 +112,7 @@ function! s:_ulid_decode(ulid_b32) abort
     call s:_throw('48bit timestamp overflow')
   endif
 
-  let timestamp_b32 = strpart(a:ulid_b32, 0, 10)
+  let timestamp_b32 = strcharpart(a:ulid_b32, 0, 10)
   " dummy 6char 0
   let timestamp_b32_w_dummy = '000000' . timestamp_b32
   let timelist_w_dummy = s:Base32cf.decoderaw(timestamp_b32_w_dummy)
@@ -120,7 +120,7 @@ function! s:_ulid_decode(ulid_b32) abort
   let timelist =  timelist_w_dummy[-6:-1]
 
   " random 10byte -> no dummy need
-  let random_b32 = strpart(a:ulid_b32, 10)
+  let random_b32 = strcharpart(a:ulid_b32, 10)
   let randomlist = s:Base32cf.decoderaw(random_b32)
 
   let retval = {
