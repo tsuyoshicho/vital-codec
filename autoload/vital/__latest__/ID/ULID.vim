@@ -69,17 +69,11 @@ function! s:_ulid_generate(...) abort
   " byte 0
   let timelist_mod[0] = s:BigNum.mod(timelist_div[5], 0x100)
 
-  let timelist = s:List.new(6,
-        \ { i,_ ->
-        \  str2nr(s:BigNum.to_string(timelist_mod[i]), 10)
-        \ }
-        \)
+  let timelist = s:List.new(6, { i,v -> str2nr(s:BigNum.to_string(timelist_mod[i]), 10)})
 
   " 80bit random (8bit = 1byte) x 10
   let r = call(s:Random.new, random_arglist)
-  let randomlist = s:List.new(10,
-        \ function(r.range,[256])
-        \)
+  let randomlist = s:List.new(10, { i,v -> r.range(256)})
 
   let retval = {
         \ 'bytes'     : timelist + randomlist,
