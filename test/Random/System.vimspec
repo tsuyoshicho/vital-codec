@@ -1,0 +1,52 @@
+Describe Random.System
+  Before all
+    let X = vital#vital#new().import('Random.System')
+    let assert = themis#helper('assert')
+  End
+
+  Describe .rand()
+    It run global RNG
+      call X.srand(0)
+      Assert NotEquals(X.rand(), -1)
+    End
+  End
+
+  Describe .srand()
+    It sets the seed
+      call X.srand(1)
+      Assert NotEquals(X.rand(), -1)
+    End
+  End
+
+  Describe .new_generator()
+    It generator constructer check
+      let r = X.new_generator()
+      call assert.is_dictionary(r)
+    End
+  End
+
+  Describe Generator.next()
+    It run instance RNG
+      let r = X.new_generator()
+      call r.seed(0)
+      Assert NotEquals(r.next(), -1)
+    End
+  End
+
+  Describe Generator.min()
+    It instance RNG's min
+      let r = X.new_generator()
+      Assert Equals(r.min(), 0)
+    End
+  End
+
+  Describe Generator.seed()
+    It instance RNG's seed
+      let r = X.new_generator()
+      call r.seed(1)
+      Assert NotEquals(X.rand(), -1)
+    End
+  End
+
+  " max not test-work
+End
