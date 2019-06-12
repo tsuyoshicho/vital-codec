@@ -10,12 +10,11 @@ INTERFACE			|Vital.RandomEx.FixedData-interface|
   FUNCTIONS			|Vital.RandomEx.FixedData-functions|
 
 
-
 ==============================================================================
 INTRODUCTION				*Vital.RandomEx.FixedData-introduction*
 
 *Vital.RandomEx.FixedData* provides a Random Number Generator (RNG) at fixed data.
-That was used for debugging/testing.
+THAT WAS USED FOR DEBUGGING/TESTING.
 
 Usage:
 >
