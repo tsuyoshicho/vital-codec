@@ -46,7 +46,7 @@ Describe ID.UUID
     It random UUID generate. length
       Assert Equals(len(UUID.v4()), len(NS.nil))
     End
-    It random UUID generate. all 0x11 data
+    It random UUID generate. all 0x00 data
       let generator = FixedData.new_generator()
       let uuid = UUID.v4(generator, testdata1)
       Assert Equals(tolower(uuid), '00000000-0000-4000-8000-000000000000')
@@ -83,7 +83,7 @@ Describe ID.UUID
       End
     End
     Describe .generatev4()
-      It generate UUID v4 string. all 0x11 data
+      It generate UUID v4 string. all 0x00 data
         let generator = FixedData.new_generator()
         let uuid = UUID.new()
         call uuid.generatev4(generator, testdata1)
