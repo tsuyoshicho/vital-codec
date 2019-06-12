@@ -56,7 +56,7 @@ endfunction
 "
 " hex string xxxxxxxx-xxxx-xxxx-Nxxx-xxxxxxxxxxxx
 
-let s:uuidregex = '{\?\x\{8}-\x\{4}-\x\{4}-\x\{4}-\x\{12}}\?'
+let s:uuidregex = '\<{\?\x\{8}-\x\{4}-\x\{4}-\x\{4}-\x\{12}}\?\>'
 let s:UUID = {}
 
 " variant
@@ -187,8 +187,8 @@ endfunction
 
 " ===== UUID data operator / generic encode/decode
 function! s:UUID.hex_decode() dict abort
-  if self.uuid_hex !~# s:uuidregex
-    call s:_throw('format error')
+  if self.uuid_hex !~? s:uuidregex
+    call s:_throw('format unmatch error')
   endif
 
   let self.string.time_low             = self.uuid_hex[0:7]

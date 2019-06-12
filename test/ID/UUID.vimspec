@@ -139,8 +139,8 @@ Describe ID.UUID
         let uuid.value.time_low            = repeat([0x00], 4)
         let uuid.value.time_mid            = repeat([0x00], 2)
         let uuid.value.time_hi_and_version = repeat([0x00], 2)
-        let uuid.value.clk_seq_hi_res      = repeat([0x00], 2)
-        let uuid.value.clk_seq_low         = repeat([0x00], 2)
+        let uuid.value.clk_seq_hi_res      = repeat([0x00], 1)
+        let uuid.value.clk_seq_low         = repeat([0x00], 1)
         let uuid.value.node                = repeat([0x00], 6)
 
         let uuid.endian  = 1
