@@ -15,12 +15,12 @@ endfunction
 
 
 let s:Generator = {
-      \ 'data' : [0],
+      \ 'data' : [0x00,0xFF],
       \ 'info' : {
       \   'index': 0,
-      \   'len'  : 1,
-      \   'max'  : 0,
-      \   'min'  : 0,
+      \   'len'  : 2,
+      \   'max'  : 0xFF,
+      \   'min'  : 0x00,
       \ }
       \}
 
@@ -46,7 +46,7 @@ function! s:Generator.seed(...) abort
   if a:0 > 0
     let typeval = type(a:1)
     if typeval == s:type.types.number
-      let data = [a:1]
+      let data = [a:1, a:1 + 1]
     elseif typeval == s:type.types.list
       let data = a:1
     endif
@@ -68,7 +68,7 @@ endfunction
 
 function! s:new_generator() abort
   let gen = deepcopy(s:Generator)
-  call gen.seed([0])
+  call gen.seed([0x00,0xFF])
   return gen
 endfunction
 

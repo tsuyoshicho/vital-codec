@@ -14,7 +14,20 @@ INTERFACE			|Vital.RandomEx.FixedData-interface|
 INTRODUCTION				*Vital.RandomEx.FixedData-introduction*
 
 *Vital.RandomEx.FixedData* provides a Random Number Generator (RNG) at fixed data.
-THAT WAS USED FOR DEBUGGING/TESTING.
+THAT IS CAN BE USING FOR DEBUGGING/TESTING.
+
+If this generator set to |Vital.Random| and use
+|Vital.Random.generate_canonical()| or |Vital.Random.range()|,It need two or more
+different data in seed list.
+
+Generate all 0x00 list >
+  let seed = [0xFF, 0x00]
+>
+
+Generate all 0xFF list >
+  let seed = [0x00, 0xFF]
+>
+
 
 Usage:
 >

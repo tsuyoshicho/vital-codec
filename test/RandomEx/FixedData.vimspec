@@ -52,20 +52,20 @@ Describe RandomEx.FixedData
     End
     Describe .next()
       It defalt data first return value.
-        Assert Equals(g.next(), 0)
+        Assert Equals(g.next(), 0x00)
       End
       It defalt data second return value.
-        Assert Equals(g.next(), 0)
+        Assert Equals(g.next(), 0xFF)
       End
     End
     Describe .min()
       It defalt data min value.
-        Assert Equals(g.min(), 0)
+        Assert Equals(g.min(), 0x00)
       End
     End
     Describe .max()
       It defalt data max value.
-        Assert Equals(g.max(), 0)
+        Assert Equals(g.max(), 0xFF)
       End
     End
     Describe .seed()
