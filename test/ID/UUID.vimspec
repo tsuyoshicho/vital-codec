@@ -56,46 +56,46 @@ Describe ID.UUID
     End
 
     Describe .generatev1()
-      It decode UUID string.
+      It generate UUID v1 string.
         Skip currently, test data nothing.
       End
     End
     Describe .generatev3()
-      It decode UUID string.
+      It generate UUID v3 string.
         let uuid = UUID.new()
         call uuid.generatev3(NS.DNS, "www.widgets.com")
         Assert Equals(uuid.uuid_hex, '3d813cbb-47fb-32ba-91df-831e1593ac29')
       End
     End
     Describe .generatev4()
-      It decode UUID string.
+      It generate UUID v4 string.
         Skip currently, test data nothing.
       End
     End
     Describe .generatev5()
-      It decode UUID string.
+      It generate UUID v5 string.
         let uuid = UUID.new()
         call uuid.generatev5(NS.DNS, "www.widgets.com")
         Assert Equals(uuid.uuid_hex, '21f7f8de-8051-5b89-8680-0195ef798b6a')
       End
     End
     Describe .hex_decode()
-      It decode UUID string.
+      It decode UUID hex string.
         Skip currently, test data nothing.
       End
     End
     Describe .byte_encode()
-      It decode UUID string.
+      It encode UUID from bytes.
         Skip currently, test data nothing.
       End
     End
     Describe .value_encode()
-      It decode UUID string.
+      It encode UUID from bytes block.
         Skip currently, test data nothing.
       End
     End
     Describe .build()
-      It decode UUID string.
+      It encode UUID internal use.
         Skip this method is internal use.
       End
     End
