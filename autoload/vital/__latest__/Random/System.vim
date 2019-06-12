@@ -7,77 +7,149 @@ function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:Prelude = s:V.import('Prelude')
   let s:Process = s:V.import('System.Process')
+  " Fallback
+  let s:Mt      = s:V.import('Random.Mt19937ar')
+
+  if s:Prelude.is_windows()
+    if executable('cmd')
+      let s:Generator = deepcopy(s:Generator_windows_cmd)
+    endif
+  else
+    if executable('bash')
+      let s:Generator = deepcopy(s:Generator_unix_bash)
+    elseif executable('openssl')
+      let s:Generator = deepcopy(s:Generator_unix_openssl)
+    elseif executable('od')
+      let s:Generator = deepcopy(s:Generator_unix_od)
+      if filereadable('/dev/urandom')
+        let s:Generator.info.path = '/dev/urandom'
+      elseif filereadable('/dev/random')
+        let s:Generator.info.path = '/dev/random'
+      else
+        " nothing source
+        let s:Generator = {}
+      endif
+    endif
+  endif
+
+  if empty(s:Generator)
+    let s:Generator = s:Mt.new_generator()
+  endif
+
+  lockvar 3 s:Generator
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Prelude', 'System.Process']
+  return ['Prelude', 'System.Process', 'Random.Mt19937ar']
 endfunction
 
 let s:Generator = {}
 
-function! s:Generator.next() abort
-  let cmd = []
+" core
+let s:Generator_core = {
+      \ 'info' : {
+      \   'max' : 0,
+      \   'min' : 0,
+      \ }
+      \}
+
+" next need implement
+
+function! s:Generator_core.max() abort
+  return self.info.max
+endfunction
+
+function! s:Generator_core.min() abort
+  return self.info.min
+endfunction
+
+function! s:Generator_core.seed(seeds) abort
+  " not work
+endfunction
+
+" Windows cmd
+let s:Generator_windows_cmd = extend({
+      \ 'info' : {
+      \   'max' : 32767,
+      \   'min' : 0,
+      \ }
+      \}, s:Generator_core, 'keep')
+
+function! s:Generator_windows_cmd.next() abort
   let value = 0
 
-  if s:Prelude.is_windows()
-    let cmd = ['echo', '%random%']
-    let result = s:Process.execute(cmd)
-    if result.success
-      let value = str2nr('0x' . trim(split(result.output, '\n')[0]), 10)
-    endif
-  else
-    if executable('openssl')
-      let cmd = ['openssl', 'rand', '-hex', '4']
-      let result = s:Process.execute(cmd)
-    elseif executable('od')
-      if filereadable('/dev/urandom')
-        let cmd = ['od', '-vAn', '--width=4', '-tx4', '-N4', '/dev/urandom']
-        let result = s:Process.execute(cmd)
-      elseif filereadable('/dev/random')
-        let cmd = ['od', '-vAn', '--width=4', '-tx4', '-N4', '/dev/random']
-        let result = s:Process.execute(cmd)
-      endif
-    endif
-    if !empty(cmd)
-      if result.success
-        let value = str2nr('0x' . trim(split(result.output, '\n')[0]), 16)
-      endif
-    else
-      " error
-    endif
+  let cmd = ['cmd', '/c', 'echo %random%']
+  let result = s:Process.execute(cmd)
+  if result.success
+    let value = str2nr('0x' . trim(result.content[0]), 10)
   endif
   return value
 endfunction
 
-function! s:Generator.min() abort
-  if !exists('s:min')
-    if s:Prelude.is_windows()
-      let s:min = 0
-    else
-      let s:min = 0
-    endif
+" Unix bash
+let s:Generator_unix_bash = extend({
+      \ 'info' : {
+      \   'max' : 32767,
+      \   'min' : 0,
+      \ }
+      \}, s:Generator_core, 'keep')
+
+function! s:Generator_unix_bash.next() abort
+  let value = 0
+
+  let cmd = ['bash', '-c', 'echo $RANDOM']
+  let result = s:Process.execute(cmd)
+  if result.success
+    let value = str2nr('0x' . trim(result.content[0]), 10)
   endif
-  return s:min
+  return value
 endfunction
 
-function! s:Generator.max() abort
-  if !exists('s:max')
-    if s:Prelude.is_windows()
-      let s:max = 32767
-    else
-      let s:max = 0xffffffff
-    endif
+" Unix openssl
+let s:Generator_unix_openssl = extend({
+      \ 'info' : {
+      \   'max' : 0xffffffff,
+      \   'min' : 0,
+      \ }
+      \}, s:Generator_core, 'keep')
+
+function! s:Generator_unix_openssl.next() abort
+  let value = 0
+
+  let cmd = ['openssl', 'rand', '-hex', '4']
+  let result = s:Process.execute(cmd)
+  if result.success
+    let value = str2nr('0x' . trim(result.content[0]), 16)
   endif
-  return s:max
+  return value
 endfunction
 
-function! s:Generator.seed(seeds) abort
-  " not work
+" Unix od
+let s:Generator_unix_od = extend({
+      \ 'info' : {
+      \   'path' : '',
+      \   'max' : 0xffffffff,
+      \   'min' : 0,
+      \ }
+      \}, s:Generator_core, 'keep')
+
+function! s:Generator_unix_od.next() abort
+  let value = 0
+
+  let cmd = ['od', '-vAn', '--width=4', '-tx4', '-N4', self.info.path]
+  let result = s:Process.execute(cmd)
+  if result.success
+    let value = str2nr('0x' . trim(result.content[0]), 16)
+  endif
+  return value
 endfunction
+
+" --------------------------------------------------
+" global RNG
 
 function! s:new_generator() abort
   let gen = deepcopy(s:Generator)
-  call gen.seed([])
+  call gen.seed([0])
   return gen
 endfunction
 
