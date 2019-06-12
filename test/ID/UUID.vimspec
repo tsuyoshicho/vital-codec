@@ -101,7 +101,8 @@ Describe ID.UUID
       It decode UUID hex string.
         let uuid = UUID.new()
         let uuid.uuid_hex = '3d813cbb-47fb-32ba-91df-831e1593ac29'
-        Assert Equals(type(uuid.hex_decode()), type({}))
+        call uuid.hex_decode()
+        Assert Equals(len(uuid.bytes), 16)
       End
     End
     Describe .byte_encode()
