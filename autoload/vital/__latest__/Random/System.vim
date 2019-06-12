@@ -24,10 +24,13 @@ function! s:Generator.next() abort
       let cmd = ['cmd', '/c', 'echo %random%']
       let result = s:Process.execute(cmd)
       if result.success
-        let value = str2nr('0x' . trim(split(result.output, '\n')[0]), 10)
+        let value = str2nr('0x' . trim(result.content[0]), 10)
       endif
     endif
   else
+    " if executable('bash')
+    "   let cmd = ['bash', '-c', 'echo $RANDOM']
+    "   let result = s:Process.execute(cmd)
     if executable('openssl')
       let cmd = ['openssl', 'rand', '-hex', '4']
       let result = s:Process.execute(cmd)
@@ -42,7 +45,7 @@ function! s:Generator.next() abort
     endif
     if !empty(cmd)
       if result.success
-        let value = str2nr('0x' . trim(split(result.output, '\n')[0]), 16)
+        let value = str2nr('0x' . trim(result.content[0]), 16)
       endif
     else
       " error
@@ -67,6 +70,7 @@ function! s:Generator.max() abort
     if s:Prelude.is_windows()
       let s:max = 32767
     else
+      " bash 32767
       let s:max = 0xffffffff
     endif
   endif
