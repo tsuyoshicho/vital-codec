@@ -11,15 +11,15 @@ Describe ID.UUID
   End
 
   Describe .new()
-    It create object.
-      " Assert Equals(UUID.new(), {})
-      Skip currently, object check nothing.
+    It create object. type check
+      Assert Equals(type(UUID.new()), type({}))
     End
   End
 
   Describe .decode()
     It decode UUID string.
-      Skip currently, test data nothing.
+      let uuid = '3d813cbb-47fb-32ba-91df-831e1593ac29'
+      Assert Equals(type(UUID.decode(uuid)), type({}))
     End
   End
 
@@ -64,12 +64,6 @@ Describe ID.UUID
   End
 
   Context UUID object
-    Describe .decode()
-      It decode UUID string.
-        Skip currently, test data nothing.
-      End
-    End
-
     Describe .generatev1()
       It generate UUID v1 string.
         Skip currently, test data nothing.
@@ -105,17 +99,30 @@ Describe ID.UUID
     End
     Describe .hex_decode()
       It decode UUID hex string.
-        Skip currently, test data nothing.
+        let uuid_hex = '3d813cbb-47fb-32ba-91df-831e1593ac29'
+        let uuid = UUID.new()
+        Assert Equals(type(uuid.hex_decode(uuid_hex)), type({}))
       End
     End
     Describe .byte_encode()
       It encode UUID from bytes.
-        Skip currently, test data nothing.
+        let uuid = UUID.new()
+        let uuid.bytes = repeat([0x00], 16)
+        call uuid.byte_encode()
+        Assert Equals(uuid.uuid_hex, '00000000-0000-0000-0000-000000000000'
       End
     End
     Describe .value_encode()
       It encode UUID from bytes block.
-        Skip currently, test data nothing.
+        let uuid = UUID.new()
+        let uuid.value.time_low            = repeat([0x00], 4)
+        let uuid.value.time_mid            = repeat([0x00], 2)
+        let uuid.value.time_hi_and_version = repeat([0x00], 2)
+        let uuid.value.clk_seq_hi_res      = repeat([0x00], 2)
+        let uuid.value.clk_seq_low         = repeat([0x00], 2)
+        let uuid.value.node                = repeat([0x00], 6)
+        call uuid.byte_encode()
+        Assert Equals(uuid.uuid_hex, '00000000-0000-0000-0000-000000000000'
       End
     End
     Describe .build()
