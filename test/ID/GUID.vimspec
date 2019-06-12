@@ -7,10 +7,10 @@ Describe ID.GUID
 
   Describe .generate()
     It random GUID generate. type
-      call assert.is_string(GUID.v4())
+      call assert.is_string(GUID.generate())
     End
     It random GUID generate. length
-      Assert Equals(len(GUID.v4()), len(NS.nil))
+      Assert Equals(len(GUID.generate()), len(NS.nil))
     End
   End
 
@@ -18,7 +18,7 @@ Describe ID.GUID
     It decode GUID string.
       " GUID Partition Table EFI system partition  C12A7328-F81F-11D2-BA4B-00A0C93EC93B
       let guid_sys_partition = 'C12A7328-F81F-11D2-BA4B-00A0C93EC93B'
-      let uuid  = GUID.decode(guid_sys_partition)
+      let uuid = GUID.decode(guid_sys_partition)
       Assert Equals(len(uuid.bytes), 16)
     End
   End
