@@ -6,7 +6,7 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V       = a:V
-  let s:MD5     = s:V.import('Hash.MD5')
+  let s:MD5     = s:V.import('Hash.MD5x')
   let s:SHA1    = s:V.import('Hash.SHA1')
   let s:bitwise = s:V.import('Bitwise')
   let s:Random  = s:V.import('Random')
@@ -147,12 +147,8 @@ endfunction
 
 function! s:UUID.generatev4(...) dict abort
   " 128bit random
-  let randomlist = s:List.new(16, {-> 0})
-
   let r = call(s:Random.new, a:000)
-  for i in range(16)
-    let randomlist[i] = r.range(256)
-  endfor
+  let randomlist = s:List.new(16, { i,v -> r.range(256)})
 
   let self.bytes   = randomlist
   let self.endian  = 1

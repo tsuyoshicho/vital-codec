@@ -1,17 +1,25 @@
 Describe ID.GUID
   Before all
     let GUID = vital#vital#new().import('ID.GUID')
+    let NS = vital#vital#new().import('ID.UUID.Namespace')
+    let assert = themis#helper('assert')
   End
 
   Describe .generate()
-    It generate GUID.
-      Skip currently, test data nothing.
+    It random GUID generate. type
+      call assert.is_string(GUID.generate())
+    End
+    It random GUID generate. length
+      Assert Equals(len(GUID.generate()), len(NS.nil))
     End
   End
 
   Describe .decode()
     It decode GUID string.
-      Skip currently, test data nothing.
+      " GUID Partition Table EFI system partition  C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+      let guid_sys_partition = 'C12A7328-F81F-11D2-BA4B-00A0C93EC93B'
+      let uuid = GUID.decode(guid_sys_partition)
+      Assert Equals(len(uuid.bytes), 16)
     End
   End
 End
