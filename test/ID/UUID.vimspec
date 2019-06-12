@@ -104,6 +104,11 @@ Describe ID.UUID
         call uuid.hex_decode()
         Assert Equals(len(uuid.bytes), 16)
       End
+      It decode UUID hex string. invalid
+        let uuid = UUID.new()
+        let uuid.uuid_hex = '3d813cbb-47fb-32ba-91df-831e1593ac29' . 'xxxx'
+        Throws /^vital: ID.UUID:/ uuid.hex_decode()
+      End
     End
     Describe .byte_encode()
       It encode UUID from bytes.
@@ -116,6 +121,16 @@ Describe ID.UUID
 
         call uuid.byte_encode()
         Assert Equals(uuid.uuid_hex, '00000000-0000-0000-0000-000000000000')
+      End
+      It encode UUID from bytes. invalid
+        let uuid = UUID.new()
+        let uuid.bytes = repeat([0x00], 16 + 2)
+
+        let uuid.endian  = 1
+        let uuid.variant = 8
+        let uuid.version = 0
+
+        Throws /^vital: ID.UUID:/ uuid.byte_encode()
       End
     End
     Describe .value_encode()
@@ -132,7 +147,7 @@ Describe ID.UUID
         let uuid.variant = 8
         let uuid.version = 0
 
-        call uuid.byte_encode()
+        call uuid.value_encode()
         Assert Equals(uuid.uuid_hex, '00000000-0000-0000-0000-000000000000')
       End
     End
