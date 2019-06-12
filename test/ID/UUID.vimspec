@@ -1,8 +1,13 @@
 Describe ID.UUID
   Before all
+    let assert = themis#helper('assert')
     let UUID = vital#vital#new().import('ID.UUID')
     let NS = vital#vital#new().import('ID.UUID.Namespace')
-    let assert = themis#helper('assert')
+
+    let FixedData = vital#vital#new().import('RandomEx.FixedData')
+
+    let testdata1 = [0xFF,0x00]
+    let testdata2 = [0x00,0xFF]
   End
 
   Describe .new()
@@ -31,7 +36,7 @@ Describe ID.UUID
   " Unfortunately the incorrect value is often requoted on other sites on the internet.
   Describe .v3()
     It uniq mapping for MD5 UUID generate.
-      Assert Equals(UUID.v3(NS.DNS, "www.widgets.com"), '3d813cbb-47fb-32ba-91df-831e1593ac29')
+      Assert Equals(tolower(UUID.v3(NS.DNS, "www.widgets.com")), '3d813cbb-47fb-32ba-91df-831e1593ac29')
     End
   End
   Describe .v4()
@@ -41,10 +46,20 @@ Describe ID.UUID
     It random UUID generate. length
       Assert Equals(len(UUID.v4()), len(NS.nil))
     End
+    It random UUID generate. all 0x11 data
+      let generator = FixedData.new_generator()
+      let uuid = UUID.v4(generator, testdata1)
+      Assert Equals(tolower(uuid), '00000000-0000-4000-8000-000000000000')
+    End
+    It random UUID generate. all 0xFF data
+      let generator = FixedData.new_generator()
+      let uuid = UUID.v4(generator, testdata2)
+      Assert Equals(tolower(uuid), 'ffffffff-ffff-4fff-bfff-ffffffffffff')
+    End
   End
   Describe .v5()
     It uniq mapping for SHA1 UUID generate.
-      Assert Equals(UUID.v5(NS.DNS, "www.widgets.com"), '21f7f8de-8051-5b89-8680-0195ef798b6a')
+      Assert Equals(tolower(UUID.v5(NS.DNS, "www.widgets.com")), '21f7f8de-8051-5b89-8680-0195ef798b6a')
     End
   End
 
@@ -64,19 +79,28 @@ Describe ID.UUID
       It generate UUID v3 string.
         let uuid = UUID.new()
         call uuid.generatev3(NS.DNS, "www.widgets.com")
-        Assert Equals(uuid.uuid_hex, '3d813cbb-47fb-32ba-91df-831e1593ac29')
+        Assert Equals(tolower(uuid.uuid_hex), '3d813cbb-47fb-32ba-91df-831e1593ac29')
       End
     End
     Describe .generatev4()
-      It generate UUID v4 string.
-        Skip currently, test data nothing.
+      It generate UUID v4 string. all 0x11 data
+        let generator = FixedData.new_generator()
+        let uuid = UUID.new()
+        call uuid.generatev4(generator, testdata1)
+        Assert Equals(tolower(uuid.uuid_hex), '00000000-0000-4000-8000-000000000000')
+      End
+      It generate UUID v4 string. all 0xFF data
+        let generator = FixedData.new_generator()
+        let uuid = UUID.new()
+        call uuid.generatev4(generator, testdata2)
+        Assert Equals(tolower(uuid.uuid_hex), 'ffffffff-ffff-4fff-bfff-ffffffffffff')
       End
     End
     Describe .generatev5()
       It generate UUID v5 string.
         let uuid = UUID.new()
         call uuid.generatev5(NS.DNS, "www.widgets.com")
-        Assert Equals(uuid.uuid_hex, '21f7f8de-8051-5b89-8680-0195ef798b6a')
+        Assert Equals(tolower(uuid.uuid_hex), '21f7f8de-8051-5b89-8680-0195ef798b6a')
       End
     End
     Describe .hex_decode()
