@@ -42,9 +42,9 @@ function! s:decode(guid) abort
   return uuid
 endfunction
 
-function! s:generate() abort
+function! s:generate(...) abort
   let uuid = s:UUID.new()
-  call uuid.generatev4()
+  call call(uuid.generatev4, a:000)
 
   let uuid.endian  = 0 " little endian
   let uuid.variant = 8 " no care
