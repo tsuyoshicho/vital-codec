@@ -12,7 +12,7 @@ Describe RandomEx.FixedData
   " new_generator()
   Context Core
     Describe .rand()
-      It global RNG default data 1-4 return value.
+      It global RNG 0 data return value.
         call FixedData.srand([0])
         Assert Equals(FixedData.rand(), 0)
         Assert Equals(FixedData.rand(), 0)
@@ -23,6 +23,20 @@ Describe RandomEx.FixedData
         call FixedData.srand(testdata)
         Assert Equals(FixedData.rand(), 0xFF)
         Assert Equals(FixedData.rand(), 0x1234)
+        Assert Equals(FixedData.rand(), 0x00)
+        Assert Equals(FixedData.rand(), 0xFF)
+      End
+      It global RNG int data 1-2 return value.
+        call FixedData.srand(10)
+        Assert Equals(FixedData.rand(), 10)
+        Assert Equals(FixedData.rand(), 11)
+        Assert Equals(FixedData.rand(), 10)
+        Assert Equals(FixedData.rand(), 11)
+      End
+      It global RNG defalt data 1-2 return value.
+        call FixedData.srand()
+        Assert Equals(FixedData.rand(), 0x00)
+        Assert Equals(FixedData.rand(), 0xFF)
         Assert Equals(FixedData.rand(), 0x00)
         Assert Equals(FixedData.rand(), 0xFF)
       End

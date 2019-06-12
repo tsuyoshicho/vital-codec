@@ -53,7 +53,7 @@ function! s:Generator.seed(...) abort
   endif
 
   if !exists('data') || 0 == len(data)
-    let data = [0]
+    let data = [0x00,0xFF]
   endif
 
   let self.data = data
