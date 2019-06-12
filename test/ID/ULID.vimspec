@@ -1,8 +1,13 @@
-
 Describe ID.ULID
   Before all
-    let ULID = vital#vital#new().import('ID.ULID')
     let assert = themis#helper('assert')
+    let ULID = vital#vital#new().import('ID.ULID')
+    let DateTime = vital#vital#new().import('DateTime')
+
+    let FixedData = vital#vital#new().import('RandomEx.FixedData')
+
+    let testdata1 = [0xFF,0x00]
+    let testdata2 = [0x00,0xFF]
   End
 
   Describe .generate()
@@ -11,6 +16,42 @@ Describe ID.ULID
     End
     It generate ULID string. length
       Assert Equals(len(ULID.generate()), 26)
+    End
+    It generate ULID string. all 0x00 data
+      let generator = FixedData.new_generator()
+      let epoch = DateTime.from_unix_time(0)
+      "  01AN4Z07BY      79KA1307SR9X4MV3
+      " |----------|    |----------------|
+      "  Timestamp          Randomness
+      "   48bits             80bits
+      Assert Equals(tolower(ULID.generate(generator, testdata1, epoch)), '0000000000' . '0000000000000000')
+    End
+    It random UUID generate. all 0xFF data
+      let generator = FixedData.new_generator()
+      let epoch = DateTime.from_unix_time(0)
+      "  01AN4Z07BY      79KA1307SR9X4MV3
+      " |----------|    |----------------|
+      "  Timestamp          Randomness
+      "   48bits             80bits
+      Assert Equals(tolower(ULID.generate(generator, testdata2, epoch)), '0000000000' . 'zzzzzzzzzzzzzzzz')
+    End
+    It generate ULID string. time is int
+      let generator = FixedData.new_generator()
+      let epoch = 0
+      "  01AN4Z07BY      79KA1307SR9X4MV3
+      " |----------|    |----------------|
+      "  Timestamp          Randomness
+      "   48bits             80bits
+      Assert Equals(tolower(ULID.generate(generator, testdata1, epoch)), '0000000000' . '0000000000000000')
+    End
+    It generate ULID string. time is invalid
+      let generator = FixedData.new_generator()
+      let epoch = {}
+      "  01AN4Z07BY      79KA1307SR9X4MV3
+      " |----------|    |----------------|
+      "  Timestamp          Randomness
+      "   48bits             80bits
+      Throws /^vital: ID.ULID:/ ULID.generate(generator, testdata1, epoch)
     End
   End
 
@@ -25,7 +66,12 @@ Describe ID.ULID
 
   Describe .ULID2UUID()
     It convert ULID to UUID format string.
-      Skip currently, test data nothing.
+      let ulid = '0000000000' . '0000000000000000'
+      Assert Equals(tolower(ULID.ULID2UUID(ulid).uuid_hex), '00000000-0000-0000-0000-000000000000')
+    End
+    It convert ULID to UUID format string. overflow
+      let ulid = '8ZZZZZZZZZ' . '0000000000000000'
+      Throws /^vital: ID.ULID:/ ULID.ULID2UUID(ulid)
     End
   End
 End
