@@ -20,10 +20,12 @@ function! s:Generator.next() abort
   let value = 0
 
   if s:Prelude.is_windows()
-    let cmd = ['echo', '%random%']
-    let result = s:Process.execute(cmd)
-    if result.success
-      let value = str2nr('0x' . trim(split(result.output, '\n')[0]), 10)
+    if executable('cmd')
+      let cmd = ['cmd', '/c', 'echo %random%']
+      let result = s:Process.execute(cmd)
+      if result.success
+        let value = str2nr('0x' . trim(split(result.output, '\n')[0]), 10)
+      endif
     endif
   else
     if executable('openssl')
