@@ -55,9 +55,11 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
   let lastBlockOctet = derivedKeyLen - ((l - 1) * hashLen)
 
   for i in range(1,l)
-    let u = salt[:] + s:_int2bytes(32, s:_uint32(i))
-    let t = u
-    for j in range(1, a:iteration)
+    " calc U_1
+    let u = s:HMAC.new(a:algo, password).calc(salt[:] + s:_int2bytes_be(32, s:_uint32(i)))
+    let t = u[:]
+
+    for j in range(2, a:iteration)
       let u = s:HMAC.new(a:algo, password).calc(u)
       call map(t, { i, v -> s:bitwise.xor(v, u[i])})
     endfor
@@ -73,8 +75,8 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
   return derivedKey
 endfunction
 
-function! s:_int2bytes(bits, int) abort
-  return map(range(a:bits / 8), 's:bitwise.and(s:bitwise.rshift(a:int, v:val * 8), 0xff)')
+function! s:_int2bytes_be(bits, int) abort
+  return reverse(map(range(a:bits / 8), 's:bitwise.and(s:bitwise.rshift(a:int, v:val * 8), 0xff)'))
 endfunction
 
 function! s:_uint32(n) abort

@@ -3,7 +3,7 @@ Describe Crypt.Password.PBKDF2
     let assert = themis#helper('assert')
     let PBKDF2 = vital#vital#new().import('Crypt.Password.PBKDF2')
 
-    let MD5  = vital#vital#new().import('Hash.MD5x')
+    " let MD5  = vital#vital#new().import('Hash.MD5x')
     let SHA1 = vital#vital#new().import('Hash.SHA1')
 
     " RFC 6070 - PKCS #5: Password-Based Key Derivation Function 2 (PBKDF2) Test Vectors https://tools.ietf.org/html/rfc6070
@@ -95,45 +95,45 @@ Describe Crypt.Password.PBKDF2
           \           0xd8, 0xde, 0x89, 0x57]
           \})
 
-    call add(testdata, {
-          \ 'P':     "password" ,
-          \ 'S':     "salt"     ,
-          \ 'c':     4096       ,
-          \ 'dkLen': 20         ,
-          \ 'DK':    [0x4b, 0x00, 0x79, 0x01, 0xb7, 0x65, 0x48, 0x9a,
-          \           0xbe, 0xad, 0x49, 0xd9, 0x26, 0xf7, 0x21, 0xd0,
-          \           0x65, 0xa4, 0x29, 0xc1]
-          \})
+    " call add(testdata, {
+    "      \ 'P':     "password" ,
+    "      \ 'S':     "salt"     ,
+    "      \ 'c':     4096       ,
+    "      \ 'dkLen': 20         ,
+    "      \ 'DK':    [0x4b, 0x00, 0x79, 0x01, 0xb7, 0x65, 0x48, 0x9a,
+    "      \           0xbe, 0xad, 0x49, 0xd9, 0x26, 0xf7, 0x21, 0xd0,
+    "      \           0x65, 0xa4, 0x29, 0xc1]
+    "      \})
 
-    call add(testdata, {
-          \ 'P':     "password"  ,
-          \ 'S':     "salt"      ,
-          \ 'c':     16777216    ,
-          \ 'dkLen': 20          ,
-          \ 'DK':    [0xee, 0xfe, 0x3d, 0x61, 0xcd, 0x4d, 0xa4, 0xe4,
-          \           0xe9, 0x94, 0x5b, 0x3d, 0x6b, 0xa2, 0x15, 0x8c,
-          \           0x26, 0x34, 0xe9, 0x84]
-          \})
+    " call add(testdata, {
+    "      \ 'P':     "password"  ,
+    "      \ 'S':     "salt"      ,
+    "      \ 'c':     16777216    ,
+    "      \ 'dkLen': 20          ,
+    "      \ 'DK':    [0xee, 0xfe, 0x3d, 0x61, 0xcd, 0x4d, 0xa4, 0xe4,
+    "      \           0xe9, 0x94, 0x5b, 0x3d, 0x6b, 0xa2, 0x15, 0x8c,
+    "      \           0x26, 0x34, 0xe9, 0x84]
+    "      \})
+    "
+    " call add(testdata, {
+    "      \ 'P':     "passwordPASSWORDpassword"              ,
+    "      \ 'S':     "saltSALTsaltSALTsaltSALTsaltSALTsalt"  ,
+    "      \ 'c':     4096                                    ,
+    "      \ 'dkLen': 25                                      ,
+    "      \ 'DK':    [0x3d, 0x2e, 0xec, 0x4f, 0xe4, 0x1c, 0x84, 0x9b,
+    "      \           0x80, 0xc8, 0xd8, 0x36, 0x62, 0xc0, 0xe4, 0x4a,
+    "      \           0x8b, 0x29, 0x1a, 0x96, 0x4c, 0xf2, 0xf0, 0x70,
+    "      \           0x38]
+    "      \})
 
-    call add(testdata, {
-          \ 'P':     "passwordPASSWORDpassword"              ,
-          \ 'S':     "saltSALTsaltSALTsaltSALTsaltSALTsalt"  ,
-          \ 'c':     4096                                    ,
-          \ 'dkLen': 25                                      ,
-          \ 'DK':    [0x3d, 0x2e, 0xec, 0x4f, 0xe4, 0x1c, 0x84, 0x9b,
-          \           0x80, 0xc8, 0xd8, 0x36, 0x62, 0xc0, 0xe4, 0x4a,
-          \           0x8b, 0x29, 0x1a, 0x96, 0x4c, 0xf2, 0xf0, 0x70,
-          \           0x38]
-          \})
-
-    call add(testdata, {
-          \ 'P':     "pass\0word" ,
-          \ 'S':     "sa\0lt"     ,
-          \ 'c':     4096         ,
-          \ 'dkLen': 16           ,
-          \ 'DK':    [0x56, 0xfa, 0x6a, 0xa7, 0x55, 0x48, 0x09, 0x9d,
-          \           0xcc, 0x37, 0xd7, 0xf0, 0x34, 0x25, 0xe0, 0xc3]
-          \})
+    " call add(testdata, {
+    "      \ 'P':     "pass\0word" ,
+    "      \ 'S':     "sa\0lt"     ,
+    "      \ 'c':     4096         ,
+    "      \ 'dkLen': 16           ,
+    "      \ 'DK':    [0x56, 0xfa, 0x6a, 0xa7, 0x55, 0x48, 0x09, 0x9d,
+    "      \           0xcc, 0x37, 0xd7, 0xf0, 0x34, 0x25, 0xe0, 0xc3]
+    "      \})
   End
 
   Describe .pbkdf2()
@@ -147,9 +147,43 @@ Describe Crypt.Password.PBKDF2
       endfor
     End
 
-    It invalid value
-      " Throws /^vital: Crypt.Password.PBKDF2:/
-      Skip currently, test data nothing.
+    It valid password is byte-list
+      let test = testdata[0]
+      " 'P':     "password" , to [0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64]
+      " 'S':     "salt"     , to [0x73, 0x61, 0x6c, 0x74]
+
+      let result = PBKDF2.pbkdf2([0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64], test.S, test.c, test.dkLen, SHA1)
+      Assert Equals(len(result), test.dkLen)
+    End
+
+    It valid salt is byte-list
+      let test = testdata[0]
+      " 'P':     "password" , to [0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64]
+      " 'S':     "salt"     , to [0x73, 0x61, 0x6c, 0x74]
+
+      let result = PBKDF2.pbkdf2(test.P, [0x73, 0x61, 0x6c, 0x74], test.c, test.dkLen, SHA1)
+      Assert Equals(len(result), test.dkLen)
+    End
+
+    It invalid password is dict
+      let test = testdata[0]
+      Throws /^vital: Crypt.Password.PBKDF2:/ PBKDF2.pbkdf2({}, test.S, test.c, test.dkLen, SHA1)
+    End
+
+    It invalid salt is dict
+      let test = testdata[0]
+      Throws /^vital: Crypt.Password.PBKDF2:/ PBKDF2.pbkdf2(test.P, {}, test.c, test.dkLen, SHA1)
+    End
+
+    It invalid key length value
+      " if has('num64')
+      "   let test = testdata[0]
+      "   " sha1 is 128bit = 16byte , mul 20 over this
+      "   Throws /^vital: Crypt.Password.PBKDF2:/ PBKDF2.pbkdf2(test.P, test.S, (0xFFFFFFFF + 1) * 20, test.dkLen, SHA1)
+      " else
+      "   Skip num64 not supported env do not work this test.
+      " endif
+      Skip currently not work.
     End
   End
 End
