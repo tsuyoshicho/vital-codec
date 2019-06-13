@@ -5,12 +5,84 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:_vital_loaded(V) abort
-  let s:V    = a:V
-  let s:HMAC = s:V.import('Hash.HMAC')
+  let s:V         = a:V
+  let s:bitwise   = s:V.import('Bitwise')
+  let s:type      = s:V.import('Vim.Type')
+  let s:HMAC      = s:V.import('Hash.HMAC')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Hash.HMAC']
+  return ['Bitwise',
+        \ 'Vim.Type',
+        \ 'Hash.HMAC',
+        \ 'Data.List.Byte']
+endfunction
+
+function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
+  " password
+  let typeval = type(a:password)
+  if typeval == s:type.types.string
+    let password = s:ByteArray.from_string(a:password)
+  elseif typeval == s:type.types.list
+    let password = a:password
+  else
+    call s:_throw('non-support password type (suport only string or bytes-list)')
+  endif
+  unlet typeval
+
+  " salt
+  let typeval = type(a:salt)
+  if typeval == s:type.types.string
+    let salt = s:ByteArray.from_string(a:salt)
+  elseif typeval == s:type.types.list
+    let salt = a:salt
+  else
+    call s:_throw('non-support salt type (suport only string or bytes-list)')
+  endif
+  unlet typeval
+
+  let derivedKeyLen = a:derivedKeyLength
+  let hashLen = a:algo.hash_length / 8 " octet
+
+  " float2nr(pow(2, 32)) - 1) = 0xffffffff
+  if has('num64') && (derivedKeyLen > (0xffffffff * hashLen))
+    call s:_throw('derived key too long')
+  endif
+  let derivedKey = []
+
+  let l = float2nr(ceil((derivedKeyLen * 1.0) / hashLen))
+  let lastBlockOctet = derivedKeyLen - ((l - 1) * hashLen)
+
+  for i in range(1,l)
+    let u = salt[:] + s:_int2bytes(32, s:_uint32(i))
+    let t = u
+    for j in range(1, a:iteration)
+      let u = s:HMAC.new(a:algo, password).calc(u)
+      call map(t, { i, v -> s:bitwise.xor(v, u[i])})
+    endfor
+
+    " fill to derivedKey
+    if i != l
+      let derivedKey += t[:]
+    else
+      let derivedKey += t[: (lastBlockOctet - 1)]
+    endif
+  endfor
+
+  return derivedKey
+endfunction
+
+function! s:_int2bytes(bits, int) abort
+  return map(range(a:bits / 8), 's:bitwise.and(s:bitwise.rshift(a:int, v:val * 8), 0xff)')
+endfunction
+
+function! s:_uint32(n) abort
+  return s:bitwise.and(a:n, 0xFFFFFFFF)
+endfunction
+
+function! s:_throw(message) abort
+  throw 'vital: Crypt.Password.PBKDF2: ' . a:message
 endfunction
 
 let &cpo = s:save_cpo
