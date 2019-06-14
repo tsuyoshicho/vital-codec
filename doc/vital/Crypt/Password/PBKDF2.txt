@@ -1,0 +1,37 @@
+*vital/Crypt/Password/PBKDF2.txt*		Utilities for PBKDF2 library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Crypt.Password.PBKDF2-contents*
+
+INTRODUCTION		                |Vital.Crypt.Password.PBKDF2-introduction|
+INTERFACE		                |Vital.Crypt.Password.PBKDF2-interface|
+  Functions                               |Vital.Crypt.Password.PBKDF2-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.Crypt.Password.PBKDF2-introduction*
+
+*Vital.Crypt.Password.PBKDF2* is an Utilities for PBKDF2 library.
+It provides functions to return the PBKDF2 derived key value.
+
+Usage: >
+  let dk = s:PBKDF2.pbkdf2(password, salt, stretch, len, algo)
+<
+
+==============================================================================
+INTERFACE				*Vital.Crypt.Password.PBKDF2-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Crypt.Password.PBKDF2-functions*
+
+					  *Vital.Crypt.Password.PBKDF2.totp()*
+pbkdf2(password, salt, iteration, len, algo)
+	Return PBKDF2 value.
+	{password} and {salt} support string or byte-list.
+	{iteration} is stretching count.
+	{len} is derived key length(octet).
+	Hash {algo}, need same as |Vital.Hash.HMAC.hash()| API.
+	ex |Vital.Hash.MD5| , |Vital.Hash.SHA1|
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
