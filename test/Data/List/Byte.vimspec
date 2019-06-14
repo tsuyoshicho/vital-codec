@@ -3,6 +3,19 @@ Describe Data.List.Byte
     let ByteArray = vital#vital#new().import('Data.List.Byte')
   End
 
+  Describe .validate()
+    It valid data
+      Assert Equals(ByteArray.validate([1,2,3]), 1)
+    End
+
+    It invalid data
+      Assert Equals(ByteArray.validate([-1,2,3]), 0)
+      Assert Equals(ByteArray.validate({}), 0)
+      Assert Equals(ByteArray.validate([0, 'a', 100]), 0)
+      Assert Equals(ByteArray.validate([0,  20, 300]), 0)
+    End
+  End
+
   Describe .from_string()
     It from string to bytes-list.
       Assert Equals(ByteArray.from_string('abc'), [0x61, 0x62, 0x63])

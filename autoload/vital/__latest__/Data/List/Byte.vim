@@ -5,11 +5,19 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
+  let s:type = s:V.import('Vim.Type')
   let s:List = s:V.import('Data.List')
 endfunction
 
 function! s:_vital_depends() abort
   return ['Data.List']
+endfunction
+
+function! s:validate(data) abort
+  return type(a:data) == s:type.types.list
+        \ && len(a:data) == len(s:List.filter(a:data, { v -> type(v) == s:type.types.number }))
+        \ && min(a:data) >= 0
+        \ && max(a:data) <= 255
 endfunction
 
 function! s:from_blob(blob) abort
