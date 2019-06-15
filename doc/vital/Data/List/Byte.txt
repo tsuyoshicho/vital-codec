@@ -21,7 +21,8 @@ FUNCTIONS				*Vital.Data.List.Byte-functions*
 
 validate({data})		         *Vital.Data.List.Byte.validate()*
 	Return bool value.
-	{data} is List, all number min 0/max 255, then return 1.
+	{data} is List, all data as |Number| and it is min 0/max 255,
+	then return 1.
 	Otherwise return 0.
 
 from_string({str})		         *Vital.Data.List.Byte.from_string()*

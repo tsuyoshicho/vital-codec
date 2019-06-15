@@ -95,6 +95,7 @@ Describe Crypt.Password.PBKDF2
           \           0xd8, 0xde, 0x89, 0x57]
           \})
 
+    " currently CI timeout over below tests iteration.
     " call add(testdata, {
     "      \ 'P':     "password" ,
     "      \ 'S':     "salt"     ,

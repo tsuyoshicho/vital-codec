@@ -24,7 +24,7 @@ INTERFACE				*Vital.Crypt.Password.PBKDF2-interface*
 ------------------------------------------------------------------------------
 FUNCTIONS				*Vital.Crypt.Password.PBKDF2-functions*
 
-					  *Vital.Crypt.Password.PBKDF2.totp()*
+					  *Vital.Crypt.Password.PBKDF2.pbkdf2()*
 pbkdf2(password, salt, iteration, len, algo)
 	Return PBKDF2 value.
 	{password} and {salt} support string or byte-list.

@@ -168,7 +168,7 @@ function! s:suite.totp() abort
 
 
   " currently test remove
-  " debug need
+  " DateTime support under 32bit epoch. below date as after 32bitmax.
         "\ { 'time': 20000000000, 'result': '65353130', 'algo': 'SHA1'   },
         "\ { 'time': 20000000000, 'result': '77737706', 'algo': 'SHA256' },
         "\ { 'time': 20000000000, 'result': '47863826', 'algo': 'SHA512' },

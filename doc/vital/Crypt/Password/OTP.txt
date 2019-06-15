@@ -66,7 +66,7 @@ totp({key},{period},{algo},{digit},...)	*Vital.Crypt.Password.OTP.totp()*
 	When you need test and/or other reason, use extra arguments that is
 	time source you specified.
 	Extra arguments one of the following support type can be set:
-	  Int value as epoch time seconds.
+	  |Number| value as epoch time seconds.
 	  |Vital.DateTime| object.
 
 
