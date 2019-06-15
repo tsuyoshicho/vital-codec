@@ -5,14 +5,14 @@ Describe Data.List.Byte
 
   Describe .validate()
     It valid data
-      Assert Equals(ByteArray.validate([1,2,3]), 1)
+      Assert True(ByteArray.validate([1,2,3]))
     End
 
     It invalid data
-      Assert Equals(ByteArray.validate([-1,2,3]), 0)
-      Assert Equals(ByteArray.validate({}), 0)
-      Assert Equals(ByteArray.validate([0, 'a', 100]), 0)
-      Assert Equals(ByteArray.validate([0,  20, 300]), 0)
+      Assert False(ByteArray.validate([-1,2,3]))
+      Assert False(ByteArray.validate({}))
+      Assert False(ByteArray.validate([0, 'a', 100]))
+      Assert False(ByteArray.validate([0,  20, 300]))
     End
   End
 
