@@ -41,7 +41,7 @@ v1({mac})                                    *Vital.ID.UUID.v1()*
         let uuid = UUID.new()
         call uuid.generatev1({mac})
         let result = uuid.uuid_hex
->
+<
 
 v3({ns}, {value})                            *Vital.ID.UUID.v3()*
 	Return UUID version 3 value.
@@ -50,7 +50,7 @@ v3({ns}, {value})                            *Vital.ID.UUID.v3()*
         let uuid = UUID.new()
         call uuid.generatev3({ns}, {value})
         let result = uuid.uuid_hex
->
+<
 
 v4()                                         *Vital.ID.UUID.v4()*
 	Return UUID version 4 value.
@@ -59,7 +59,7 @@ v4()                                         *Vital.ID.UUID.v4()*
         let uuid = UUID.new()
         call uuid.generatev4()
         let result = uuid.uuid_hex
->
+<
 
 v5({ns}, {value})                            *Vital.ID.UUID.v5()*
 	Return UUID version 5 value.
@@ -68,7 +68,7 @@ v5({ns}, {value})                            *Vital.ID.UUID.v5()*
         let uuid = UUID.new()
         call uuid.generatev5({ns}, {value})
         let result = uuid.uuid_hex
->
+<
 
 
 ==============================================================================

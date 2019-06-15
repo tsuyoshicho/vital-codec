@@ -26,7 +26,7 @@ This module lower using priority other PRNG algorithm.
 >
 	let s:V = vital#{plugin-name}#new()
 	let s:X = s:V.import("Random.System")
-
+ 
 	call s:X.srand(1)
 	echo s:X.rand()
 	" 132
