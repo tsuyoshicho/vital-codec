@@ -1,6 +1,6 @@
 *vital/Random/System.txt*	random number generator using system source.
 
-Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 
 ==============================================================================
 CONTENTS					*Vital.Random.System-contents*
@@ -78,4 +78,4 @@ Generator.seed({seeds})		*Vital.Random.System-Generator.seed()*
 
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:

@@ -1,6 +1,6 @@
 *vital/ID/UUID.txt*		UUID:Universally Unique Identifier library.
 
-Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 
 ==============================================================================
 CONTENTS				*Vital.ID.UUID-contents*
@@ -153,4 +153,4 @@ UUID.build()	               	*Vital.ID.UUID-UUID.build()*
         See direct code.
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:

@@ -1,6 +1,7 @@
 *vital/Hash/MD5x.txt*		md5 utilities library.
 
-Maintainer: nicwest   <oss@nic-west.com>
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+Original Maintainer: nicwest   <oss@nic-west.com>
 
 EXPERIMENTAL under develop.
 
@@ -32,4 +33,4 @@ digest_raw({bytes})			*Vital.Hash.MD5x.digest_raw()*
 	Return MD5 hashed bytes list from {str} or raw {bytes} list.
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:

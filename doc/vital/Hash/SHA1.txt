@@ -1,6 +1,6 @@
 *vital/Hash/SHA1.txt*		sha1 utilities library.
 
-Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 
 ==============================================================================
 CONTENTS				*Vital.Hash.SHA1-contents*
@@ -35,4 +35,4 @@ digest_raw({bytes})			*Vital.Hash.SHA1.digest_raw()*
 	Return SHA1 hashed bytes list from {str} or raw {bytes} list.
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:

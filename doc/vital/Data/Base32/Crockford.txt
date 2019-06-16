@@ -1,6 +1,6 @@
 *vital/Data/Base32/Crockford.txt*		base32 utilities library.
 
-Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 
 ==============================================================================
 CONTENTS				*Vital.Data.Base32.Crockford-contents*
@@ -42,4 +42,4 @@ decoderaw({str})			*Vital.Data.Base32.Crockford.decoderaw()*
 
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:

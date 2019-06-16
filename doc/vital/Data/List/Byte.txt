@@ -1,6 +1,6 @@
 *vital/Data/List/Byte.txt*		bytes-list utilities library.
 
-Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 
 ==============================================================================
 CONTENTS				*Vital.Data.List.Byte-contents*
@@ -49,4 +49,4 @@ to_blob({bytes})		         *Vital.Data.List.Byte.to_blob()*
 
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:

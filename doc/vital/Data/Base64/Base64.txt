@@ -1,6 +1,6 @@
 *vital/Data/Base64/Base64.txt*		base64 raw utilities library.
 
-Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 Original Maintainer: mattn   <mattn.jp@gmail.com>
 
 ==============================================================================
@@ -38,4 +38,4 @@ b64decode({str}, {map}, {padding flag}, {padding char})
 	This function is mainly used to create Base64 derived types.
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:

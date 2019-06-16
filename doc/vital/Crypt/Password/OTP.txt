@@ -1,6 +1,6 @@
 *vital/Crypt/Password/OTP.txt*		OTP:One-time Password Generation library.
 
-Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 
 ==============================================================================
 CONTENTS				*Vital.Crypt.Password.OTP-contents*
@@ -71,4 +71,4 @@ totp({key},{period},{algo},{digit},...)	*Vital.Crypt.Password.OTP.totp()*
 
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:

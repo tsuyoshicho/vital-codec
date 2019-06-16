@@ -1,6 +1,6 @@
 *vital/RandomEx/FixedData.txt*	random number generator using fixed data
 
-Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 
 ==============================================================================
 CONTENTS				*Vital.RandomEx.FixedData-contents*
@@ -85,4 +85,4 @@ Generator.seed({seeds})		*Vital.RandomEx.FixedData-Generator.seed()*
 
 
 ==============================================================================
-vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
