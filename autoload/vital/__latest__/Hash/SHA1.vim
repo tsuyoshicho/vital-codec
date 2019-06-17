@@ -9,8 +9,8 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:_vital_created(module) abort
-  let a:module.name = 'SHA'
-  let a:module.hash_length = 160
+  let a:module.name = 'SHA1'
+  let a:module.hash_length = s:sha1hashsize * 8 " 160
 endfunction
 
 function! s:_vital_loaded(V) abort
