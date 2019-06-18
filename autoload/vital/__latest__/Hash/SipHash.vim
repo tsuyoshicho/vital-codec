@@ -39,7 +39,7 @@ function! s:_common_hash() abort
   if !exists('s:common_hash')
     let s:common_hash = s:new(s:DEFAULT.hash_length, s:DEFAULT.rounds.c, s:DEFAULT.rounds.d)
   endif
-  return s: common_hash
+  return s:common_hash
 endfunction
 
 let s:OBJECT = extend({
@@ -57,6 +57,8 @@ function! s:new(...) abort
     let obj.hash_length = a:1
     let obj.rounds.c = a:2
     let obj.rounds.d = a:3
+  else
+    " throw e
   endif
   if obj.hash_length == 64 || obj.hash_length == 128
     " legal
