@@ -166,7 +166,7 @@ endfunction
 " length hash bitlength (64 or 128)
 function! s:siphash_state.hash(data) abort
   let data = copy(a:data)
-  let outputByteLen = self.length / 8
+  let outputByteLen = self.hash_length / 8
 
   let self.v[0] = 0x736f6d6570736575
   let self.v[1] = 0x646f72616e646f6d
