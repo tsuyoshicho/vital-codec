@@ -211,7 +211,7 @@ function! s:suite.encode() abort
         \ ],
         \]
 
-  let inputdata = []
+  let inputdata = repeat([0], len(vectors_sip64))
   for i in range(len(vectors_sip64))
     let inputdata =  inputdata + [i]
     let outputdata = s:SipHash.calc(inputdata)
