@@ -173,8 +173,8 @@ function! s:siphash_state.hash(data) abort
   let self.v[2] = 0x6c7967656e657261
   let self.v[3] = 0x7465646279746573
 
-  let self.k[0] = s:_bytes2int64(self.key[0:7])
-  let self.k[1] = s:_bytes2int64(self.key[8:15])
+  let self.k[0] = s:_bytes2int64(self.key[0 : 7])
+  let self.k[1] = s:_bytes2int64(self.key[8 : 15])
 
   let leftshift = s:_uint64(s:bitwise.and(len(data), 7))
   let blockshift = s:_uint64(s:bitwise.lshift(len(data), 56))
@@ -189,16 +189,18 @@ function! s:siphash_state.hash(data) abort
     let self.v[1] = s:bitwise.xor(self.v[1], 0xee) " v1 ^= 0xee;
   endif
 
-  for i in range(0, len(data), 8)
-    let m = s:_bytes2int64(data[i:i+8])
-    let self.v[3] = s:bitwise.xor(self.v[3], m) " v3 ^= m;
+  if len(data) >= 8
+    for i in range(0, len(data) - 7, 8)
+      let m = s:_bytes2int64(data[i : i+7])
+      let self.v[3] = s:bitwise.xor(self.v[3], m) " v3 ^= m;
 
-    for j in range(self.rounds.c)
-      call self.round()
+      for j in range(self.rounds.c)
+        call self.round()
+      endfor
+
+      let self.v[0] = s:bitwise.xor(self.v[0], m) " v0 ^= m;
     endfor
-
-    let self.v[0] = s:bitwise.xor(self.v[0], m) " v0 ^= m;
-  endfor
+  endif
 
   if 0 != leftshift
     if leftshift > 6
