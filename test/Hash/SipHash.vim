@@ -15,6 +15,8 @@ function! s:suite.prop() abort
 endfunction
 
 function! s:suite.encode() abort
+  " key data
+  let key = range(0,15)
   " data define
   let vectors_sip64 = [
         \ [
@@ -210,6 +212,8 @@ function! s:suite.encode() abort
         \  0x72, 0x45, 0x06, 0xeb, 0x4c, 0x32, 0x8a, 0x95,
         \ ],
         \]
+
+  call s:SipHash.setkey(key)
 
   let inputdata = repeat([0], len(vectors_sip64))
   for i in range(len(vectors_sip64))
