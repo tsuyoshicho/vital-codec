@@ -222,7 +222,7 @@ function! s:siphash_state.hash(data) abort
       let blockshift = s:bitwise.or(blockshift, s:_uint64(s:bitwise.lshift(data[1],  8))) " b |= ((uint64_t)in[1]) << 8;
     endif
     if leftshift > 0
-      let blockshift = s:bitwise.or(blockshift, s:_uint64(                data[0]     )) " b |= ((uint64_t)in[0]);
+      let blockshift = s:bitwise.or(blockshift, s:_uint64(                 data[0]     )) " b |= ((uint64_t)in[0]);
     endif
   endif
 
