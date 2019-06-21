@@ -253,7 +253,7 @@ function! s:siphash_state.hash(data) abort
   let output = s:_int642bytes(blockshift)
 
   if (outputByteLen == 8)
-    return output;
+    return output
   endif
 
   let self.v[1] = s:bitwise.xor(self.v[1], 0xdd) " v1 ^= 0xdd;
@@ -270,7 +270,7 @@ function! s:siphash_state.hash(data) abort
 
   let output = output + s:_int642bytes(blockshift)
 
-  return output;
+  return output
 endfunction
 
 "---------------------------------------------------------------------
