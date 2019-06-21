@@ -43,9 +43,9 @@ function! s:_common_hash() abort
 endfunction
 
 let s:OBJECT = extend({
-      \ 'state' : {},
-      \},
-      \ s:DEFAULT , 'keep')
+      \  'state' : {},
+      \ },
+      \ s:DEFAULT, 'keep')
 
 function! s:new(...) abort
   let obj = deepcopy(s:OBJECT)
@@ -124,7 +124,7 @@ function! s:_int64rotator(word, bits) abort
 endfunction
 
 let s:siphash_state = {
-      \ 'key' : [],
+      \ 'key' : range(16),
       \ 'hash_length' : 0,
       \ 'rounds' : {
       \   'c' : 0,
@@ -138,7 +138,7 @@ function! s:siphash_state.setkey(key) abort
   if len(a:key) != 16
     " throw e
   endif
-  let self.k = a:key
+  let self.k = copy(a:key)
 endfunction
 
 function! s:siphash_state.round() abort
