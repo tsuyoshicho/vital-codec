@@ -276,6 +276,10 @@ endfunction
 "---------------------------------------------------------------------
 " misc
 
+function! s:_uint8(n) abort
+  return s:bitwise.and(a:n, 0xFF)
+endfunction
+
 function! s:_bytes2int64(bytes) abort
   return  s:bitwise.or(s:bitwise.lshift(a:bytes[7], 56),
         \ s:bitwise.or(s:bitwise.lshift(a:bytes[6], 48),
