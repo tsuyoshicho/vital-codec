@@ -1,6 +1,6 @@
-Describe RandomEx.FixedData
+Describe Random.Extra.FixedData
   Before all
-    let FixedData = vital#vital#new().import('RandomEx.FixedData')
+    let FixedData = vital#vital#new().import('Random.Extra.FixedData')
     let assert = themis#helper('assert')
 
     let testdata = [0xFF,0x1234,0x00]

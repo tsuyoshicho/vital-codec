@@ -1,19 +1,19 @@
-*vital/RandomEx/FixedData.txt*	random number generator using fixed data
+*vital/Random.Extra/FixedData.txt*	random number generator using fixed data
 
 Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 
 ==============================================================================
-CONTENTS				*Vital.RandomEx.FixedData-contents*
+CONTENTS				*Vital.Random.Extra.FixedData-contents*
 
-INTRODUCTION			|Vital.RandomEx.FixedData-introduction|
-INTERFACE			|Vital.RandomEx.FixedData-interface|
-  FUNCTIONS			|Vital.RandomEx.FixedData-functions|
+INTRODUCTION			|Vital.Random.Extra.FixedData-introduction|
+INTERFACE			|Vital.Random.Extra.FixedData-interface|
+  FUNCTIONS			|Vital.Random.Extra.FixedData-functions|
 
 
 ==============================================================================
-INTRODUCTION				*Vital.RandomEx.FixedData-introduction*
+INTRODUCTION				*Vital.Random.Extra.FixedData-introduction*
 
-*Vital.RandomEx.FixedData* provides a Random Number Generator (RNG) at fixed data.
+*Vital.Random.Extra.FixedData* provides a Random Number Generator (RNG) at fixed data.
 THAT IS CAN BE USING FOR DEBUGGING/TESTING.
 
 If this generator set to |Vital.Random| and use
@@ -32,7 +32,7 @@ Generate all 0xFF list >
 Usage:
 >
 	let s:V = vital#{plugin-name}#new()
-	let s:X = s:V.import("RandomEx.FixedData")
+	let s:X = s:V.import("Random.Extra.FixedData")
  
 	call s:X.srand([0x00, 0xFF])
 	echo s:X.rand()
@@ -46,42 +46,42 @@ Usage:
 
 
 ==============================================================================
-INTERFACE				*Vital.RandomEx.FixedData-interface*
+INTERFACE				*Vital.Random.Extra.FixedData-interface*
 
 ------------------------------------------------------------------------------
-FUNCTIONS				*Vital.RandomEx.FixedData-functions*
+FUNCTIONS				*Vital.Random.Extra.FixedData-functions*
 
-srand([{seed}])				*Vital.RandomEx.FixedData.srand()*
+srand([{seed}])				*Vital.Random.Extra.FixedData.srand()*
 	Initialize the global generator with the given {seed} that is int list.
-	Fixed Data provide in data from 0 to len-1(cyclic). 
+	Fixed Data provide in data from 0 to len-1(cyclic).
 
-rand()					*Vital.RandomEx.FixedData.rand()*
+rand()					*Vital.Random.Extra.FixedData.rand()*
 	Generate a random number from the global generator.
 	Note: A return value is possibly negative. This is because Vim script
 	doesn't have an unsigned integer type.
 
-new_generator()				*Vital.RandomEx.FixedData.new_generator()*
-	Create a new Generator object(|Vital.RandomEx.FixedData-Generator|).
+new_generator()				*Vital.Random.Extra.FixedData.new_generator()*
+	Create a new Generator object(|Vital.Random.Extra.FixedData-Generator|).
 
 
 ==============================================================================
-OBJECTS					*Vital.RandomEx.FixedData-objects*
+OBJECTS					*Vital.Random.Extra.FixedData-objects*
 
 ------------------------------------------------------------------------------
-Generator Object		*Vital.RandomEx.FixedData-Generator*
+Generator Object		*Vital.Random.Extra.FixedData-Generator*
 
-Generator.next()		*Vital.RandomEx.FixedData-Generator.next()*
-	Generate the next data. see |Vital.RandomEx.FixedData.rand()|.
+Generator.next()		*Vital.Random.Extra.FixedData-Generator.next()*
+	Generate the next data. see |Vital.Random.Extra.FixedData.rand()|.
 
-Generator.min()			*Vital.RandomEx.FixedData-Generator.min()*
+Generator.min()			*Vital.Random.Extra.FixedData-Generator.min()*
 	Get the smallest possible value in the output range.
 
-Generator.max()			*Vital.RandomEx.FixedData-Generator.max()*
+Generator.max()			*Vital.Random.Extra.FixedData-Generator.max()*
 	Get the largest possible value in the output range.
 
-Generator.seed({seeds})		*Vital.RandomEx.FixedData-Generator.seed()*
+Generator.seed({seeds})		*Vital.Random.Extra.FixedData-Generator.seed()*
 	Initialze the generator with the given {seed} list.
-	see |Vital.RandomEx.FixedData.srand()|.
+	see |Vital.Random.Extra.FixedData.srand()|.
 
 
 ==============================================================================
