@@ -25,6 +25,12 @@ validate({data})		         *Vital.Data.List.Byte.validate()*
 	then return 1.
 	Otherwise return 0.
 
+endian_convert({data})		         *Vital.Data.List.Byte.endian_convert()*
+	Return endian converted bytes-list value.
+	Output little-endian as input of big-endian.
+	Vice versa output big-endian as input of little-endian.
+	Input {data} need 2 or more even count
+
 from_string({str})		         *Vital.Data.List.Byte.from_string()*
 	Return bytes-list from {str}.
 	bytes-list like: character cast to byte.
@@ -47,6 +53,18 @@ from_blob({blob})		         *Vital.Data.List.Byte.from_blob()*
 to_blob({bytes})		         *Vital.Data.List.Byte.to_blob()*
 	Return blob that is {bytes} stored to blob structure.
 
+
+from_int({int}, {bits})		         *Vital.Data.List.Byte.from_blob()*
+	Return bytes-list from {int}.
+	bytes-list like: {bits} bit-length int value.
+	Byte-order: big-endian
+	If you need little-endian result, using
+	|Vital.Data.List.Byte.endian_convert()|
+
+to_int({bytes})			         *Vital.Data.List.Byte.to_blob()*
+	Return int that is {bytes} decode big-endian bytes value.
+	If you need little-endian decode work, using
+	|Vital.Data.List.Byte.endian_convert()|
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
