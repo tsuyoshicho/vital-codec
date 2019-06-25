@@ -1,0 +1,67 @@
+Describe Vim.Type.Number
+  Before all
+    let n = vital#vital#new().import('Vim.Type.Number')
+  End
+
+  Describe .uint8()
+    It cast data
+      Assert Equals(n.uint8(0x123), 0x23)
+    End
+  End
+
+  Describe .uint16()
+    It cast data
+      Assert Equals(n.uint16(0x12345), 0x2345)
+    End
+  End
+
+  Describe .uint32()
+    if has('num64')
+      It cast data
+        Assert Equals(n.uint32(0x123456789), 0x23456789)
+      End
+    else
+      It cast data
+        Skip currently 32bit over not support in Vim
+      End
+    endif
+  End
+
+  Describe .uint64()
+    It cast data
+      Skip currently 64bit over not support in Vim
+    End
+  End
+
+
+  Describe .rotate8()
+    It cast data
+      Assert Equals(n.rotate8(0b11001001, 3), 0b01001110)
+    End
+  End
+
+  Describe .rotate16()
+    It cast data
+      Assert Equals(n.rotate16(0b0000000011001001, 11), 0b0100100000000110)
+    End
+  End
+
+  Describe .rotate32()
+    It cast data
+      Assert Equals(n.rotate32(0x1a2b3c4d, 24), 0xc4d1a2b3)
+    End
+  End
+
+  Describe .rotate64()
+    if has('num64')
+    It cast data
+      Assert Equals(n.rotate64(0x1a2b3c4d567890ef, 40), 0x7890ef1a2b3c4d56)
+    End
+    else
+      It cast data
+        Skip currently 32bit over not support in Vim
+      End
+    endif
+  End
+
+End
