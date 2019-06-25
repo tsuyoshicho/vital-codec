@@ -4,7 +4,7 @@ Describe ID.UUID
     let UUID = vital#vital#new().import('ID.UUID')
     let NS = vital#vital#new().import('ID.UUID.Namespace')
 
-    let FixedData = vital#vital#new().import('RandomEx.FixedData')
+    let FixedData = vital#vital#new().import('Random.Extra.FixedData')
 
     let testdata1 = [0xFF,0x00]
     let testdata2 = [0x00,0xFF]

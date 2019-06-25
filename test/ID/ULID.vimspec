@@ -4,7 +4,7 @@ Describe ID.ULID
     let ULID = vital#vital#new().import('ID.ULID')
     let DateTime = vital#vital#new().import('DateTime')
 
-    let FixedData = vital#vital#new().import('RandomEx.FixedData')
+    let FixedData = vital#vital#new().import('Random.Extra.FixedData')
 
     let testdata1 = [0xFF,0x00]
     let testdata2 = [0x00,0xFF]
