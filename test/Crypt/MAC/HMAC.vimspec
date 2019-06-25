@@ -1,6 +1,6 @@
-Describe Hash.HMAC
+Describe Crypt.MAC.HMAC
   Before all
-    let HMAC = vital#vital#new().import('Hash.HMAC')
+    let HMAC = vital#vital#new().import('Crypt.MAC.HMAC')
     let MD5  = vital#vital#new().import('Hash.MD5x')
     let SHA1 = vital#vital#new().import('Hash.SHA1')
 
@@ -148,7 +148,7 @@ Describe Hash.HMAC
 
   Describe .new()
     It argument count over 2
-      Throws /^vital: Hash.HMAC:/ HMAC.new('a', 'a', 'a')
+      Throws /^vital: Crypt.MAC.HMAC:/ HMAC.new('a', 'a', 'a')
     End
   End
 
@@ -178,7 +178,7 @@ Describe Hash.HMAC
 
     It invalid value
       let hmacmd5 = HMAC.new()
-      Throws /^vital: Hash.HMAC:/ hmacmd5.key({})
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.key({})
     End
   End
 
@@ -209,11 +209,11 @@ Describe Hash.HMAC
 
     It invalid value
       let hmacmd5 = HMAC.new()
-      Throws /^vital: Hash.HMAC:/ hmacmd5.hash([])
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.hash([])
       let hmacmd5 = HMAC.new()
-      Throws /^vital: Hash.HMAC:/ hmacmd5.hash({})
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.hash({})
       let hmacmd5 = HMAC.new()
-      Throws /^vital: Hash.HMAC:/ hmacmd5.hash({ 'digest_raw': 0 })
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.hash({ 'digest_raw': 0 })
     End
   End
 
@@ -245,23 +245,23 @@ Describe Hash.HMAC
     It no set algo do not work
       let hmacmd5 = HMAC.new()
       call hmacmd5.key(test_case_md5[0].key)
-      Throws /^vital: Hash.HMAC:/ hmacmd5.calc(test_case_md5[0].data)
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.calc(test_case_md5[0].data)
     End
     It no set key do not work
       let hmacmd5 = HMAC.new()
       call hmacmd5.hash(MD5)
-      Throws /^vital: Hash.HMAC:/ hmacmd5.calc(test_case_md5[0].data)
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.calc(test_case_md5[0].data)
     End
     It no set algo and key do not work
       let hmacmd5 = HMAC.new()
-      Throws /^vital: Hash.HMAC:/ hmacmd5.calc(test_case_md5[0].data)
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.calc(test_case_md5[0].data)
     End
 
     It invalid value
       let hmacmd5 = HMAC.new()
       call hmacmd5.hash(MD5)
       call hmacmd5.key(test_case_md5[0].key)
-      Throws /^vital: Hash.HMAC:/ hmacmd5.calc({})
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.calc({})
     End
   End
 
@@ -293,23 +293,23 @@ Describe Hash.HMAC
     It no set algo do not work
       let hmacmd5 = HMAC.new()
       call hmacmd5.key(test_case_md5[0].key)
-      Throws /^vital: Hash.HMAC:/ hmacmd5.hmac(test_case_md5[0].data)
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.hmac(test_case_md5[0].data)
     End
     It no set key do not work
       let hmacmd5 = HMAC.new()
       call hmacmd5.hash(MD5)
-      Throws /^vital: Hash.HMAC:/ hmacmd5.hmac(test_case_md5[0].data)
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.hmac(test_case_md5[0].data)
     End
     It no set algo and key do not work
       let hmacmd5 = HMAC.new()
-      Throws /^vital: Hash.HMAC:/ hmacmd5.hmac(test_case_md5[0].data)
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.hmac(test_case_md5[0].data)
     End
 
     It invalid value
       let hmacmd5 = HMAC.new()
       call hmacmd5.hash(MD5)
       call hmacmd5.key(test_case_md5[0].key)
-      Throws /^vital: Hash.HMAC:/ hmacmd5.hmac({})
+      Throws /^vital: Crypt.MAC.HMAC:/ hmacmd5.hmac({})
     End
   End
 End
