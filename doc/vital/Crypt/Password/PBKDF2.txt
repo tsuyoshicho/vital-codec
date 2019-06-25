@@ -30,7 +30,7 @@ pbkdf2(password, salt, iteration, len, algo)
 	{password} and {salt} support string or byte-list.
 	{iteration} is stretching count.
 	{len} is derived key length(octet).
-	Hash {algo}, need same as |Vital.Hash.HMAC.hash()| API.
+	Hash {algo}, need same as |Vital.Crypt.MAC.HMAC.hash()| API.
 	ex |Vital.Hash.MD5| , |Vital.Hash.SHA1|
 
 ==============================================================================

@@ -8,14 +8,14 @@ function! s:_vital_loaded(V) abort
   let s:V         = a:V
   let s:bitwise   = s:V.import('Bitwise')
   let s:type      = s:V.import('Vim.Type')
-  let s:HMAC      = s:V.import('Hash.HMAC')
+  let s:HMAC      = s:V.import('Crypt.MAC.HMAC')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
   return ['Bitwise',
         \ 'Vim.Type',
-        \ 'Hash.HMAC',
+        \ 'Crypt.MAC.HMAC',
         \ 'Data.List.Byte']
 endfunction
 

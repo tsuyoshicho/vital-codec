@@ -101,5 +101,5 @@ function! s:HMAC.hmac(data) abort
 endfunction
 
 function! s:_throw(message) abort
-  throw 'vital: Hash.HMAC: ' . a:message
+  throw 'vital: Crypt.MAC.HMAC: ' . a:message
 endfunction
