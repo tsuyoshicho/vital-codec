@@ -35,7 +35,7 @@ function! s:rotate8l(data, bits) abort
                             \ s:bitwise.rshift(data, 8 - a:bits)))
 endfunction
 function! s:rotate8r(data, bits) abort
-  return s:rotate8l(a:data, 8 - bits)
+  return s:rotate8l(a:data, 8 - a:bits)
 endfunction
 
 function! s:rotate16l(data, bits) abort
@@ -44,7 +44,7 @@ function! s:rotate16l(data, bits) abort
                              \ s:bitwise.rshift(data, 16 - a:bits)))
 endfunction
 function! s:rotate16r(data, bits) abort
-  return s:rotate16l(a:data, 16 - bits)
+  return s:rotate16l(a:data, 16 - a:bits)
 endfunction
 
 function! s:rotate32l(data, bits) abort
@@ -53,7 +53,7 @@ function! s:rotate32l(data, bits) abort
                              \ s:bitwise.rshift(data, 32 - a:bits)))
 endfunction
 function! s:rotate32r(data, bits) abort
-  return s:rotate32l(a:data, 32 - bits)
+  return s:rotate32l(a:data, 32 - a:bits)
 endfunction
 
 function! s:rotate64l(data, bits) abort
@@ -62,7 +62,7 @@ function! s:rotate64l(data, bits) abort
                              \ s:bitwise.rshift(data, 64 - a:bits)))
 endfunction
 function! s:rotate64r(data, bits) abort
-  return s:rotate64l(a:data, 64 - bits)
+  return s:rotate64l(a:data, 64 - a:bits)
 endfunction
 
 let &cpo = s:save_cpo
