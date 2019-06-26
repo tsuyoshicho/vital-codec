@@ -159,6 +159,17 @@ function! s:siphash_state.round() abort
   let self.v[2] = s:_int64rotator(self.v[2], 32)      " v2 = ROTL(v2, 32);
 endfunction
 
+" trace disable
+function! s:siphash_state.trace(len) abort
+endfunction
+
+" " trace enable
+" function! s:siphash_state.trace(len) abort
+"   for i in range(len(self.v))
+"     echo '(' . string(a:len) . ')' . 'v' . i .':' . printf("%08x %08x", s:int.uint32(s:bitwise.rshift(self.v[i], 32)), s:int.uint32(self.v[i]))
+"   endfor
+" endfunction
+
 " data   byte-list
 " key    byte-list 16byte
 " length hash bitlength (64 or 128)
@@ -191,6 +202,9 @@ function! s:siphash_state.hash(data) abort
     for i in range(0, len(data) - 7, 8)
       let m = s:ByteArray.to_int(s:ByteArray.endian_convert(data[i : i+7]))
       let self.v[3] = s:bitwise.xor(self.v[3], m) " v3 ^= m;
+
+      " debug
+      cal self.trace(len(data))
 
       for j in range(self.rounds.c)
         call self.round()
@@ -226,6 +240,9 @@ function! s:siphash_state.hash(data) abort
 
   let self.v[3] = s:bitwise.xor(self.v[3], blockshift) " v3 ^= b;
 
+  " debug
+  cal self.trace(len(data))
+
   for i in range(self.rounds.c)
     call self.round()
   endfor
@@ -237,6 +254,9 @@ function! s:siphash_state.hash(data) abort
   else
     let self.v[2] = s:bitwise.xor(self.v[2], 0xff) " v2 ^= 0xff;
   endif
+
+  " debug
+  cal self.trace(len(data))
 
   for i in range(self.rounds.d)
     call self.round()
@@ -255,6 +275,9 @@ function! s:siphash_state.hash(data) abort
   endif
 
   let self.v[1] = s:bitwise.xor(self.v[1], 0xdd) " v1 ^= 0xdd;
+
+  " debug
+  cal self.trace(len(data))
 
   for i in range(self.rounds.d)
     call self.round()

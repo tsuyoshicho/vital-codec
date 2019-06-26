@@ -218,7 +218,11 @@ function! s:suite.encode() abort
   let inputdata = repeat([0], len(vectors_sip64))
   for i in range(len(vectors_sip64))
     let inputdata[i] = i
-    let outputdata = s:SipHash.digest_raw(inputdata[0:i])
+    if i == 0
+      let outputdata = s:SipHash.digest_raw([])
+    else
+      let outputdata = s:SipHash.digest_raw(inputdata[0:i-1])
+    endif
     for j in range(len(outputdata))
       call s:assert.equal(outputdata[j], vectors_sip64[i][j])
     endfor
