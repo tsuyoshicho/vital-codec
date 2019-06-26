@@ -84,7 +84,7 @@ let s:sha1context = {
       \}
 
 function! s:_sha1circular_shift(bits, word) abort
-  return s:bitwise.or(s:bitwise.lshift32(a:word, a:bits), s:bitwise.rshift32(a:word, 32 - a:bits))
+  return s:int.rotate32l(a:word, a:bits)
 endfunction
 
 function! s:sha1context.init() dict abort
@@ -329,12 +329,10 @@ endfunction
 " misc
 
 function! s:_uint8(n) abort
-  " return s:bitwise.and(a:n, 0xFF)
   return s:int.uint8(a:n)
 endfunction
 
 function! s:_uint32(n) abort
-  " return s:bitwise.and(a:n, 0xFFFFFFFF)
   return s:int.uint32(a:n)
 endfunction
 
