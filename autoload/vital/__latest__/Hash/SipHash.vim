@@ -16,7 +16,7 @@ function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
   let s:int     = s:V.import('Vim.Type.Number')
-  let s:ByteList = s:V.import('Data.List.Byte')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
@@ -93,16 +93,16 @@ endfunction
 
 " object interface
 function! s:OBJECT.sum(data) abort
-  let bytes = s:ByteList.from_string(a:data)
+  let bytes = s:ByteArray.from_string(a:data)
   return self.sum_raw(bytes)
 endfunction
 
 function! s:OBJECT.sum_raw(bytes) abort
-  return s:ByteList.to_hexstring(self.digest_raw(a:bytes))
+  return s:ByteArray.to_hexstring(self.digest_raw(a:bytes))
 endfunction
 
 function! s:OBJECT.digest(data) abort
-  let bytes = s:ByteList.from_string(a:data)
+  let bytes = s:ByteArray.from_string(a:data)
   return self.digest_raw(bytes)
 endfunction
 
@@ -118,10 +118,7 @@ endfunction
 " https://github.com/vcatechnology/siphashsum/blob/master/siphash.h
 
 function! s:_int64rotator(word, bits) abort
-  return s:bitwise.or(
-        \ s:bitwise.lshift(a:word, a:bits),
-        \ s:bitwise.rshift(a:word, 64 - a:bits)
-        \)
+  return s:int.rotate64l(a:word, a:bits)
 endfunction
 
 let s:siphash_state = {
@@ -174,8 +171,8 @@ function! s:siphash_state.hash(data) abort
   let self.v[2] = 0x6c7967656e657261
   let self.v[3] = 0x7465646279746573
 
-  let self.k[0] = s:ByteArray.from_int(self.key[0 : 7], 64)
-  let self.k[1] = s:ByteArray.from_int(self.key[8 : 15], 64)
+  let self.k[0] = s:ByteArray.endian_convert(s:ByteArray.from_int(self.key[0 : 7], 64))
+  let self.k[1] = s:ByteArray.endian_convert(s:ByteArray.from_int(self.key[8 : 15], 64))
 
   let leftshift = s:int.uint64(s:bitwise.and(len(data), 7))
   let blockshift = s:int.uint64(s:bitwise.lshift(len(data), 56))
@@ -192,7 +189,7 @@ function! s:siphash_state.hash(data) abort
 
   if len(data) >= 8
     for i in range(0, len(data) - 7, 8)
-      let m = s:ByteArray.from_int(data[i : i+7], 64)
+      let m = s:ByteArray.endian_convert(s:ByteArray.from_int(data[i : i+7], 64))
       let self.v[3] = s:bitwise.xor(self.v[3], m) " v3 ^= m;
 
       for j in range(self.rounds.c)
