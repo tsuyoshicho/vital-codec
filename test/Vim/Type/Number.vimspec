@@ -48,15 +48,25 @@ Describe Vim.Type.Number
 
   Describe .rotate32()
     It cast data
-      Assert Equals(n.rotate32(0x1a2b3c4d, 24), 0xc4d1a2b3)
+      " input
+      " 0b 00001111 10100101 00000000 11001001
+      " rotl 27
+      " output
+      " 0b  01001 <-- 00001111 10100101  00000000  110
+      Assert Equals(n.rotate32(0b00001111101001010000000011001001, 27), 0b01001000011111010010100000000110)
     End
   End
 
   Describe .rotate64()
     if has('num64')
-    It cast data
-      Assert Equals(n.rotate64(0x1a2b3c4d567890ef, 40), 0x7890ef1a2b3c4d56)
-    End
+      It cast data
+        " input
+        " 0b 00001111 10100101 00000000 11001001 00000000 11111111 10101010 01010101
+        " rotl 27
+        " output
+        " 0b  01001 00000000 11111111 10101010 01010101 <-- 00001111 10100101  00000000  110
+        Assert Equals(n.rotate64(0b0000111110100101000000001100100100000000111111111010101001010101 , 27), 0b0100100000000111111111010101001010101000011111010010100000000110)
+      End
     else
       It cast data
         Skip currently 32bit over not support in Vim
