@@ -1,0 +1,65 @@
+*vital/Vim/Type/Number.txt*		Utilities for Number data.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Vim.Type.Number-contents*
+
+INTRODUCTION			|Vital.Vim.Type.Number-introduction|
+INTERFACE			|Vital.Vim.Type.Number-interface|
+  Functions			  |Vital.Vim.Type.Number-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.Vim.Type.Number-introduction*
+
+*Vital.Vim.Type.Number* is |Number| data utility.
+
+==============================================================================
+INTERFACE				*Vital.Vim.Type.Number-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Vim.Type.Number-functions*
+
+
+uint8({int})				  *Vital.Vim.Type.Number.uint8()*
+	Return uint8 (1 byte) casted integer from {int}.
+
+uint16({int})				  *Vital.Vim.Type.Number.uint16()*
+	Return uint16 (2 byte) casted integer from {int}.
+
+uint32({int})				  *Vital.Vim.Type.Number.uint32()*
+	Return uint32 (4 byte) casted integer from {int}.
+
+uint64({int})				  *Vital.Vim.Type.Number.uint64()*
+	Return uint64 (8 byte) casted integer from {int}.
+
+Note: below functions will be moved to |Bitwise|.
+rotate8l({int}, {bits})			  *Vital.Vim.Type.Number.rotate8l()*
+	Return value that is {bits}-bit left bit-rotated with {int} as uint8.
+	Ex. >
+	echo printf('08b' n.rotate8(0b11001001, 3)
+	"         01001110
+	" 110 <-- 01001 <-- 110
+<
+rotate8r({int}, {bits})			  *Vital.Vim.Type.Number.rotate8r()*
+	Same as |Vital.Vim.Type.Number.rotate8l()|, shift right.
+
+rotate16l({int}, {bits})		  *Vital.Vim.Type.Number.rotate16l()*
+	Return value that is {bits}-bit left bit-rotated with {int} as uint16.
+
+rotate16r({int}, {bits})		  *Vital.Vim.Type.Number.rotate16r()*
+	Same as |Vital.Vim.Type.Number.rotate16l()|, shift right.
+
+rotate32l({int}, {bits})		  *Vital.Vim.Type.Number.rotate32l()*
+	Return value that is {bits}-bit left bit-rotated with {int} as uint32.
+
+rotate32r({int}, {bits})		  *Vital.Vim.Type.Number.rotate32r()*
+	Same as |Vital.Vim.Type.Number.rotate32l()|, shift right.
+
+rotate64l({int}, {bits})		  *Vital.Vim.Type.Number.rotate64l()*
+	Return value that is {bits}-bit left bit-rotated with {int} as uint64.
+
+rotate64r({int}, {bits})		  *Vital.Vim.Type.Number.rotate64r()*
+	Same as |Vital.Vim.Type.Number.rotate64l()|, shift right.
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
