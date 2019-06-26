@@ -64,10 +64,10 @@ endfunction
 
 function! s:endian_convert(bytes) abort
   if !(len(a:bytes) > 1)
-    s:_throw('data count need 2 or more')
+    call s:_throw('data count need 2 or more')
   endif
-  if !(len(a:bytes) % 2)
-    s:_throw('odd data count')
+  if (len(a:bytes) % 2)
+    call s:_throw('odd data count')
   endif
   return reverse(copy(a:bytes))
 endfunction
