@@ -34,30 +34,53 @@ Describe Vim.Type.Number
   End
 
 
-  Describe .rotate8()
+  Describe .rotate8l()
     It cast data
-      Assert Equals(n.rotate8(0b11001001, 3), 0b01001110)
+      Assert Equals(n.rotate8l(0b11001001, 3), 0b01001110)
     End
   End
 
-  Describe .rotate16()
+  Describe .rotate8r()
     It cast data
-      Assert Equals(n.rotate16(0b0000000011001001, 11), 0b0100100000000110)
+      Assert Equals(n.rotate8r(0b11001001, 5), 0b01001110)
     End
   End
 
-  Describe .rotate32()
+  Describe .rotate16l()
+    It cast data
+      Assert Equals(n.rotate16l(0b0000000011001001, 11), 0b0100100000000110)
+    End
+  End
+
+  Describe .rotate16r()
+    It cast data
+      Assert Equals(n.rotate16r(0b0000000011001001, 5), 0b0100100000000110)
+    End
+  End
+
+  Describe .rotate32l()
     It cast data
       " input
       " 0b 00001111 10100101 00000000 11001001
       " rotl 27
       " output
       " 0b  01001 <-- 00001111 10100101  00000000  110
-      Assert Equals(n.rotate32(0b00001111101001010000000011001001, 27), 0b01001000011111010010100000000110)
+      Assert Equals(n.rotate32l(0b00001111101001010000000011001001, 27), 0b01001000011111010010100000000110)
     End
   End
 
-  Describe .rotate64()
+  Describe .rotate32l()
+    It cast data
+      " input
+      " 0b 00001111 10100101 00000000 11001001
+      " rotr 5
+      " output
+      " 0b  01001 --> 00001111 10100101  00000000  110
+      Assert Equals(n.rotate32r(0b00001111101001010000000011001001, 5), 0b01001000011111010010100000000110)
+    End
+  End
+
+  Describe .rotate64l()
     if has('num64')
       It cast data
         " input
@@ -65,7 +88,7 @@ Describe Vim.Type.Number
         " rotl 27
         " output
         " 0b  01001 00000000 11111111 10101010 01010101 <-- 00001111 10100101  00000000  110
-        Assert Equals(n.rotate64(0b0000111110100101000000001100100100000000111111111010101001010101 , 27), 0b0100100000000111111111010101001010101000011111010010100000000110)
+        Assert Equals(n.rotate64l(0b0000111110100101000000001100100100000000111111111010101001010101 , 27), 0b0100100000000111111111010101001010101000011111010010100000000110)
       End
     else
       It cast data
@@ -74,4 +97,20 @@ Describe Vim.Type.Number
     endif
   End
 
+  Describe .rotate64r()
+    if has('num64')
+      It cast data
+        " input
+        " 0b 00001111 10100101 00000000 11001001 00000000 11111111 10101010 01010101
+        " rotr 37
+        " output
+        " 0b  01001 00000000 11111111 10101010 01010101 --> 00001111 10100101  00000000  110
+        Assert Equals(n.rotate64r(0b0000111110100101000000001100100100000000111111111010101001010101 , 37), 0b0100100000000111111111010101001010101000011111010010100000000110)
+      End
+    else
+      It cast data
+        Skip currently 32bit over not support in Vim
+      End
+    endif
+  End
 End
