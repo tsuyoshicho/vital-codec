@@ -24,19 +24,23 @@ endfunction
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
-  let s:bitwise = s:V.import('Bitwise')
-  let s:type    = s:V.import('Vim.Type')
-  let s:HMAC    = s:V.import('Crypt.MAC.HMAC')
-  let s:List    = s:V.import('Data.List')
-  let s:DateTime= s:V.import('DateTime')
+  let s:bitwise  = s:V.import('Bitwise')
+  let s:type     = s:V.import('Vim.Type')
+  let s:int      = s:V.import('Vim.Type.Number')
+  let s:HMAC     = s:V.import('Crypt.MAC.HMAC')
+  let s:List     = s:V.import('Data.List')
+  let s:DateTime = s:V.import('DateTime')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
   return ['Bitwise',
         \ 'Vim.Type',
+        \ 'Vim.Type.Number',
         \ 'Crypt.MAC.HMAC',
         \ 'Data.List',
-        \ 'DateTime']
+        \ 'DateTime',
+        \ 'Data.List.Byte']
 endfunction
 
 function! s:hotp(key, counter, algo, digit) abort
@@ -57,7 +61,7 @@ function! s:hotp(key, counter, algo, digit) abort
   let hmac_list =  hmac.calc(counter)
 
   let offset = s:bitwise.and(hmac_list[-1],0xf)
-  let bincode = s:bitwise.and(s:_bytes2int32_be(hmac_list[offset:offset+3]), 0x7FFFFFFF)
+  let bincode = s:bitwise.and(s:ByteArray.to_int(hmac_list[offset:offset+3]), 0x7FFFFFFF)
 
   let modulo_base = float2nr(pow(10, a:digit))
   let hotp_value = bincode % modulo_base
@@ -84,44 +88,12 @@ function! s:totp(key, period, algo, digit, ...) abort
   let epoch_sec = 0
 
   if has('num64')
-    let counter = s:_int642bytes_be(float2nr(floor((now_sec - epoch_sec) / a:period)))
+    let counter =  s:ByteArray.from_int(float2nr(floor((now_sec - epoch_sec) / a:period)), 64)
   else
-    let counter = s:_int322bytes_be(float2nr(floor((now_sec - epoch_sec) / a:period)))
+    let counter =  s:ByteArray.from_int(float2nr(floor((now_sec - epoch_sec) / a:period)), 32)
   endif
 
   return s:hotp(a:key, counter, a:algo, a:digit)
-endfunction
-
-"---------------------------------------------------------------------
-" misc
-
-function! s:_uint8(n) abort
-  return s:bitwise.and(a:n, 0xFF)
-endfunction
-
-function! s:_bytes2int32_be(bytes) abort
-  return  s:bitwise.or(s:bitwise.lshift(a:bytes[0], 24),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[1], 16),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[2], 8),
-        \ a:bytes[3])))
-endfunction
-
-function! s:_int322bytes_be(value) abort
-  return [s:_uint8(s:bitwise.rshift(a:value, 24)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 16)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 8)),
-        \ s:_uint8(a:value)]
-endfunction
-
-function! s:_int642bytes_be(value) abort
-  return [s:_uint8(s:bitwise.rshift(a:value, 56)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 48)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 40)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 32)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 24)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 16)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 8)),
-        \ s:_uint8(a:value)]
 endfunction
 
 function! s:_throw(message) abort

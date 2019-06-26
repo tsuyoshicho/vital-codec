@@ -6,7 +6,6 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V        = a:V
-  let s:bitwise  = s:V.import('Bitwise')
   let s:type     = s:V.import('Vim.Type')
   let s:Random   = s:V.import('Random')
   let s:List     = s:V.import('Data.List')
@@ -17,9 +16,8 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Vim.Type', 'Random', 'Data.List',
-        \ 'Data.BigNum', 'Data.Base32.Crockford', 'ID.UUID',
-        \ 'DateTime']
+  return ['Vim.Type', 'Random', 'Data.List', 'Data.BigNum',
+        \ 'Data.Base32.Crockford', 'ID.UUID', 'DateTime']
 endfunction
 
 function! s:generate(...) abort
@@ -136,10 +134,6 @@ function! s:_bytes2uuid(bytes) abort
 
   call uuid.byte_encode()
   return uuid
-endfunction
-
-function! s:_uint8(n) abort
-  return s:bitwise.and(a:n, 0xFF)
 endfunction
 
 function! s:_throw(message) abort

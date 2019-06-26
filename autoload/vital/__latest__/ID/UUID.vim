@@ -206,9 +206,9 @@ function! s:UUID.hex_decode() dict abort
   let self.value.time_hi_and_version  = s:ByteArray.from_hexstring(self.string.time_hi_and_version)
   if 0 == self.endian
     " little endian data: swap
-    let self.value.time_low             = s:_swap_dword(self.value.time_low)
-    let self.value.time_mid             = s:_swap_word(self.value.time_mid)
-    let self.value.time_hi_and_version  = s:_swap_word(self.value.time_hi_and_version)
+    let self.value.time_low             = s:ByteArray.endian_convert(self.value.time_low)
+    let self.value.time_mid             = s:ByteArray.endian_convert(self.value.time_mid)
+    let self.value.time_hi_and_version  = s:ByteArray.endian_convert(self.value.time_hi_and_version)
   endif
 
   let self.value.clk_seq_hi_res = s:ByteArray.from_hexstring(self.string.clock[0:1])
@@ -223,9 +223,9 @@ endfunction
 function! s:UUID.build() dict abort
   if 0 == self.endian
     " little endian string: swapped data
-    let self.string.time_low             = s:ByteArray.to_hexstring(s:_swap_dword(self.value.time_low))
-    let self.string.time_mid             = s:ByteArray.to_hexstring(s:_swap_word(self.value.time_mid))
-    let self.string.time_hi_and_version  = s:ByteArray.to_hexstring(s:_swap_word(self.value.time_hi_and_version))
+    let self.string.time_low             = s:ByteArray.to_hexstring(s:ByteArray.endian_convert(self.value.time_low))
+    let self.string.time_mid             = s:ByteArray.to_hexstring(s:ByteArray.endian_convert(self.value.time_mid))
+    let self.string.time_hi_and_version  = s:ByteArray.to_hexstring(s:ByteArray.endian_convert(self.value.time_hi_and_version))
   else
     " big endian string
     let self.string.time_low             = s:ByteArray.to_hexstring(self.value.time_low)
@@ -352,14 +352,6 @@ function! s:_variant_detect(uuid) abort
     let uuid.version = s:bitwise.and(s:bitwise.rshift(
           \ uuid.value.time_hi_and_version[0], 4), 0b1111)
   endif
-endfunction
-
-function! s:_swap_word(data) abort
-  return reverse(a:data[0:1])
-endfunction
-
-function! s:_swap_dword(data) abort
-  return reverse(a:data[0:3])
 endfunction
 
 function! s:_throw(msg) abort

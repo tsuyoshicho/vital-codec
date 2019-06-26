@@ -8,6 +8,7 @@ function! s:_vital_loaded(V) abort
   let s:V         = a:V
   let s:bitwise   = s:V.import('Bitwise')
   let s:type      = s:V.import('Vim.Type')
+  let s:int       = s:V.import('Vim.Type.Number')
   let s:HMAC      = s:V.import('Crypt.MAC.HMAC')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
@@ -15,6 +16,7 @@ endfunction
 function! s:_vital_depends() abort
   return ['Bitwise',
         \ 'Vim.Type',
+        \ 'Vim.Type.Number',
         \ 'Crypt.MAC.HMAC',
         \ 'Data.List.Byte']
 endfunction
@@ -56,7 +58,7 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
 
   for i in range(1,l)
     " calc U_1
-    let u = s:HMAC.new(a:algo, password).calc(salt[:] + s:_int2bytes_be(32, s:_uint32(i)))
+    let u = s:HMAC.new(a:algo, password).calc(salt[:] + s:ByteArray.from_int(s:int.uint32(i), 32))
     let t = u[:]
 
     for j in range(2, a:iteration)
@@ -73,14 +75,6 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
   endfor
 
   return derivedKey
-endfunction
-
-function! s:_int2bytes_be(bits, int) abort
-  return reverse(map(range(a:bits / 8), 's:bitwise.and(s:bitwise.rshift(a:int, v:val * 8), 0xff)'))
-endfunction
-
-function! s:_uint32(n) abort
-  return s:bitwise.and(a:n, 0xFFFFFFFF)
 endfunction
 
 function! s:_throw(message) abort

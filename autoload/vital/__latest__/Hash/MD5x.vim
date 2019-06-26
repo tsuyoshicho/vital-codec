@@ -12,11 +12,12 @@ endfunction
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
-  let s:ByteList = s:V.import('Data.List.Byte')
+  let s:int     = s:V.import('Vim.Type.Number')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Data.List.Byte']
+  return ['Bitwise', 'Vim.Type.Number', 'Data.List.Byte']
 endfunction
 
 let s:shift = [
@@ -46,16 +47,16 @@ let s:table = [
       \ ]
 
 function! s:sum(data) abort
-  let bytes = s:ByteList.from_string(a:data)
+  let bytes = s:ByteArray.from_string(a:data)
   return s:sum_raw(bytes)
 endfunction
 
 function! s:sum_raw(bytes) abort
-  return s:ByteList.to_hexstring(s:digest_raw(a:bytes))
+  return s:ByteArray.to_hexstring(s:digest_raw(a:bytes))
 endfunction
 
 function! s:digest(data) abort
-  let bytes = s:ByteList.from_string(a:data)
+  let bytes = s:ByteArray.from_string(a:data)
   return s:digest_raw(bytes)
 endfunction
 
@@ -74,16 +75,16 @@ function! s:digest_raw(bytes) abort
 
 
   if has('num64')
-    call extend(l:padded, s:_int2bytes(64, l:orig_len))
+    call extend(l:padded, s:ByteArray.endian_convert(s:ByteArray.from_int(l:orig_len, 64)))
   else
-    call extend(l:padded, s:_int2bytes(32, l:orig_len))
+    call extend(l:padded, s:ByteArray.endian_convert(s:ByteArray.from_int(l:orig_len, 32)))
     call extend(l:padded, [0, 0, 0, 0])
   endif
 
   for l:chunk_i in range(0, len(l:padded)-1, 64)
     let l:chunk = l:padded[l:chunk_i : l:chunk_i + 63]
 
-    let l:M = map(range(16), 's:_bytes2int32(l:chunk[(v:val*4):(v:val*4)+3])')
+    let l:M = map(range(16), {i,v -> s:ByteArray.to_int(s:ByteArray.endian_convert(l:chunk[(i*4) : (i*4)+3]))})
     let l:A = l:a0
     let l:B = l:b0
     let l:C = l:c0
@@ -110,7 +111,7 @@ function! s:digest_raw(bytes) abort
       let l:A = l:D
       let l:D = l:C
       let l:C = l:B
-      let l:B = l:B + s:_leftrotate(l:F, s:shift[l:i])
+      let l:B = l:B + s:int.rotate32l(l:F, s:shift[l:i])
 
     endfor
     let l:a0 = l:a0 + l:A
@@ -120,28 +121,12 @@ function! s:digest_raw(bytes) abort
   endfor
 
   let l:bytes = []
-  call extend(l:bytes, s:_int2bytes(32, l:a0))
-  call extend(l:bytes, s:_int2bytes(32, l:b0))
-  call extend(l:bytes, s:_int2bytes(32, l:c0))
-  call extend(l:bytes, s:_int2bytes(32, l:d0))
+  call extend(l:bytes, s:ByteArray.endian_convert(s:ByteArray.from_int(l:a0, 32)))
+  call extend(l:bytes, s:ByteArray.endian_convert(s:ByteArray.from_int(l:b0, 32)))
+  call extend(l:bytes, s:ByteArray.endian_convert(s:ByteArray.from_int(l:c0, 32)))
+  call extend(l:bytes, s:ByteArray.endian_convert(s:ByteArray.from_int(l:d0, 32)))
 
   return l:bytes
-endfunction
-
-function! s:_leftrotate(x, c) abort
-  let l:x = s:bitwise.and(a:x, 0xFFFFFFFF)
-  return s:bitwise.and(s:bitwise.or(s:bitwise.lshift(l:x, a:c), s:bitwise.rshift(l:x, (32-a:c))), 0xFFFFFFFF)
-endfunction
-
-function! s:_int2bytes(bits, int) abort
-  return map(range(a:bits / 8), 's:bitwise.and(s:bitwise.rshift(a:int, v:val * 8), 0xff)')
-endfunction
-
-function! s:_bytes2int32(bytes) abort
-  return  s:bitwise.or(s:bitwise.lshift(a:bytes[3], 24),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[2], 16),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[1], 8),
-        \ a:bytes[0])))
 endfunction
 
 let &cpo = s:save_cpo
