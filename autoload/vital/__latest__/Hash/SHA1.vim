@@ -17,7 +17,7 @@ function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
   let s:int     = s:V.import('Vim.Type.Number')
-  let s:ByteList = s:V.import('Data.List.Byte')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
@@ -25,16 +25,16 @@ function! s:_vital_depends() abort
 endfunction
 
 function! s:sum(data) abort
-  let bytes = s:ByteList.from_string(a:data)
+  let bytes = s:ByteArray.from_string(a:data)
   return s:sum_raw(bytes)
 endfunction
 
 function! s:sum_raw(bytes) abort
-  return s:ByteList.to_hexstring(s:digest_raw(a:bytes))
+  return s:ByteArray.to_hexstring(s:digest_raw(a:bytes))
 endfunction
 
 function! s:digest(data) abort
-  let bytes = s:ByteList.from_string(a:data)
+  let bytes = s:ByteArray.from_string(a:data)
   return s:digest_raw(bytes)
 endfunction
 

@@ -30,7 +30,7 @@ function! s:_vital_loaded(V) abort
   let s:HMAC     = s:V.import('Crypt.MAC.HMAC')
   let s:List     = s:V.import('Data.List')
   let s:DateTime = s:V.import('DateTime')
-  let s:ByteList = s:V.import('Data.List.Byte')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
@@ -109,7 +109,7 @@ function! s:_bytes2int32_be(bytes) abort
   "      \ s:bitwise.or(s:bitwise.lshift(a:bytes[1], 16),
   "      \ s:bitwise.or(s:bitwise.lshift(a:bytes[2], 8),
   "      \ a:bytes[3])))
-  return s:ByteList.to_int(a:bytes)
+  return s:ByteArray.to_int(a:bytes)
 endfunction
 
 function! s:_int322bytes_be(value) abort
@@ -117,7 +117,7 @@ function! s:_int322bytes_be(value) abort
   "      \ s:_uint8(s:bitwise.rshift(a:value, 16)),
   "      \ s:_uint8(s:bitwise.rshift(a:value, 8)),
   "      \ s:_uint8(a:value)]
-  return s:ByteList.from_int(a:value, 32)
+  return s:ByteArray.from_int(a:value, 32)
 endfunction
 
 function! s:_int642bytes_be(value) abort
@@ -129,7 +129,7 @@ function! s:_int642bytes_be(value) abort
   "      \ s:_uint8(s:bitwise.rshift(a:value, 16)),
   "      \ s:_uint8(s:bitwise.rshift(a:value, 8)),
   "      \ s:_uint8(a:value)]
-  return s:ByteList.from_int(a:value, 64)
+  return s:ByteArray.from_int(a:value, 64)
 endfunction
 
 function! s:_throw(message) abort

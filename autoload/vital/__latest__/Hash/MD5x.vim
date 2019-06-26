@@ -13,7 +13,7 @@ function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
   let s:int     = s:V.import('Vim.Type.Number')
-  let s:ByteList = s:V.import('Data.List.Byte')
+  let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
@@ -47,16 +47,16 @@ let s:table = [
       \ ]
 
 function! s:sum(data) abort
-  let bytes = s:ByteList.from_string(a:data)
+  let bytes = s:ByteArray.from_string(a:data)
   return s:sum_raw(bytes)
 endfunction
 
 function! s:sum_raw(bytes) abort
-  return s:ByteList.to_hexstring(s:digest_raw(a:bytes))
+  return s:ByteArray.to_hexstring(s:digest_raw(a:bytes))
 endfunction
 
 function! s:digest(data) abort
-  let bytes = s:ByteList.from_string(a:data)
+  let bytes = s:ByteArray.from_string(a:data)
   return s:digest_raw(bytes)
 endfunction
 
@@ -134,11 +134,11 @@ function! s:_leftrotate(x, c) abort
 endfunction
 
 function! s:_int2bytes(bits, int) abort
-  return s:ByteList.endian_convert(s:ByteList.from_int(a:int, a:bits))
+  return s:ByteArray.endian_convert(s:ByteArray.from_int(a:int, a:bits))
 endfunction
 
 function! s:_bytes2int32(bytes) abort
-  return s:ByteList.to_int(s:ByteList.endian_convert(a:bytes))
+  return s:ByteArray.to_int(s:ByteArray.endian_convert(a:bytes))
 endfunction
 
 let &cpo = s:save_cpo
