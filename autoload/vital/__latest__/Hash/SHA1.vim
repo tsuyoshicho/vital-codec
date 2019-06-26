@@ -16,11 +16,12 @@ endfunction
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
+  let s:int     = s:V.import('Vim.Type.Number')
   let s:ByteList = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Data.List.Byte']
+  return ['Bitwise', 'Vim.Type.Number', 'Data.List.Byte']
 endfunction
 
 function! s:sum(data) abort
@@ -328,11 +329,13 @@ endfunction
 " misc
 
 function! s:_uint8(n) abort
-  return s:bitwise.and(a:n, 0xFF)
+  " return s:bitwise.and(a:n, 0xFF)
+  return s:int.uint8(a:n)
 endfunction
 
 function! s:_uint32(n) abort
-  return s:bitwise.and(a:n, 0xFFFFFFFF)
+  " return s:bitwise.and(a:n, 0xFFFFFFFF)
+  return s:int.uint32(a:n)
 endfunction
 
 let &cpo = s:save_cpo

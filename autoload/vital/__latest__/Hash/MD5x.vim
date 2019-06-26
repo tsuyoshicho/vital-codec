@@ -12,11 +12,12 @@ endfunction
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
+  let s:int     = s:V.import('Vim.Type.Number')
   let s:ByteList = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Data.List.Byte']
+  return ['Bitwise', 'Vim.Type.Number', 'Data.List.Byte']
 endfunction
 
 let s:shift = [
@@ -129,19 +130,22 @@ function! s:digest_raw(bytes) abort
 endfunction
 
 function! s:_leftrotate(x, c) abort
-  let l:x = s:bitwise.and(a:x, 0xFFFFFFFF)
-  return s:bitwise.and(s:bitwise.or(s:bitwise.lshift(l:x, a:c), s:bitwise.rshift(l:x, (32-a:c))), 0xFFFFFFFF)
+  " let l:x = s:bitwise.and(a:x, 0xFFFFFFFF)
+  " return s:bitwise.and(s:bitwise.or(s:bitwise.lshift(l:x, a:c), s:bitwise.rshift(l:x, (32-a:c))), 0xFFFFFFFF)
+  return s:int.rotate32l(a:x, a:c)
 endfunction
 
 function! s:_int2bytes(bits, int) abort
-  return map(range(a:bits / 8), 's:bitwise.and(s:bitwise.rshift(a:int, v:val * 8), 0xff)')
+  " return map(range(a:bits / 8), 's:bitwise.and(s:bitwise.rshift(a:int, v:val * 8), 0xff)')
+  return s:ByteList.endian_convert(s:ByteList.from_int(a:int, a:bits))
 endfunction
 
 function! s:_bytes2int32(bytes) abort
-  return  s:bitwise.or(s:bitwise.lshift(a:bytes[3], 24),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[2], 16),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[1], 8),
-        \ a:bytes[0])))
+  " return  s:bitwise.or(s:bitwise.lshift(a:bytes[3], 24),
+  "      \ s:bitwise.or(s:bitwise.lshift(a:bytes[2], 16),
+  "      \ s:bitwise.or(s:bitwise.lshift(a:bytes[1], 8),
+  "      \ a:bytes[0])))
+  return s:ByteList.to_int(s:ByteList.endian_convert(a:bytes))
 endfunction
 
 let &cpo = s:save_cpo
