@@ -58,7 +58,7 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
 
   for i in range(1,l)
     " calc U_1
-    let u = s:HMAC.new(a:algo, password).calc(salt[:] + s:_int2bytes_be(32, s:_uint32(i)))
+    let u = s:HMAC.new(a:algo, password).calc(salt[:] + s:ByteArray.from_int(s:int.uint32(i), 32))
     let t = u[:]
 
     for j in range(2, a:iteration)
@@ -75,14 +75,6 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
   endfor
 
   return derivedKey
-endfunction
-
-function! s:_int2bytes_be(bits, int) abort
-  return s:ByteArray.from_int(a:int, a:bits)
-endfunction
-
-function! s:_uint32(n) abort
-  return s:int.uint32(a:n)
 endfunction
 
 function! s:_throw(message) abort

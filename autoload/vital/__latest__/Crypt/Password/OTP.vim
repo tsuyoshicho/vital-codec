@@ -61,7 +61,7 @@ function! s:hotp(key, counter, algo, digit) abort
   let hmac_list =  hmac.calc(counter)
 
   let offset = s:bitwise.and(hmac_list[-1],0xf)
-  let bincode = s:bitwise.and(s:_bytes2int32_be(hmac_list[offset:offset+3]), 0x7FFFFFFF)
+  let bincode = s:bitwise.and(s:ByteArray.to_int(hmac_list[offset:offset+3]), 0x7FFFFFFF)
 
   let modulo_base = float2nr(pow(10, a:digit))
   let hotp_value = bincode % modulo_base
@@ -88,31 +88,12 @@ function! s:totp(key, period, algo, digit, ...) abort
   let epoch_sec = 0
 
   if has('num64')
-    let counter = s:_int642bytes_be(float2nr(floor((now_sec - epoch_sec) / a:period)))
+    let counter =  s:ByteArray.from_int(float2nr(floor((now_sec - epoch_sec) / a:period)), 64)
   else
-    let counter = s:_int322bytes_be(float2nr(floor((now_sec - epoch_sec) / a:period)))
+    let counter =  s:ByteArray.from_int(float2nr(floor((now_sec - epoch_sec) / a:period)), 32)
   endif
 
   return s:hotp(a:key, counter, a:algo, a:digit)
-endfunction
-
-"---------------------------------------------------------------------
-" misc
-
-function! s:_uint8(n) abort
-  return s:int.uint8(a:n)
-endfunction
-
-function! s:_bytes2int32_be(bytes) abort
-  return s:ByteArray.to_int(a:bytes)
-endfunction
-
-function! s:_int322bytes_be(value) abort
-  return s:ByteArray.from_int(a:value, 32)
-endfunction
-
-function! s:_int642bytes_be(value) abort
-  return s:ByteArray.from_int(a:value, 64)
 endfunction
 
 function! s:_throw(message) abort

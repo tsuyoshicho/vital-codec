@@ -75,16 +75,16 @@ function! s:digest_raw(bytes) abort
 
 
   if has('num64')
-    call extend(l:padded, s:_int2bytes(64, l:orig_len))
+    call extend(l:padded, s:ByteArray.endian_convert(s:ByteArray.from_int(l:orig_len, 64)))
   else
-    call extend(l:padded, s:_int2bytes(32, l:orig_len))
+    call extend(l:padded, s:ByteArray.endian_convert(s:ByteArray.from_int(l:orig_len, 32)))
     call extend(l:padded, [0, 0, 0, 0])
   endif
 
   for l:chunk_i in range(0, len(l:padded)-1, 64)
     let l:chunk = l:padded[l:chunk_i : l:chunk_i + 63]
 
-    let l:M = map(range(16), 's:_bytes2int32(l:chunk[(v:val*4):(v:val*4)+3])')
+    let l:M = map(range(16), 's:ByteArray.to_int(s:ByteArray.endian_convert(l:chunk[(v:val*4):(v:val*4)+3])))')
     let l:A = l:a0
     let l:B = l:b0
     let l:C = l:c0
@@ -111,7 +111,7 @@ function! s:digest_raw(bytes) abort
       let l:A = l:D
       let l:D = l:C
       let l:C = l:B
-      let l:B = l:B + s:_leftrotate(l:F, s:shift[l:i])
+      let l:B = l:B + s:int.rotate32l(l:F, s:shift[l:i])
 
     endfor
     let l:a0 = l:a0 + l:A
@@ -121,24 +121,12 @@ function! s:digest_raw(bytes) abort
   endfor
 
   let l:bytes = []
-  call extend(l:bytes, s:_int2bytes(32, l:a0))
-  call extend(l:bytes, s:_int2bytes(32, l:b0))
-  call extend(l:bytes, s:_int2bytes(32, l:c0))
-  call extend(l:bytes, s:_int2bytes(32, l:d0))
+  call extend(l:bytes, s:ByteArray.endian_convert(s:ByteArray.from_int(l:a0, 32)))
+  call extend(l:bytes, s:ByteArray.endian_convert(s:ByteArray.from_int(l:b0, 32)))
+  call extend(l:bytes, s:ByteArray.endian_convert(s:ByteArray.from_int(l:c0, 32)))
+  call extend(l:bytes, s:ByteArray.endian_convert(s:ByteArray.from_int(l:d0, 32)))
 
   return l:bytes
-endfunction
-
-function! s:_leftrotate(x, c) abort
-  return s:int.rotate32l(a:x, a:c)
-endfunction
-
-function! s:_int2bytes(bits, int) abort
-  return s:ByteArray.endian_convert(s:ByteArray.from_int(a:int, a:bits))
-endfunction
-
-function! s:_bytes2int32(bytes) abort
-  return s:ByteArray.to_int(s:ByteArray.endian_convert(a:bytes))
 endfunction
 
 let &cpo = s:save_cpo

@@ -119,7 +119,7 @@ function! s:sha1context.result(digest) dict abort
   endif
 
   for i in range(s:sha1hashsize)
-    let a:digest[i] = s:_uint8(
+    let a:digest[i] = s:int.uint8(
           \   s:bitwise.rshift32(
           \     self.intermediatehash[s:bitwise.rshift32(i, 2)],
           \     8 * (3 - s:bitwise.and(i, 0x03))
@@ -151,7 +151,7 @@ function! s:sha1context.input(bytes) dict abort
     if self.Corrupted
       break
     endif
-    call self.messageblock.push(s:_uint8(x))
+    call self.messageblock.push(s:int.uint8(x))
 
     if self.messageblock.index == s:sha1blocksize
       call self.process()
@@ -273,14 +273,14 @@ function! s:sha1context.padding() dict abort
   "  Store the message length as the last 8 octets
   "
   " as data[-8]..data[-1]
-  let self.messageblock.data[56] = s:_uint8(s:bitwise.rshift32(self.length.high, 24))
-  let self.messageblock.data[57] = s:_uint8(s:bitwise.rshift32(self.length.high, 16))
-  let self.messageblock.data[58] = s:_uint8(s:bitwise.rshift32(self.length.high,  8))
-  let self.messageblock.data[59] = s:_uint8(                   self.length.high     )
-  let self.messageblock.data[60] = s:_uint8(s:bitwise.rshift32(self.length.low , 24))
-  let self.messageblock.data[61] = s:_uint8(s:bitwise.rshift32(self.length.low , 16))
-  let self.messageblock.data[62] = s:_uint8(s:bitwise.rshift32(self.length.low ,  8))
-  let self.messageblock.data[63] = s:_uint8(                   self.length.low      )
+  let self.messageblock.data[56] = s:int.uint8(s:bitwise.rshift32(self.length.high, 24))
+  let self.messageblock.data[57] = s:int.uint8(s:bitwise.rshift32(self.length.high, 16))
+  let self.messageblock.data[58] = s:int.uint8(s:bitwise.rshift32(self.length.high,  8))
+  let self.messageblock.data[59] = s:int.uint8(                   self.length.high     )
+  let self.messageblock.data[60] = s:int.uint8(s:bitwise.rshift32(self.length.low , 24))
+  let self.messageblock.data[61] = s:int.uint8(s:bitwise.rshift32(self.length.low , 16))
+  let self.messageblock.data[62] = s:int.uint8(s:bitwise.rshift32(self.length.low ,  8))
+  let self.messageblock.data[63] = s:int.uint8(                   self.length.low      )
 
   call self.process()
 endfunction
@@ -312,28 +312,17 @@ function! s:sha1context.length.sizeset(data) dict abort
     " 3.b high shift  = 0x0000000l >> (32 - 3)
   " endif
   " 32/64bit work use shift
-  let self.high = s:_uint32(s:bitwise.rshift(len(a:data), 32 - 3))
-  let self.low  = s:_uint32(s:bitwise.lshift(len(a:data),      3))
+  let self.high = s:int.uint32(s:bitwise.rshift(len(a:data), 32 - 3))
+  let self.low  = s:int.uint32(s:bitwise.lshift(len(a:data),      3))
 
   " SHA1 2^64 - 1 overflow check
   " 0xh0000000 is not 0, then overflow it(byte data are Vim List;it can contains 2^64 - 1 item)
-  if (has('num64') && (0 != s:_uint32(s:bitwise.rshift(len(a:data), 32 + (32 - 3)))))
+  if (has('num64') && (0 != s:int.uint32(s:bitwise.rshift(len(a:data), 32 + (32 - 3)))))
     let self.high = 0
     let self.low  = 0
     return s:input_long
   endif
   return s:success
-endfunction
-
-"---------------------------------------------------------------------
-" misc
-
-function! s:_uint8(n) abort
-  return s:int.uint8(a:n)
-endfunction
-
-function! s:_uint32(n) abort
-  return s:int.uint32(a:n)
 endfunction
 
 let &cpo = s:save_cpo
