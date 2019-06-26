@@ -100,35 +100,18 @@ endfunction
 " misc
 
 function! s:_uint8(n) abort
-  " return s:bitwise.and(a:n, 0xFF)
   return s:int.uint8(a:n)
 endfunction
 
 function! s:_bytes2int32_be(bytes) abort
-  " return  s:bitwise.or(s:bitwise.lshift(a:bytes[0], 24),
-  "      \ s:bitwise.or(s:bitwise.lshift(a:bytes[1], 16),
-  "      \ s:bitwise.or(s:bitwise.lshift(a:bytes[2], 8),
-  "      \ a:bytes[3])))
   return s:ByteArray.to_int(a:bytes)
 endfunction
 
 function! s:_int322bytes_be(value) abort
-  " return [s:_uint8(s:bitwise.rshift(a:value, 24)),
-  "      \ s:_uint8(s:bitwise.rshift(a:value, 16)),
-  "      \ s:_uint8(s:bitwise.rshift(a:value, 8)),
-  "      \ s:_uint8(a:value)]
   return s:ByteArray.from_int(a:value, 32)
 endfunction
 
 function! s:_int642bytes_be(value) abort
-  " return [s:_uint8(s:bitwise.rshift(a:value, 56)),
-  "      \ s:_uint8(s:bitwise.rshift(a:value, 48)),
-  "      \ s:_uint8(s:bitwise.rshift(a:value, 40)),
-  "      \ s:_uint8(s:bitwise.rshift(a:value, 32)),
-  "      \ s:_uint8(s:bitwise.rshift(a:value, 24)),
-  "      \ s:_uint8(s:bitwise.rshift(a:value, 16)),
-  "      \ s:_uint8(s:bitwise.rshift(a:value, 8)),
-  "      \ s:_uint8(a:value)]
   return s:ByteArray.from_int(a:value, 64)
 endfunction
 

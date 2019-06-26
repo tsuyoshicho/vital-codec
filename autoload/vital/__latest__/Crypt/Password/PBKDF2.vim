@@ -78,12 +78,10 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
 endfunction
 
 function! s:_int2bytes_be(bits, int) abort
-  " return reverse(map(range(a:bits / 8), 's:bitwise.and(s:bitwise.rshift(a:int, v:val * 8), 0xff)'))
   return s:ByteArray.from_int(a:int, a:bits)
 endfunction
 
 function! s:_uint32(n) abort
-  " return s:bitwise.and(a:n, 0xFFFFFFFF)
   return s:int.uint32(a:n)
 endfunction
 

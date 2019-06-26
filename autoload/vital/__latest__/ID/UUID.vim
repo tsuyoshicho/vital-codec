@@ -355,11 +355,13 @@ function! s:_variant_detect(uuid) abort
 endfunction
 
 function! s:_swap_word(data) abort
-  return reverse(a:data[0:1])
+  " return reverse(a:data[0:1])
+  return s:ByteArray.endian_convert(a:data)
 endfunction
 
 function! s:_swap_dword(data) abort
-  return reverse(a:data[0:3])
+  " return reverse(a:data[0:3])
+  return s:ByteArray.endian_convert(a:data)
 endfunction
 
 function! s:_throw(msg) abort
