@@ -48,7 +48,7 @@ endfunction
 
 function! s:from_int(value, bits) abort
   " return to big endian
-  return s:List.new(bits/8, {i -> s:int.uint8(s:bitwise.rshift(a:value, bits - (i + 1)*8))})
+  return s:List.new(a:bits/8, {i -> s:int.uint8(s:bitwise.rshift(a:value, a:bits - (i + 1)*8))})
 endfunction
 
 function! s:to_int(bytes) abort
@@ -56,7 +56,7 @@ function! s:to_int(bytes) abort
   let ret = 0
   let maxlen = len(a:bytes)
   let values = map(copy(a:bytes), { i,v ->  s:bitwise.lshift(v, (maxlen-1 - i) * 8)})
-  for [i,v] in values
+  for v in values
     let ret = s:bitwise.or(v,ret)
   endfor
   return ret
