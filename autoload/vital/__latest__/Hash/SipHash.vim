@@ -15,11 +15,12 @@ endfunction
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:bitwise = s:V.import('Bitwise')
+  let s:int     = s:V.import('Vim.Type.Number')
   let s:ByteList = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Data.List.Byte']
+  return ['Bitwise', 'Vim.Type.Number', 'Data.List.Byte']
 endfunction
 
 let s:DEFAULT = {
@@ -173,11 +174,11 @@ function! s:siphash_state.hash(data) abort
   let self.v[2] = 0x6c7967656e657261
   let self.v[3] = 0x7465646279746573
 
-  let self.k[0] = s:_bytes2int64(self.key[0 : 7])
-  let self.k[1] = s:_bytes2int64(self.key[8 : 15])
+  let self.k[0] = s:ByteArray.from_int(self.key[0 : 7], 64)
+  let self.k[1] = s:ByteArray.from_int(self.key[8 : 15], 64)
 
-  let leftshift = s:_uint64(s:bitwise.and(len(data), 7))
-  let blockshift = s:_uint64(s:bitwise.lshift(len(data), 56))
+  let leftshift = s:int.uint64(s:bitwise.and(len(data), 7))
+  let blockshift = s:int.uint64(s:bitwise.lshift(len(data), 56))
 
   " initial xor
   let self.v[3] = s:bitwise.xor(self.v[3], self.k[1]) " v3 ^= k1;
@@ -191,7 +192,7 @@ function! s:siphash_state.hash(data) abort
 
   if len(data) >= 8
     for i in range(0, len(data) - 7, 8)
-      let m = s:_bytes2int64(data[i : i+7])
+      let m = s:ByteArray.from_int(data[i : i+7], 64)
       let self.v[3] = s:bitwise.xor(self.v[3], m) " v3 ^= m;
 
       for j in range(self.rounds.c)
@@ -204,25 +205,25 @@ function! s:siphash_state.hash(data) abort
 
   if 0 != leftshift
     if leftshift > 6
-      let blockshift = s:bitwise.or(blockshift, s:_uint64(s:bitwise.lshift(data[6], 48))) " b |= ((uint64_t)in[6]) << 48;
+      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[6], 48))) " b |= ((uint64_t)in[6]) << 48;
     endif
     if leftshift > 5
-      let blockshift = s:bitwise.or(blockshift, s:_uint64(s:bitwise.lshift(data[5], 40))) " b |= ((uint64_t)in[5]) << 40;
+      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[5], 40))) " b |= ((uint64_t)in[5]) << 40;
     endif
     if leftshift > 4
-      let blockshift = s:bitwise.or(blockshift, s:_uint64(s:bitwise.lshift(data[4], 32))) " b |= ((uint64_t)in[4]) << 32;
+      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[4], 32))) " b |= ((uint64_t)in[4]) << 32;
     endif
     if leftshift > 3
-      let blockshift = s:bitwise.or(blockshift, s:_uint64(s:bitwise.lshift(data[3], 24))) " b |= ((uint64_t)in[3]) << 24;
+      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[3], 24))) " b |= ((uint64_t)in[3]) << 24;
     endif
     if leftshift > 2
-      let blockshift = s:bitwise.or(blockshift, s:_uint64(s:bitwise.lshift(data[2], 16))) " b |= ((uint64_t)in[2]) << 16;
+      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[2], 16))) " b |= ((uint64_t)in[2]) << 16;
     endif
     if leftshift > 1
-      let blockshift = s:bitwise.or(blockshift, s:_uint64(s:bitwise.lshift(data[1],  8))) " b |= ((uint64_t)in[1]) << 8;
+      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[1],  8))) " b |= ((uint64_t)in[1]) << 8;
     endif
     if leftshift > 0
-      let blockshift = s:bitwise.or(blockshift, s:_uint64(                 data[0]     )) " b |= ((uint64_t)in[0]);
+      let blockshift = s:bitwise.or(blockshift, s:int.uint64(                 data[0]     )) " b |= ((uint64_t)in[0]);
     endif
   endif
 
@@ -250,7 +251,7 @@ function! s:siphash_state.hash(data) abort
         \ s:bitwise.xor(self.v[2], self.v[3])
         \)
 
-  let output = s:_int642bytes(blockshift)
+  let output = s:ByteArray.endian_convert(s:ByteArray.from_int(blockshift, 64))
 
   if (outputByteLen == 8)
     return output
@@ -268,42 +269,9 @@ function! s:siphash_state.hash(data) abort
         \ s:bitwise.xor(self.v[2], self.v[3])
         \)
 
-  let output = output + s:_int642bytes(blockshift)
+  let output = output + s:ByteArray.endian_convert(s:ByteArray.from_int(blockshift, 64))
 
   return output
-endfunction
-
-"---------------------------------------------------------------------
-" misc
-
-function! s:_uint8(n) abort
-  return s:bitwise.and(a:n, 0xFF)
-endfunction
-
-function! s:_bytes2int64(bytes) abort
-  return  s:bitwise.or(s:bitwise.lshift(a:bytes[7], 56),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[6], 48),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[5], 40),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[4], 32),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[3], 24),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[2], 16),
-        \ s:bitwise.or(s:bitwise.lshift(a:bytes[1], 8),
-        \ a:bytes[0])))))))
-endfunction
-
-function! s:_int642bytes(value) abort
-  return [s:_uint8(a:value),
-        \ s:_uint8(s:bitwise.rshift(a:value, 8)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 16)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 24)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 32)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 40)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 48)),
-        \ s:_uint8(s:bitwise.rshift(a:value, 56))]
-endfunction
-
-function! s:_uint64(n) abort
-  return s:bitwise.and(a:n, 0xFFFFFFFFFFFFFFFF)
 endfunction
 
 let &cpo = s:save_cpo
