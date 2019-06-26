@@ -84,7 +84,7 @@ function! s:digest_raw(bytes) abort
   for l:chunk_i in range(0, len(l:padded)-1, 64)
     let l:chunk = l:padded[l:chunk_i : l:chunk_i + 63]
 
-    let l:M = map(range(16), 's:ByteArray.to_int(s:ByteArray.endian_convert(l:chunk[(v:val*4):(v:val*4)+3])))')
+    let l:M = map(range(16), {i,v -> s:ByteArray.to_int(s:ByteArray.endian_convert(l:chunk[(i*4) : (i*4)+3]))})
     let l:A = l:a0
     let l:B = l:b0
     let l:C = l:c0
