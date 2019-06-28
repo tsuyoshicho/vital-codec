@@ -118,7 +118,7 @@ endfunction
 " https://github.com/vcatechnology/siphashsum/blob/master/siphash.h
 
 function! s:_int64rotator(word, bits) abort
-  return s:int.rotate64l(a:word, a:bits)
+  return s:int.uint64(s:int.rotate64l(s:int.uint64(a:word), a:bits))
 endfunction
 
 let s:siphash_state = {
@@ -136,27 +136,27 @@ function! s:siphash_state.setkey(key) abort
   if len(a:key) != 16
     " throw e
   endif
-  let self.k = copy(a:key)
+  let self.key = copy(a:key)
 endfunction
 
 function! s:siphash_state.round() abort
-  let self.v[0] += self.v[1]                          " v0 += v1;
-  let self.v[1] = s:_int64rotator(self.v[1], 13)      " v1 = ROTL(v1, 13);
-  let self.v[1] = s:bitwise.xor(self.v[1], self.v[0]) " v1 ^= v0;
-  let self.v[0] = s:_int64rotator(self.v[0], 32)      " v0 = ROTL(v0, 32);
+  let self.v[0] = s:int.uint64(self.v[0] + self.v[1])  " v0 += v1;
+  let self.v[1] = s:_int64rotator(self.v[1], 13)       " v1 = ROTL(v1, 13);
+  let self.v[1] = s:bitwise.xor(self.v[1], self.v[0])  " v1 ^= v0;
+  let self.v[0] = s:_int64rotator(self.v[0], 32)       " v0 = ROTL(v0, 32);
 
-  let self.v[2] += self.v[3]                          " v2 += v3;
-  let self.v[3] = s:_int64rotator(self.v[3], 16)      " v3 = ROTL(v3, 16);
-  let self.v[3] = s:bitwise.xor(self.v[3], self.v[2]) " v3 ^= v2;
+  let self.v[2] = s:int.uint64(self.v[2] + self.v[3])  " v2 += v3;
+  let self.v[3] = s:_int64rotator(self.v[3], 16)       " v3 = ROTL(v3, 16);
+  let self.v[3] = s:bitwise.xor(self.v[3], self.v[2])  " v3 ^= v2;
 
-  let self.v[0] += self.v[3]                          " v0 += v3;
-  let self.v[3] = s:_int64rotator(self.v[3], 21)      " v3 = ROTL(v3, 21);
-  let self.v[3] = s:bitwise.xor(self.v[3], self.v[0]) " v3 ^= v0;
+  let self.v[0] = s:int.uint64(self.v[0] + self.v[3])  " v0 += v3;
+  let self.v[3] = s:_int64rotator(self.v[3], 21)       " v3 = ROTL(v3, 21);
+  let self.v[3] = s:bitwise.xor(self.v[3], self.v[0])  " v3 ^= v0;
 
-  let self.v[2] += self.v[1]                          " v2 += v1;
-  let self.v[1] = s:_int64rotator(self.v[1], 17)      " v1 = ROTL(v1, 17);
-  let self.v[1] = s:bitwise.xor(self.v[1], self.v[2]) " v1 ^= v2;
-  let self.v[2] = s:_int64rotator(self.v[2], 32)      " v2 = ROTL(v2, 32);
+  let self.v[2] = s:int.uint64(self.v[2] + self.v[1])  " v2 += v1;
+  let self.v[1] = s:_int64rotator(self.v[1], 17)       " v1 = ROTL(v1, 17);
+  let self.v[1] = s:bitwise.xor(self.v[1], self.v[2])  " v1 ^= v2;
+  let self.v[2] = s:_int64rotator(self.v[2], 32)       " v2 = ROTL(v2, 32);
 endfunction
 
 " trace disable
