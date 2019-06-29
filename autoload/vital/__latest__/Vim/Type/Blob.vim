@@ -19,51 +19,71 @@ function! s:new(length) abort
   return s:ByteArray.to_blob(retval)
 endfunction
 
+function! s:uint8bit(...) abort
+  return  s:_uintXbit(1,a:000)
+endfunction
+
+function! s:uint16bit(...) abort
+  return  s:_uintXbit(2,a:000)
+endfunction
+
+function! s:uint32bit(...) abort
+  return  s:_uintXbit(4,a:000)
+endfunction
+
 function! s:uint64bit(...) abort
+  return  s:_uintXbit(8,a:000)
+endfunction
+
+function! s:_uintXbit(length, initial) abort
+  let length = a:length
   let inital = 0
-  if a:0
-    let inital = a:1
+  if !empty(a:initial)
+    let inital = a:initial[0]
   endif
-  let retval = s:new(8) " 8 byte 64bit length
-  for i in range(8)
-    let retval[i] = s:int.uint8(s:bitwise.rshift(inital, 64 - (8 * (i + 1))))
+  let retval = s:new(length)
+  for i in range(length)
+    let retval[i] = s:int.uint8(s:bitwise.rshift(inital, (8 * (length - (i + 1)))))
   endfor
   return retval
 endfunction
 
 " bit operation
-" TODO: and/or/xor integration one function
-function! s:uint_or(x, y) abort
+function! s:or(x, y) abort
+  return s:_bitop(a:x, a:y, s:bitwise.or)
+endfunction
+
+function! s:xor(x, y) abort
+  return s:_bitop(a:x, a:y, s:bitwise.xor)
+endfunction
+
+function! s:and(x, y) abort
+  return s:_bitop(a:x, a:y, s:bitwise.and)
+endfunction
+
+function! s:_bitop(x, y, op) abort
   " same size check
+  if len(a:x) != len(a:y)
+    call s:_throw('argments x and y''s size discrepancy.')
+  endif
   let length = len(a:x)
   let retval = s:new(length)
   for i in range(length)
-    let retval[i] = s:bitwise.or(a:x[i], a:y[i])
+    let retval[i] = call(a:op,[a:x[i], a:y[i]])
   endfor
   return retval
 endfunction
 
-function! s:uint_xor(x, y) abort
-  " same size check
+function! s:invert(x) abort
   let length = len(a:x)
   let retval = s:new(length)
   for i in range(length)
-    let retval[i] = s:bitwise.xor(a:x[i], a:y[i])
+    let retval[i] = s:bitwise.invert(a:x[i])
   endfor
   return retval
 endfunction
 
-function! s:uint_and(x, y) abort
-  " same size check
-  let length = len(a:x)
-  let retval = s:new(length)
-  for i in range(length)
-    let retval[i] = s:bitwise.and(a:x[i], a:y[i])
-  endfor
-  return retval
-endfunction
-
-function! s:uint_rotl(x, bits) abort
+function! s:rotl(x, bits) abort
   let length = len(a:x)
   let retval = s:new(length)
   let blocknum = a:bits / length
@@ -80,24 +100,21 @@ endfunction
 " Arithmetic operation
 function! s:uint_add(x, y) abort
   " same size check
+  if len(a:x) != len(a:y)
+    call s:_throw('argments x and y''s size discrepancy.')
+  endif
   let length = len(a:x)
   let retval = s:new(length)
   let carry = 0
   for i in range(length, 0, -1)
     let retval[i] = s:int.uint8(a:x[i] + a:y[i] + carry)
-    let carry = (a:x[i] + a:y[i]) / 255
+    let carry = (a:x[i] + a:y[i]) / 0xFF
   endfor
   return retval
 endfunction
 
-" uint operation
-function! s:uint2list(x) abort
-  let length = len(a:x)
-  let retval = s:new(length)
-  for i in range(length)
-    let retval[i] = a:x[i]
-  endfor
-  return retval
+function! s:_throw(message) abort
+  throw "vital: Vim.Type.Blob: " . a:message
 endfunction
 
 let &cpo = s:save_cpo
