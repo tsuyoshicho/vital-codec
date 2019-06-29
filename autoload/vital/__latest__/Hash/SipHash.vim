@@ -324,7 +324,7 @@ function! s:_blob64bit_add(x, y) abort
   let retval = s:_blob64bit_new()
   let carry = 0
   for i in range(7, 0, -1)
-    let retval[i] = s:int.uint8(a:x[i] + a:y[i] + carry))
+    let retval[i] = s:int.uint8(a:x[i] + a:y[i] + carry)
     let carry = (a:x[i] + a:y[i]) / 255
   endfor
   return retval
