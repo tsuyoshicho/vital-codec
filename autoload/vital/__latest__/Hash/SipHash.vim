@@ -344,9 +344,9 @@ function! s:_blob64bit_rotl(x, bits) abort
 endfunction
 
 function! s:_blob64bit_to_list_le(x) abort
-  let retval = []
-  for i in a:x
-    let retval = retval + [a:x[i]]
+  let retval = repeat([0],8) " 8 byte 64bit length
+  for i in range(8)
+    let retval[i] = a:x[i]
   endfor
   return retval
 endfunction
