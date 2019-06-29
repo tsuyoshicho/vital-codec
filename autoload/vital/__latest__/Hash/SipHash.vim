@@ -264,7 +264,7 @@ function! s:siphash_state.hash(data) abort
         \ s:_blob64bit_xor(self.v[2], self.v[3])
         \)
 
-  let output = s:ByteArray.endian_convert(s:_blob64bit_to_list_le(blockshift))
+  let output = s:ByteArray.from_blob(blockshift)
 
   if (outputByteLen == 8)
     return output
@@ -285,7 +285,7 @@ function! s:siphash_state.hash(data) abort
         \ s:_blob64bit_xor(self.v[2], self.v[3])
         \)
 
-  let output = output + s:ByteArray.endian_convert(s:_blob64bit_to_list_le(blockshift))
+  let output = output + s:ByteArray.from_blob(blockshift)
 
   return output
 endfunction
@@ -339,14 +339,6 @@ function! s:_blob64bit_rotl(x, bits) abort
     let previndex = (i + 8 - 1) % 8
     let retval[targetindex] = s:int.uint8(s:bitwise.or(s:bitwise.lshift(a:x[i], shift),
                                                      \ s:bitwise.rshift(a:x[previndex], 8 - shift)))
-  endfor
-  return retval
-endfunction
-
-function! s:_blob64bit_to_list_le(x) abort
-  let retval = repeat([0],8) " 8 byte 64bit length
-  for i in range(8)
-    let retval[i] = a:x[i]
   endfor
   return retval
 endfunction
