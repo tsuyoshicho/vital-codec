@@ -117,10 +117,6 @@ endfunction
 " https://github.com/veorq/SipHash/blob/master/siphash.c
 " https://github.com/vcatechnology/siphashsum/blob/master/siphash.h
 
-function! s:_int64rotator(word, bits) abort
-  return s:int.uint64(s:int.rotate64l(s:int.uint64(a:word), a:bits))
-endfunction
-
 let s:siphash_state = {
       \ 'key' : range(16),
       \ 'hash_length' : 0,
@@ -128,8 +124,8 @@ let s:siphash_state = {
       \   'c' : 0,
       \   'd' : 0,
       \  },
-      \ 'v'   : repeat([0], 4),
-      \ 'k'   : repeat([0], 2),
+      \ 'v'   : repeat([0z00], 4),
+      \ 'k'   : repeat([0z00], 2),
       \}
 
 function! s:siphash_state.setkey(key) abort
@@ -140,23 +136,23 @@ function! s:siphash_state.setkey(key) abort
 endfunction
 
 function! s:siphash_state.round() abort
-  let self.v[0] = s:int.uint64(self.v[0] + self.v[1])  " v0 += v1;
-  let self.v[1] = s:_int64rotator(self.v[1], 13)       " v1 = ROTL(v1, 13);
-  let self.v[1] = s:bitwise.xor(self.v[1], self.v[0])  " v1 ^= v0;
-  let self.v[0] = s:_int64rotator(self.v[0], 32)       " v0 = ROTL(v0, 32);
+  let self.v[0] = s:_blob64bit_add(self.v[0], self.v[1])  " v0 += v1;
+  let self.v[1] = s:_blob64bit_rotl(self.v[1], 13)        " v1 = ROTL(v1, 13);
+  let self.v[1] = s:_blob64bit_xor(self.v[1], self.v[0])  " v1 ^= v0;
+  let self.v[0] = s:_blob64bit_rotl(self.v[0], 32)        " v0 = ROTL(v0, 32);
 
-  let self.v[2] = s:int.uint64(self.v[2] + self.v[3])  " v2 += v3;
-  let self.v[3] = s:_int64rotator(self.v[3], 16)       " v3 = ROTL(v3, 16);
-  let self.v[3] = s:bitwise.xor(self.v[3], self.v[2])  " v3 ^= v2;
+  let self.v[2] = s:_blob64bit_add(self.v[2], self.v[3])  " v2 += v3;
+  let self.v[3] = s:_blob64bit_rotl(self.v[3], 16)        " v3 = ROTL(v3, 16);
+  let self.v[3] = s:_blob64bit_xor(self.v[3], self.v[2])  " v3 ^= v2;
 
-  let self.v[0] = s:int.uint64(self.v[0] + self.v[3])  " v0 += v3;
-  let self.v[3] = s:_int64rotator(self.v[3], 21)       " v3 = ROTL(v3, 21);
-  let self.v[3] = s:bitwise.xor(self.v[3], self.v[0])  " v3 ^= v0;
+  let self.v[0] = s:_blob64bit_add(self.v[0], self.v[3])  " v0 += v3;
+  let self.v[3] = s:_blob64bit_rotl(self.v[3], 21)        " v3 = ROTL(v3, 21);
+  let self.v[3] = s:_blob64bit_xor(self.v[3], self.v[0])  " v3 ^= v0;
 
-  let self.v[2] = s:int.uint64(self.v[2] + self.v[1])  " v2 += v1;
-  let self.v[1] = s:_int64rotator(self.v[1], 17)       " v1 = ROTL(v1, 17);
-  let self.v[1] = s:bitwise.xor(self.v[1], self.v[2])  " v1 ^= v2;
-  let self.v[2] = s:_int64rotator(self.v[2], 32)       " v2 = ROTL(v2, 32);
+  let self.v[2] = s:_blob64bit_add(self.v[2], self.v[1])  " v2 += v1;
+  let self.v[1] = s:_blob64bit_rotl(self.v[1], 17)        " v1 = ROTL(v1, 17);
+  let self.v[1] = s:_blob64bit_xor(self.v[1], self.v[2])  " v1 ^= v2;
+  let self.v[2] = s:_blob64bit_rotl(self.v[2], 32)        " v2 = ROTL(v2, 32);
 endfunction
 
 " trace disable
@@ -166,7 +162,7 @@ endfunction
 " " trace enable
 " function! s:siphash_state.trace(len) abort
 "   for i in range(len(self.v))
-"     echo '(' . string(a:len) . ')' . 'v' . i .':' . printf("%08x %08x", s:int.uint32(s:bitwise.rshift(self.v[i], 32)), s:int.uint32(self.v[i]))
+"     echo '(' . string(a:len) . ')' . 'v' . i .':' . string(self.v[i])
 "   endfor
 " endfunction
 
@@ -177,31 +173,31 @@ function! s:siphash_state.hash(data) abort
   let data = copy(a:data)
   let outputByteLen = self.hash_length / 8
 
-  let self.v[0] = 0x736f6d6570736575
-  let self.v[1] = 0x646f72616e646f6d
-  let self.v[2] = 0x6c7967656e657261
-  let self.v[3] = 0x7465646279746573
+  let self.v[0] = 0z736f6d6570736575
+  let self.v[1] = 0z646f72616e646f6d
+  let self.v[2] = 0z6c7967656e657261
+  let self.v[3] = 0z7465646279746573
 
-  let self.k[0] = s:ByteArray.to_int(s:ByteArray.endian_convert(self.key[0 :  7]))
-  let self.k[1] = s:ByteArray.to_int(s:ByteArray.endian_convert(self.key[8 : 15]))
+  let self.k[0] = s:ByteArray.to_blob(self.key[0 :  7])
+  let self.k[1] = s:ByteArray.to_blob(self.key[8 : 15])
 
-  let leftshift = s:int.uint64(s:bitwise.and(len(data), 7))
-  let blockshift = s:int.uint64(s:bitwise.lshift(len(data), 56))
+  let leftshift = s:bitwise.and(len(data), 7)
+  let blockshift = s:_blob64bit_new(s:bitwise.lshift(len(data), 56))
 
   " initial xor
-  let self.v[3] = s:bitwise.xor(self.v[3], self.k[1]) " v3 ^= k1;
-  let self.v[2] = s:bitwise.xor(self.v[2], self.k[0]) " v2 ^= k0;
-  let self.v[1] = s:bitwise.xor(self.v[1], self.k[1]) " v1 ^= k1;
-  let self.v[0] = s:bitwise.xor(self.v[0], self.k[0]) " v0 ^= k0;
+  let self.v[3] = s:_blob64bit_xor(self.v[3], self.k[1]) " v3 ^= k1;
+  let self.v[2] = s:_blob64bit_xor(self.v[2], self.k[0]) " v2 ^= k0;
+  let self.v[1] = s:_blob64bit_xor(self.v[1], self.k[1]) " v1 ^= k1;
+  let self.v[0] = s:_blob64bit_xor(self.v[0], self.k[0]) " v0 ^= k0;
 
   if (outputByteLen == 16)
-    let self.v[1] = s:bitwise.xor(self.v[1], 0xee) " v1 ^= 0xee;
+    let self.v[1] = s:_blob64bit_xor(self.v[1], s:_blob64bit_new(0xee)) " v1 ^= 0xee;
   endif
 
   if len(data) >= 8
     for i in range(0, len(data) - 7, 8)
-      let m = s:ByteArray.to_int(s:ByteArray.endian_convert(data[i : i+7]))
-      let self.v[3] = s:bitwise.xor(self.v[3], m) " v3 ^= m;
+      let m = s:ByteArray.to_blob(data[i : i+7]))
+      let self.v[3] = s:_blob64bit_xor(self.v[3], m) " v3 ^= m;
 
       " debug
       cal self.trace(len(data))
@@ -210,35 +206,35 @@ function! s:siphash_state.hash(data) abort
         call self.round()
       endfor
 
-      let self.v[0] = s:bitwise.xor(self.v[0], m) " v0 ^= m;
+      let self.v[0] = s:_blob64bit_xor(self.v[0], m) " v0 ^= m;
     endfor
   endif
 
   if 0 != leftshift
     if leftshift > 6
-      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[6], 48))) " b |= ((uint64_t)in[6]) << 48;
+      let blockshift = s:_blob64bit_or(blockshift, s:_blob64bit_new(s:bitwise.lshift(data[6], 48))) " b |= ((uint64_t)in[6]) << 48;
     endif
     if leftshift > 5
-      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[5], 40))) " b |= ((uint64_t)in[5]) << 40;
+      let blockshift = s:_blob64bit_or(blockshift, s:_blob64bit_new(s:bitwise.lshift(data[5], 40))) " b |= ((uint64_t)in[5]) << 40;
     endif
     if leftshift > 4
-      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[4], 32))) " b |= ((uint64_t)in[4]) << 32;
+      let blockshift = s:_blob64bit_or(blockshift, s:_blob64bit_new(s:bitwise.lshift(data[4], 32))) " b |= ((uint64_t)in[4]) << 32;
     endif
     if leftshift > 3
-      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[3], 24))) " b |= ((uint64_t)in[3]) << 24;
+      let blockshift = s:_blob64bit_or(blockshift, s:_blob64bit_new(s:bitwise.lshift(data[3], 24))) " b |= ((uint64_t)in[3]) << 24;
     endif
     if leftshift > 2
-      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[2], 16))) " b |= ((uint64_t)in[2]) << 16;
+      let blockshift = s:_blob64bit_or(blockshift, s:_blob64bit_new(s:bitwise.lshift(data[2], 16))) " b |= ((uint64_t)in[2]) << 16;
     endif
     if leftshift > 1
-      let blockshift = s:bitwise.or(blockshift, s:int.uint64(s:bitwise.lshift(data[1],  8))) " b |= ((uint64_t)in[1]) << 8;
+      let blockshift = s:_blob64bit_or(blockshift, s:_blob64bit_new(s:bitwise.lshift(data[1],  8))) " b |= ((uint64_t)in[1]) << 8;
     endif
     if leftshift > 0
-      let blockshift = s:bitwise.or(blockshift, s:int.uint64(                 data[0]     )) " b |= ((uint64_t)in[0]);
+      let blockshift = s:_blob64bit_or(blockshift, s:_blob64bit_new(                 data[0],    )) " b |= ((uint64_t)in[0]);
     endif
   endif
 
-  let self.v[3] = s:bitwise.xor(self.v[3], blockshift) " v3 ^= b;
+  let self.v[3] = s:_blob64bit_xor(self.v[3], blockshift) " v3 ^= b;
 
   " debug
   cal self.trace(len(data))
@@ -247,12 +243,12 @@ function! s:siphash_state.hash(data) abort
     call self.round()
   endfor
 
-  let self.v[0] = s:bitwise.xor(self.v[0], blockshift) " v0 ^= b;
+  let self.v[0] = s:_blob64bit_xor(self.v[0], blockshift) " v0 ^= b;
 
   if (outputByteLen == 16)
-    let self.v[2] = s:bitwise.xor(self.v[2], 0xee) " v2 ^= 0xee;
+    let self.v[2] = s:_blob64bit_xor(self.v[2], s:_blob64bit_new(0xee)) " v2 ^= 0xee;
   else
-    let self.v[2] = s:bitwise.xor(self.v[2], 0xff) " v2 ^= 0xff;
+    let self.v[2] = s:_blob64bit_xor(self.v[2], s:_blob64bit_new(0xff)) " v2 ^= 0xff;
   endif
 
   " debug
@@ -263,12 +259,12 @@ function! s:siphash_state.hash(data) abort
   endfor
 
   " b = v0 ^ v1 ^ v2 ^ v3;
-  let blockshift = s:bitwise.xor(
-        \ s:bitwise.xor(self.v[0], self.v[1]),
-        \ s:bitwise.xor(self.v[2], self.v[3])
+  let blockshift = s:_blob64bit_xor(
+        \ s:_blob64bit_xor(self.v[0], self.v[1]),
+        \ s:_blob64bit_xor(self.v[2], self.v[3])
         \)
 
-  let output = s:ByteArray.endian_convert(s:ByteArray.from_int(blockshift, 64))
+  let output = s:ByteArray.endian_convert(s:_blob64bit_to_list_le(blockshift))
 
   if (outputByteLen == 8)
     return output
@@ -284,14 +280,75 @@ function! s:siphash_state.hash(data) abort
   endfor
 
   " b = v0 ^ v1 ^ v2 ^ v3;
-  let blockshift = s:bitwise.xor(
-        \ s:bitwise.xor(self.v[0], self.v[1]),
-        \ s:bitwise.xor(self.v[2], self.v[3])
+  let blockshift = s:_blob64bit_xor(
+        \ s:_blob64bit_xor(self.v[0], self.v[1]),
+        \ s:_blob64bit_xor(self.v[2], self.v[3])
         \)
 
-  let output = output + s:ByteArray.endian_convert(s:ByteArray.from_int(blockshift, 64))
+  let output = output + s:ByteArray.endian_convert(s:_blob64bit_to_list_le(blockshift))
 
   return output
+endfunction
+
+" inner function
+
+function! s:_blob64bit_new(...) abort
+  let inital = 0
+  if a:0
+    let inital = a:1
+  endif
+  let retval = repeat([0],8) " 8 byte 64bit length
+  for i in range(8)
+    let retval[i] = s:int.uint8(s:bitwise.rshift(inital, 64 - (8 * (i + 1))))
+  endfor
+  return s:ByteArray.to_blob(retval)
+endfunction
+
+function! s:_blob64bit_or(x, y) abort
+  let retval = s:_blob64bit_new()
+  for i in range(8)
+    let retval[i] = s:bitwise.or(a:x[i], a:y[i])
+  endfor
+  return retval
+endfunction
+
+function! s:_blob64bit_xor(x, y) abort
+  let retval = s:_blob64bit_new()
+  for i in range(8)
+    let retval[i] = s:bitwise.xor(a:x[i], a:y[i])
+  endfor
+  return retval
+endfunction
+
+function! s:_blob64bit_add(x, y) abort
+  let retval = s:_blob64bit_new()
+  let carry = 0
+  for i in range(7, 0, -1)
+    let retval[i] = s:int.uint8(a:x[i] + a:y[i] + carry))
+    let carry = (a:x[i] + a:y[i]) / 255
+  endfor
+  return retval
+endfunction
+
+function! s:_blob64bit_rotl(x, bits) abort
+  let retval = s:_blob64bit_new()
+  let blocknum = a:bits / 8
+  let shift    = a:bits % 8
+  for i in range(8)
+    let targetindex = (i + blocknum) % 8
+    let previndex = (i + 8 - 1) % 8
+    let retval[targetindex] = s:int.uint8(s:bitwise.or(s:bitwise.lshift(a:x[i], shift),
+                                                     \ s:bitwise.rshift(a:x[previndex], 8 - shift)))
+  endfor
+  return retval
+endfunction
+
+function! s:_blob64bit_to_list_le(x) abort
+  let retval = []
+  for i in a:x
+    let retval = retval + [a:x[i]]
+  endfor
+  return retval
 endfunction
 
 let &cpo = s:save_cpo
