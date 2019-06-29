@@ -178,8 +178,8 @@ function! s:siphash_state.hash(data) abort
   let self.v[2] = 0z6c7967656e657261
   let self.v[3] = 0z7465646279746573
 
-  let self.k[0] = s:ByteArray.to_blob(self.key[0 :  7])
-  let self.k[1] = s:ByteArray.to_blob(self.key[8 : 15])
+  let self.k[0] = s:ByteArray.endian_convert(s:ByteArray.to_blob(self.key[0 :  7]))
+  let self.k[1] = s:ByteArray.endian_convert(s:ByteArray.to_blob(self.key[8 : 15]))
 
   let leftshift = s:bitwise.and(len(data), 7)
   let blockshift = s:_blob64bit_new(s:bitwise.lshift(len(data), 56))
@@ -196,7 +196,7 @@ function! s:siphash_state.hash(data) abort
 
   if len(data) >= 8
     for i in range(0, len(data) - 7, 8)
-      let m = s:ByteArray.to_blob(data[i : i+7]))
+      let m = s:ByteArray.endian_convert(s:ByteArray.to_blob(data[i : i+7]))
       let self.v[3] = s:_blob64bit_xor(self.v[3], m) " v3 ^= m;
 
       " debug
@@ -264,7 +264,7 @@ function! s:siphash_state.hash(data) abort
         \ s:_blob64bit_xor(self.v[2], self.v[3])
         \)
 
-  let output = s:ByteArray.from_blob(blockshift)
+  let output = s:ByteArray.endian_convert(s:ByteArray.from_blob(blockshift))
 
   if (outputByteLen == 8)
     return output
@@ -285,7 +285,7 @@ function! s:siphash_state.hash(data) abort
         \ s:_blob64bit_xor(self.v[2], self.v[3])
         \)
 
-  let output = output + s:ByteArray.from_blob(blockshift)
+  let output = output + s:ByteArray.endian_convert(s:ByteArray.from_blob(blockshift))
 
   return output
 endfunction
