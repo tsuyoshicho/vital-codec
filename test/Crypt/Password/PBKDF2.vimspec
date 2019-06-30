@@ -4,7 +4,7 @@ Describe Crypt.Password.PBKDF2
     let PBKDF2 = vital#vital#new().import('Crypt.Password.PBKDF2')
 
     " let MD5  = vital#vital#new().import('Hash.MD5x')
-    let SHA1 = vital#vital#new().import('Hash.SHA1')
+    let SHA1 = vital#vital#new().import('Hash.SHA1x')
 
     " RFC 6070 - PKCS #5: Password-Based Key Derivation Function 2 (PBKDF2) Test Vectors https://tools.ietf.org/html/rfc6070
     " 2.  PBKDF2 HMAC-SHA1 Test Vectors

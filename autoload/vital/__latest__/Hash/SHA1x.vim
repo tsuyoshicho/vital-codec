@@ -1,4 +1,5 @@
 " Utilities for SHA1.
+" develop under name as SHA1x
 " Tsuyoshi CHO <Tsuyoshi.CHO@Gmail.com>
 " License CC0
 " Code:
@@ -47,12 +48,12 @@ function! s:digest_raw(bytes) abort
 
   let err = sha.input(bytes)
   if err
-    throw printf('vital: Hash.SHA1: input Error %d', err)
+    throw printf('vital: Hash.SHA1x: input Error %d', err)
   endif
 
   let err = sha.result(digest)
   if err
-    throw printf('vital: Hash.SHA1: result Error %d', err)
+    throw printf('vital: Hash.SHA1x: result Error %d', err)
   endif
 
   return digest

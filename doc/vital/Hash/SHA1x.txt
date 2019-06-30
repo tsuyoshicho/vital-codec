@@ -1,18 +1,18 @@
-*vital/Hash/SHA1.txt*		sha1 utilities library.
+*vital/Hash.SHA1xx.txt*		sha1 utilities library.
 
 Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 
 ==============================================================================
-CONTENTS				*Vital.Hash.SHA1-contents*
+CONTENTS				*Vital.Hash.SHA1x-contents*
 
-INTRODUCTION		                |Vital.Hash.SHA1-introduction|
-INTERFACE		                |Vital.Hash.SHA1-interface|
-  Functions                             |Vital.Hash.SHA1-functions|
+INTRODUCTION		                |Vital.Hash.SHA1x-introduction|
+INTERFACE		                |Vital.Hash.SHA1x-interface|
+  Functions                             |Vital.Hash.SHA1x-functions|
 
 ==============================================================================
-INTRODUCTION				*Vital.Hash.SHA1-introduction*
+INTRODUCTION				*Vital.Hash.SHA1x-introduction*
 
-*Vital.Hash.SHA1* is a SHA1 Utilities Library.
+*Vital.Hash.SHA1x* is a SHA1 Utilities Library.
 It provides functions to return the SHA1 sum/digest of a given string as
 hex/bytes list.
 
@@ -22,16 +22,16 @@ imported from the implementation.
 https://github.com/vim-scripts/sha1.vim
 
 ==============================================================================
-INTERFACE				*Vital.Hash.SHA1-interface*
+INTERFACE				*Vital.Hash.SHA1x-interface*
 ------------------------------------------------------------------------------
-FUNCTIONS				*Vital.Hash.SHA1-functions*
+FUNCTIONS				*Vital.Hash.SHA1x-functions*
 
-sum({str})				*Vital.Hash.SHA1.sum()*
-sum_raw({bytes})			*Vital.Hash.SHA1.sum_raw()*
+sum({str})				*Vital.Hash.SHA1x.sum()*
+sum_raw({bytes})			*Vital.Hash.SHA1x.sum_raw()*
 	Return SHA1 hashed string from {str} or raw {bytes} list.
 
-digest({str})				*Vital.Hash.SHA1.digest()*
-digest_raw({bytes})			*Vital.Hash.SHA1.digest_raw()*
+digest({str})				*Vital.Hash.SHA1x.digest()*
+digest_raw({bytes})			*Vital.Hash.SHA1x.digest_raw()*
 	Return SHA1 hashed bytes list from {str} or raw {bytes} list.
 
 ==============================================================================

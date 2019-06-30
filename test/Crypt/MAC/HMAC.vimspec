@@ -2,7 +2,7 @@ Describe Crypt.MAC.HMAC
   Before all
     let HMAC = vital#vital#new().import('Crypt.MAC.HMAC')
     let MD5  = vital#vital#new().import('Hash.MD5x')
-    let SHA1 = vital#vital#new().import('Hash.SHA1')
+    let SHA1 = vital#vital#new().import('Hash.SHA1x')
 
     " https://tools.ietf.org/html/rfc2202
     " RFC TestVector

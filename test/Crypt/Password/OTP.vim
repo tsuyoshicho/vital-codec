@@ -3,7 +3,7 @@ let s:assert = themis#helper('assert')
 
 function! s:suite.before()
   let s:OTP  = vital#vital#new().import('Crypt.Password.OTP')
-  let s:SHA1 = vital#vital#new().import('Hash.SHA1')
+  let s:SHA1 = vital#vital#new().import('Hash.SHA1x')
 
   let s:DateTime = vital#vital#new().import('DateTime')
 endfunction
