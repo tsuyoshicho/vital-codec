@@ -1,8 +1,8 @@
-let s:suite = themis#suite('Hash.SHA1')
+let s:suite = themis#suite('Hash.SHA1x')
 let s:assert = themis#helper('assert')
 
 function! s:suite.before()
-  let s:SHA1 = vital#vital#new().import('Hash.SHA1')
+  let s:SHA1 = vital#vital#new().import('Hash.SHA1x')
 endfunction
 
 function! s:suite.after()
