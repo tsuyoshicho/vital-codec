@@ -3,6 +3,7 @@ let s:assert = themis#helper('assert')
 
 function! s:suite.before()
   let s:SipHash = vital#vital#new().import('Hash.SipHash')
+  let s:ByteArray = vital#vital#new().import('Data.List.Byte')
 endfunction
 
 function! s:suite.after()
@@ -223,8 +224,9 @@ function! s:suite.encode() abort
     else
       let outputdata = s:SipHash.digest_raw(inputdata[0:i-1])
     endif
-    for j in range(len(outputdata))
-      call s:assert.equal(outputdata[j], vectors_sip64[i][j])
-    endfor
+    call s:assert.equal(outputdata, s:ByteArray.to_blob(vectors_sip64[i]))
+    " for j in range(len(outputdata))
+    "   call s:assert.equal(outputdata[j], vectors_sip64[i][j])
+    " endfor
   endfor
 endfunction
