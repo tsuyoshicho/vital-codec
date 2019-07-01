@@ -1,0 +1,27 @@
+Describe Vim.Type.Blob
+  Before all
+    let b = vital#vital#new().import('Vim.Type.Blob')
+  End
+
+  Describe .new()
+    It cast any data
+      for i in [1,2,4,8,16,32,64]
+        Assert Equals(len(b.new(i)), i)
+      endfor
+    End
+  End
+
+ " new(length)
+ " uint8bit(...)
+ " uint16bit(...)
+ " uint32bit(...)
+ " uint64bit(...)
+ "
+ " or(x, y)
+ " xor(x, y)
+ " and(x, y)
+ " invert(x)
+ " rotl(x, bits)
+ " uint_add(x, y)
+
+End
