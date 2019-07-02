@@ -4,6 +4,11 @@ Describe Vim.Type.Blob
     let typeval = type(0z00)
   End
 
+ " new(length)
+ " uint8bit(...)
+ " uint16bit(...)
+ " uint32bit(...)
+ " uint64bit(...)
   Describe .new()
     It cast any data
       for i in [1,2,4,8,16,32,64]
@@ -86,17 +91,67 @@ Describe Vim.Type.Blob
     End
   End
 
- " new(length)
- " uint8bit(...)
- " uint16bit(...)
- " uint32bit(...)
- " uint64bit(...)
  "
  " or(x, y)
  " xor(x, y)
  " and(x, y)
  " invert(x)
  " rotl(x, bits)
+  Describe .or()
+    It size 1 byte
+      let source_x = [0x3f]
+      let source_a_joined = 0x18
+      let source_b_joined = 0x37
+      let data_a = b.uint8bit(source_joined_a)
+      let data_b = b.uint8bit(source_joined_b)
+      let data_x = b.or(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 2 byte
+      let source_x = [0x3f, 0xFF]
+      let source_a_joined = 0x18F0
+      let source_b_joined = 0x370F
+      let data_a = b.uint16bit(source_joined_a)
+      let data_b = b.uint16bit(source_joined_b)
+      let data_x = b.or(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 4 byte
+      let source_x = [0x3f, 0xFF, 0xFF, 044]
+      let source_a_joined = 0x18F03A44
+      let source_b_joined = 0x370FA344
+      let data_a = b.uint32bit(source_joined_a)
+      let data_b = b.uint32bit(source_joined_b)
+      let data_x = b.or(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 8 byte
+      let source_x = [0x3f, 0xFF, 0xFF, 044, 0x3f, 0xFF, 0xFF, 044]
+      let source_a_joined = 0x18F03A44370FA344
+      let source_b_joined = 0x370FA34418F03A44
+      let data_a = b.uint64bit(source_joined_a)
+      let data_b = b.uint64bit(source_joined_b)
+      let data_x = b.or(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+  End
+
  " uint_add(x, y)
 
 End
