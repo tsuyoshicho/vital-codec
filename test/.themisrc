@@ -7,6 +7,7 @@ if !has('nvim') && v:version < 800
 endif
 if !has('patch-8.1.0735')
   call themis#option('exclude', ['test/Vim/Type/Blob.vimspec'])
+  call themis#option('exclude', ['test/Hash/SipHash.vim'])
 endif
 
 let g:Expect = themis#helper('expect')
