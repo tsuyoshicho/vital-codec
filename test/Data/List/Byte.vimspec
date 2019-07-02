@@ -55,8 +55,8 @@ Describe Data.List.Byte
   End
 
   Describe .from_blob()
-    if has('patch-8.1.0735')
-      It from blob to bytes-list.
+    It from blob to bytes-list.
+      if has('patch-8.1.0735')
         let result =  ByteArray.from_blob(0z616263)
         let data = [0x61, 0x62, 0x63]
 
@@ -65,15 +65,15 @@ Describe Data.List.Byte
         for i in range(len(data))
           Assert Equals(result[i], data[i])
         endfor
-      End
-    else
-      Skip no avaliable blob type.
-    endif
+      else
+        Skip no avaliable blob type.
+      endif
+    End
   End
 
   Describe .to_blob()
-    if has('patch-8.1.0735')
-      It from bytes-list to blob.
+    It from bytes-list to blob.
+      if has('patch-8.1.0735')
         let result =  ByteArray.to_blob([0x61, 0x62, 0x63])
         let data = 0z616263
 
@@ -82,10 +82,10 @@ Describe Data.List.Byte
         for i in range(len(data))
           Assert Equals(result[i], data[i])
         endfor
-      End
-    else
-      Skip no avaliable blob type.
-    endif
+      else
+        Skip no avaliable blob type.
+      endif
+    End
   End
 
   Describe .from_int()
