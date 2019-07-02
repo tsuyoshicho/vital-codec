@@ -41,12 +41,15 @@ uint64bit({initial value})		  *Vital.Vim.Type.Blob.uint64bit()*
 
 or({X}, {Y})				  *Vital.Vim.Type.Blob.or()*
 	Return new blob that is {X} or {Y} value.
+	NOTE: {X} and {Y} as same size.
 
 xor({X}, {Y})				  *Vital.Vim.Type.Blob.xor()*
 	Return new blob that is {X} xor {Y} value.
+	NOTE: {X} and {Y} as same size.
 
 and({X}, {Y})				  *Vital.Vim.Type.Blob.xor()*
 	Return new blob that is {X} and {Y} value.
+	NOTE: {X} and {Y} as same size.
 
 invert({X})				  *Vital.Vim.Type.Blob.xor()*
 	Return new blob that is invert {X} value.
