@@ -36,7 +36,7 @@ Describe Vim.Type.Blob
     It cast no data
       let data = b.uint16bit()
       Assert Equals(type(data), typeval)
-      Assert Equals(len(data),  1)
+      Assert Equals(len(data),  2)
     End
     It cast any data
       let source = [0x0F, 0x0E]
@@ -54,7 +54,7 @@ Describe Vim.Type.Blob
     It cast no data
       let data = b.uint32bit()
       Assert Equals(type(data), typeval)
-      Assert Equals(len(data),  1)
+      Assert Equals(len(data),  4)
     End
     It cast any data
       let source = [0x0F, 0x0E, 0x0D, 0x0C]
@@ -72,7 +72,7 @@ Describe Vim.Type.Blob
     It cast no data
       let data = b.uint64bit()
       Assert Equals(type(data), typeval)
-      Assert Equals(len(data),  1)
+      Assert Equals(len(data),  8)
     End
     It cast any data
       let source = [0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08]
