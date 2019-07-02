@@ -5,6 +5,9 @@ call themis#option('exclude', ['test/_testdata/', 'test/README.md'])
 if !has('nvim') && v:version < 800
   call themis#option('exclude', ['test/Async/Promise.vimspec'])
 endif
+if !has('patch-8.1.0735')
+  call themis#option('exclude', ['test/Vim/Type/Blob.vimspec'])
+endif
 
 let g:Expect = themis#helper('expect')
 call themis#helper('command').with(themis#helper('assert')).with({'Expect': g:Expect})

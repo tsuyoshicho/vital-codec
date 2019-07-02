@@ -1,12 +1,87 @@
 Describe Vim.Type.Blob
   Before all
     let b = vital#vital#new().import('Vim.Type.Blob')
+    let typeval = type(0z00)
   End
 
   Describe .new()
     It cast any data
       for i in [1,2,4,8,16,32,64]
-        Assert Equals(len(b.new(i)), i)
+        let data = b.new(i)
+        Assert Equals(type(data), typeval)
+        Assert Equals(len(data),  i)
+      endfor
+    End
+  End
+
+  Describe .uint8bit()
+    It cast no data
+      let data = b.uint8bit()
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  1)
+    End
+    It cast any data
+      let source = [0x0F]
+      let source_joined = 0x0F
+      let data = b.uint8bit(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+  End
+
+  Describe .uint16bit()
+    It cast no data
+      let data = b.uint16bit()
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  1)
+    End
+    It cast any data
+      let source = [0x0F, 0x0E]
+      let source_joined = 0x0F0E
+      let data = b.uint16bit(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+  End
+
+  Describe .uint32bit()
+    It cast no data
+      let data = b.uint32bit()
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  1)
+    End
+    It cast any data
+      let source = [0x0F, 0x0E, 0x0D, 0x0C]
+      let source_joined = 0x0F0E0D0C
+      let data = b.uint32bit(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+  End
+
+  Describe .uint64bit()
+    It cast no data
+      let data = b.uint64bit()
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  1)
+    End
+    It cast any data
+      let source = [0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08]
+      let source_joined = 0x0F0E0D0C0B0A0908
+      let data = b.uint64bit(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
       endfor
     End
   End
