@@ -1,0 +1,63 @@
+*vital/Vim/Type/Blob.txt*		Utilities for Blob data.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Vim.Type.Blob-contents*
+
+INTRODUCTION			|Vital.Vim.Type.Blob-introduction|
+INTERFACE			|Vital.Vim.Type.Blob-interface|
+  Functions			  |Vital.Vim.Type.Blob-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.Vim.Type.Blob-introduction*
+
+*Vital.Vim.Type.Blob* is |Blob| data utility.
+
+==============================================================================
+INTERFACE				*Vital.Vim.Type.Blob-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Vim.Type.Blob-functions*
+
+new({length})				  *Vital.Vim.Type.Blob.new()*
+	Return new blob ({length} byte), data fill in 0.
+
+uint8bit({initial value})		  *Vital.Vim.Type.Blob.uint8bit()*
+	Return uint8 (1 byte) blob.
+	Optional, data fill in {initial value}.
+
+uint16bit({initial value})		  *Vital.Vim.Type.Blob.uint16bit()*
+	Return uint16 (2 byte) blob.
+	Optional, data fill in {initial value}.
+
+uint32bit({initial value})		  *Vital.Vim.Type.Blob.uint32bit()*
+	Return uint32 (4 byte) blob.
+	Optional, data fill in {initial value}.
+
+uint64bit({initial value})		  *Vital.Vim.Type.Blob.uint64bit()*
+	Return uint64 (8 byte) blob.
+	Optional, data fill in {initial value}.
+
+
+or({X}, {Y})				  *Vital.Vim.Type.Blob.or()*
+	Return new blob that is {X} or {Y} value.
+
+xor({X}, {Y})				  *Vital.Vim.Type.Blob.xor()*
+	Return new blob that is {X} xor {Y} value.
+
+and({X}, {Y})				  *Vital.Vim.Type.Blob.xor()*
+	Return new blob that is {X} and {Y} value.
+
+invert({X})				  *Vital.Vim.Type.Blob.xor()*
+	Return new blob that is invert {X} value.
+
+rotl({X},{bits})			  *Vital.Vim.Type.Blob.rotl()*
+	Return new blob that is {X} rotate {bits} bit left value.
+
+uint_add({X}, {Y})				  *Vital.Vim.Type.Blob.uint_add()*
+	Return new blob that is {X} + {Y} value.
+	NOTE: {X} and {Y} as same size.
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
