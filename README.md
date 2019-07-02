@@ -15,13 +15,17 @@ vital module for Encode/Decode logics
 
 ## Module specific information
 
+Some packages come from vital.vim.
+
 * Hash.MD5x : Renamed to MD5 when merged in the future. MD5 enhanced.
+* Hash.SHA1x : Renamed to SHA1 when merged in the future. SHA1 enhanced.
 * Data.Base32x: Renamed to Base32 when merged in the future. Wrapper implementation.
 * Data.Base64x: Renamed to Base64 when merged in the future. Wrapper implementation.
-* Hash.OTP: Deprecated for past compatibility. Wrapper implementation.
+* Crypt.Password.OTP: Pacage renamed from Hash.OTP(Deprecated, deleted).
+* Crypt.MAC.HMAC: Package renamed from Hash.HMAC.
 
 ## License
-[CC0](http://creativecommons.org/publicdomain/zero/1.0/)
+[CC0 1.0 Universal](http://creativecommons.org/publicdomain/zero/1.0/)
 
 ## CI setting/Test/Documents
 Copying from vital.vim except a part (non-formal)
