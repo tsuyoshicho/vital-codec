@@ -104,13 +104,41 @@ function! s:uint_add(x, y) abort
     call s:_throw('argments x and y''s size discrepancy.')
   endif
   let length = len(a:x)
-  let retval = s:new(length)
+  let retval = s:add(a:x, a:y)
+  if length < len(retval)
+    call s:_throw(printf('overflow %d byte uint.', length))
+  endif
+  return retval
+endfunction
+
+function! s:add(x, y) abort
+  let x = s:ByteArray.from_blob(a:x)
+  let y = s:ByteArray.from_blob(a:y)
+
+  let lenx = len(x)
+  let leny = len(y)
+
+  if lenx == leny
+    " skip
+  elseif lenx < leny
+    " expand x
+    let x = repeat([0], leny - lenx)+ x
+  else
+    " expand y
+    let y = repeat([0], lenx - leny)+ y
+  endif
+
+  let length = len(a:x)
+  let retval = repeat([0], length)
   let carry = 0
   for i in range(length, 0, -1)
     let retval[i] = s:int.uint8(a:x[i] + a:y[i] + carry)
     let carry = (a:x[i] + a:y[i]) / 0xFF
   endfor
-  return retval
+  if carry
+    let retval = [1] + retval
+  endif
+  return  s:ByteArray.from_blob(retval)
 endfunction
 
 function! s:_throw(message) abort

@@ -57,9 +57,13 @@ invert({X})				  *Vital.Vim.Type.Blob.xor()*
 rotl({X},{bits})			  *Vital.Vim.Type.Blob.rotl()*
 	Return new blob that is {X} rotate {bits} bit left value.
 
-uint_add({X}, {Y})				  *Vital.Vim.Type.Blob.uint_add()*
+add({X}, {Y})				  *Vital.Vim.Type.Blob.add()*
+	Return new blob that is {X} + {Y} value.
+
+uint_add({X}, {Y})			  *Vital.Vim.Type.Blob.uint_add()*
 	Return new blob that is {X} + {Y} value.
 	NOTE: {X} and {Y} as same size.
+	NOTE: result overflow check and throw exception.
 
 
 ==============================================================================

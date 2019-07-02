@@ -415,5 +415,80 @@ Describe Vim.Type.Blob
         Assert Equals(data_x[i],  source_x[i])
       endfor
     End
+    " size error
+    It size 4 byte x is samll
+      let source_x = [0x37, 0xFF, 0xDD, 0x88]
+      let source_a_joined =   0xF03A44
+      let source_b_joined = 0x370FA344
+      let data_a = b.uint32bit(source_a_joined)
+      let data_b = b.uint32bit(source_b_joined)
+      Throws /^vital: Vim.Type.Blob:/ b.uint_add(data_a, data_b)
+    End
+    " overflow error
+    It size 4 byte carry over
+      let source_x = [0x01, 0x4F, 0xFF, 0xDD, 0x88]
+      let source_a_joined = 0x98F03A44
+      let source_b_joined = 0xB70FA344
+      let data_a = b.uint32bit(source_a_joined)
+      let data_b = b.uint32bit(source_b_joined)
+      let data_x = b.add(data_a, data_b)
+      Throws /^vital: Vim.Type.Blob:/ b.uint_add(data_a, data_b)
+    End
+  End
+
+  " add(x, y)
+  Describe .add()
+    It size 4 byte same size
+      let source_x = [0x4F, 0xFF, 0xDD, 0x88]
+      let source_a_joined = 0x18F03A44
+      let source_b_joined = 0x370FA344
+      let data_a = b.uint32bit(source_a_joined)
+      let data_b = b.uint32bit(source_b_joined)
+      let data_x = b.add(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 4 byte x is samll
+      let source_x = [0x37, 0xFF, 0xDD, 0x88]
+      let source_a_joined =   0xF03A44
+      let source_b_joined = 0x370FA344
+      let data_a = b.uint32bit(source_a_joined)
+      let data_b = b.uint32bit(source_b_joined)
+      let data_x = b.add(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 4 byte y is small
+      let source_x = [0x18, 0xFF, 0xDD, 0x88]
+      let source_a_joined = 0x18F03A44
+      let source_b_joined =   0x0FA344
+      let data_a = b.uint32bit(source_a_joined)
+      let data_b = b.uint32bit(source_b_joined)
+      let data_x = b.add(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 4 byte carry over
+      let source_x = [0x01, 0x4F, 0xFF, 0xDD, 0x88]
+      let source_a_joined = 0x98F03A44
+      let source_b_joined = 0xB70FA344
+      let data_a = b.uint32bit(source_a_joined)
+      let data_b = b.uint32bit(source_b_joined)
+      let data_x = b.add(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
   End
 End
