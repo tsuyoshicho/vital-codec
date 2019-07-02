@@ -60,10 +60,11 @@ rotl({X},{bits})			  *Vital.Vim.Type.Blob.rotl()*
 add({X}, {Y})				  *Vital.Vim.Type.Blob.add()*
 	Return new blob that is {X} + {Y} value.
 
-uint_add({X}, {Y})			  *Vital.Vim.Type.Blob.uint_add()*
+uint_add({X}, {Y},{flag})		  *Vital.Vim.Type.Blob.uint_add()*
 	Return new blob that is {X} + {Y} value.
 	NOTE: {X} and {Y} as same size.
-	NOTE: result overflow check and throw exception.
+	NOTE: When {flag} set 'nooverflow', then skip overflow check.
+	Otherwise result overflow throw exception.
 
 
 ==============================================================================

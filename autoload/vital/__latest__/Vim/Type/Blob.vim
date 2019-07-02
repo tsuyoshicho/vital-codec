@@ -98,14 +98,21 @@ function! s:rotl(x, bits) abort
 endfunction
 
 " Arithmetic operation
-function! s:uint_add(x, y) abort
+function! s:uint_add(x, y,...) abort
   " same size check
   if len(a:x) != len(a:y)
     call s:_throw('argments x and y''s size discrepancy.')
   endif
   let length = len(a:x)
   let retval = s:add(a:x, a:y)
-  if length < len(retval)
+
+  let overflow_check = 1
+  if a:0 > 0
+    if a:1 is? 'nooverflow'
+      let overflow_check = 0
+    endif
+  endif
+  if overflow_check && (length < len(retval))
     call s:_throw(printf('overflow %d byte uint.', length))
   endif
   return retval
