@@ -15,17 +15,17 @@ Describe Vim.Type.Blob
     End
   End
 
-  " uint8bit(...)
-  Describe .uint8bit()
+  " uint8(...)
+  Describe .uint8()
     It cast no data
-      let data = b.uint8bit()
+      let data = b.uint8()
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  1)
     End
     It cast any data
       let source = [0x0F]
       let source_joined = 0x0F
-      let data = b.uint8bit(source_joined)
+      let data = b.uint8(source_joined)
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  len(source))
       for i in range(len(source))
@@ -34,17 +34,17 @@ Describe Vim.Type.Blob
     End
   End
 
-  " uint16bit(...)
-  Describe .uint16bit()
+  " uint16(...)
+  Describe .uint16()
     It cast no data
-      let data = b.uint16bit()
+      let data = b.uint16()
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  2)
     End
     It cast any data
       let source = [0x0F, 0x0E]
       let source_joined = 0x0F0E
-      let data = b.uint16bit(source_joined)
+      let data = b.uint16(source_joined)
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  len(source))
       for i in range(len(source))
@@ -53,17 +53,17 @@ Describe Vim.Type.Blob
     End
   End
 
-  " uint32bit(...)
-  Describe .uint32bit()
+  " uint32(...)
+  Describe .uint32()
     It cast no data
-      let data = b.uint32bit()
+      let data = b.uint32()
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  4)
     End
     It cast any data
       let source = [0x0F, 0x0E, 0x0D, 0x0C]
       let source_joined = 0x0F0E0D0C
-      let data = b.uint32bit(source_joined)
+      let data = b.uint32(source_joined)
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  len(source))
       for i in range(len(source))
@@ -72,17 +72,17 @@ Describe Vim.Type.Blob
     End
   End
 
-  " uint64bit(...)
-  Describe .uint64bit()
+  " uint64(...)
+  Describe .uint64()
     It cast no data
-      let data = b.uint64bit()
+      let data = b.uint64()
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  8)
     End
     It cast any data
       let source = [0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08]
       let source_joined = 0x0F0E0D0C0B0A0908
-      let data = b.uint64bit(source_joined)
+      let data = b.uint64(source_joined)
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  len(source))
       for i in range(len(source))
@@ -98,8 +98,8 @@ Describe Vim.Type.Blob
       let source_x = [0x3f]
       let source_a_joined = 0x18
       let source_b_joined = 0x37
-      let data_a = b.uint8bit(source_a_joined)
-      let data_b = b.uint8bit(source_b_joined)
+      let data_a = b.uint8(source_a_joined)
+      let data_b = b.uint8(source_b_joined)
       let data_x = b.or(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -111,8 +111,8 @@ Describe Vim.Type.Blob
       let source_x = [0x3f, 0xFF]
       let source_a_joined = 0x18F0
       let source_b_joined = 0x370F
-      let data_a = b.uint16bit(source_a_joined)
-      let data_b = b.uint16bit(source_b_joined)
+      let data_a = b.uint16(source_a_joined)
+      let data_b = b.uint16(source_b_joined)
       let data_x = b.or(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -124,8 +124,8 @@ Describe Vim.Type.Blob
       let source_x = [0x3f, 0xFF, 0xFF, 044]
       let source_a_joined = 0x18F03A44
       let source_b_joined = 0x370FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.or(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -137,8 +137,8 @@ Describe Vim.Type.Blob
       let source_x = [0x3f, 0xFF, 0xFF, 044, 0x3f, 0xFF, 0xFF, 044]
       let source_a_joined = 0x18F03A44370FA344
       let source_b_joined = 0x370FA34418F03A44
-      let data_a = b.uint64bit(source_a_joined)
-      let data_b = b.uint64bit(source_b_joined)
+      let data_a = b.uint64(source_a_joined)
+      let data_b = b.uint64(source_b_joined)
       let data_x = b.or(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -154,8 +154,8 @@ Describe Vim.Type.Blob
       let source_x = [0x2F]
       let source_a_joined = 0x18
       let source_b_joined = 0x37
-      let data_a = b.uint8bit(source_a_joined)
-      let data_b = b.uint8bit(source_b_joined)
+      let data_a = b.uint8(source_a_joined)
+      let data_b = b.uint8(source_b_joined)
       let data_x = b.xor(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -167,8 +167,8 @@ Describe Vim.Type.Blob
       let source_x = [0x2F, 0xFF]
       let source_a_joined = 0x18F0
       let source_b_joined = 0x370F
-      let data_a = b.uint16bit(source_a_joined)
-      let data_b = b.uint16bit(source_b_joined)
+      let data_a = b.uint16(source_a_joined)
+      let data_b = b.uint16(source_b_joined)
       let data_x = b.xor(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -180,8 +180,8 @@ Describe Vim.Type.Blob
       let source_x = [0x2F, 0xFF, 0x99, 0x00]
       let source_a_joined = 0x18F03A44
       let source_b_joined = 0x370FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.xor(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -193,8 +193,8 @@ Describe Vim.Type.Blob
       let source_x = [0x2F, 0xFF, 0x99, 0x00, 0x2F, 0xFF, 0x99, 0x00]
       let source_a_joined = 0x18F03A44370FA344
       let source_b_joined = 0x370FA34418F03A44
-      let data_a = b.uint64bit(source_a_joined)
-      let data_b = b.uint64bit(source_b_joined)
+      let data_a = b.uint64(source_a_joined)
+      let data_b = b.uint64(source_b_joined)
       let data_x = b.xor(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -210,8 +210,8 @@ Describe Vim.Type.Blob
       let source_x = [0x10]
       let source_a_joined = 0x18
       let source_b_joined = 0x37
-      let data_a = b.uint8bit(source_a_joined)
-      let data_b = b.uint8bit(source_b_joined)
+      let data_a = b.uint8(source_a_joined)
+      let data_b = b.uint8(source_b_joined)
       let data_x = b.and(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -223,8 +223,8 @@ Describe Vim.Type.Blob
       let source_x = [0x10, 0x00]
       let source_a_joined = 0x18F0
       let source_b_joined = 0x370F
-      let data_a = b.uint16bit(source_a_joined)
-      let data_b = b.uint16bit(source_b_joined)
+      let data_a = b.uint16(source_a_joined)
+      let data_b = b.uint16(source_b_joined)
       let data_x = b.and(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -236,8 +236,8 @@ Describe Vim.Type.Blob
       let source_x = [0x10, 0x00, 0x22, 0x44]
       let source_a_joined = 0x18F03A44
       let source_b_joined = 0x370FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.and(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -249,8 +249,8 @@ Describe Vim.Type.Blob
       let source_x = [0x10, 0x00, 0x22, 0x44, 0x10, 0x00, 0x22, 0x44]
       let source_a_joined = 0x18F03A44370FA344
       let source_b_joined = 0x370FA34418F03A44
-      let data_a = b.uint64bit(source_a_joined)
-      let data_b = b.uint64bit(source_b_joined)
+      let data_a = b.uint64(source_a_joined)
+      let data_b = b.uint64(source_b_joined)
       let data_x = b.and(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -265,7 +265,7 @@ Describe Vim.Type.Blob
     It size 1 byte
       let source_x = [0xE7]
       let source_a_joined = 0x18
-      let data_a = b.uint8bit(source_a_joined)
+      let data_a = b.uint8(source_a_joined)
       let data_x = b.invert(data_a)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -276,7 +276,7 @@ Describe Vim.Type.Blob
     It size 2 byte
       let source_x = [0xE7, 0x0F]
       let source_a_joined = 0x18F0
-      let data_a = b.uint16bit(source_a_joined)
+      let data_a = b.uint16(source_a_joined)
       let data_x = b.invert(data_a)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -287,7 +287,7 @@ Describe Vim.Type.Blob
     It size 4 byte
       let source_x = [0xE7, 0x0F, 0xC5, 0xBB]
       let source_a_joined = 0x18F03A44
-      let data_a = b.uint32bit(source_a_joined)
+      let data_a = b.uint32(source_a_joined)
       let data_x = b.invert(data_a)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -298,7 +298,7 @@ Describe Vim.Type.Blob
     It size 8 byte
       let source_x = [0xE7, 0x0F, 0xC5, 0xBB, 0xC8, 0xF0, 0x5C, 0xBB]
       let source_a_joined = 0x18F03A44370FA344
-      let data_a = b.uint64bit(source_a_joined)
+      let data_a = b.uint64(source_a_joined)
       let data_x = b.invert(data_a)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -314,7 +314,7 @@ Describe Vim.Type.Blob
       let source_x = [0x06]
       let rot = 3 + (8 * (1 - 1))
       let source_a_joined = 0x18
-      let data_a = b.uint8bit(source_a_joined)
+      let data_a = b.uint8(source_a_joined)
       let data_x = b.rotl(data_a, rot)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -326,7 +326,7 @@ Describe Vim.Type.Blob
       let source_x = [0x06, 0x3C]
       let rot = 3 + (8 * (2 - 1))
       let source_a_joined = 0x18F0
-      let data_a = b.uint16bit(source_a_joined)
+      let data_a = b.uint16(source_a_joined)
       let data_x = b.rotl(data_a, rot)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -338,7 +338,7 @@ Describe Vim.Type.Blob
       let source_x = [0x06, 0x3C, 0x0E, 0x91]
       let rot = 3 + (8 * (4 - 1))
       let source_a_joined = 0x18F03A44
-      let data_a = b.uint32bit(source_a_joined)
+      let data_a = b.uint32(source_a_joined)
       let data_x = b.rotl(data_a, rot)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -350,7 +350,7 @@ Describe Vim.Type.Blob
       let source_x = [0x06, 0x3C, 0x0E, 0x91, 0x0D, 0xC3, 0xE8, 0xD1]
       let rot = 3 + (8 * (8 - 1))
       let source_a_joined = 0x18F03A44370FA344
-      let data_a = b.uint64bit(source_a_joined)
+      let data_a = b.uint64(source_a_joined)
       let data_x = b.rotl(data_a, rot)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -367,8 +367,8 @@ Describe Vim.Type.Blob
       let source_x = [0x4F]
       let source_a_joined = 0x18
       let source_b_joined = 0x37
-      let data_a = b.uint8bit(source_a_joined)
-      let data_b = b.uint8bit(source_b_joined)
+      let data_a = b.uint8(source_a_joined)
+      let data_b = b.uint8(source_b_joined)
       let data_x = b.uint_add(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -380,8 +380,8 @@ Describe Vim.Type.Blob
       let source_x = [0x4F, 0xFF]
       let source_a_joined = 0x18F0
       let source_b_joined = 0x370F
-      let data_a = b.uint16bit(source_a_joined)
-      let data_b = b.uint16bit(source_b_joined)
+      let data_a = b.uint16(source_a_joined)
+      let data_b = b.uint16(source_b_joined)
       let data_x = b.uint_add(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -393,8 +393,8 @@ Describe Vim.Type.Blob
       let source_x = [0x4F, 0xFF, 0xDD, 0x88]
       let source_a_joined = 0x18F03A44
       let source_b_joined = 0x370FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.uint_add(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -406,8 +406,8 @@ Describe Vim.Type.Blob
       let source_x = [0x4F, 0xFF, 0xDD, 0x88, 0x4F, 0xFF, 0xDE, 0x08]
       let source_a_joined = 0x18F03A44370FA384
       let source_b_joined = 0x370FA34418F03A84
-      let data_a = b.uint64bit(source_a_joined)
-      let data_b = b.uint64bit(source_b_joined)
+      let data_a = b.uint64(source_a_joined)
+      let data_b = b.uint64(source_b_joined)
       let data_x = b.uint_add(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -420,8 +420,8 @@ Describe Vim.Type.Blob
       let source_x = [0x37, 0xFF, 0xDD, 0x88]
       let source_a_joined =   0xF03A44
       let source_b_joined = 0x370FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       Throws /^vital: Vim.Type.Blob:/ b.uint_add(data_a, data_b)
     End
     " overflow error
@@ -429,8 +429,8 @@ Describe Vim.Type.Blob
       let source_x = [0x01, 0x4F, 0xFF, 0xDD, 0x88]
       let source_a_joined = 0x98F03A44
       let source_b_joined = 0xB70FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.add(data_a, data_b)
       Throws /^vital: Vim.Type.Blob:/ b.uint_add(data_a, data_b)
     End
@@ -439,8 +439,8 @@ Describe Vim.Type.Blob
       let source_x = [0x01, 0x4F, 0xFF, 0xDD, 0x88]
       let source_a_joined = 0x98F03A44
       let source_b_joined = 0xB70FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.add(data_a, data_b)
       let result = b.uint_add(data_a, data_b,'nooverflow')
       Assert True(result)
@@ -453,8 +453,8 @@ Describe Vim.Type.Blob
       let source_x = [0x4F, 0xFF, 0xDD, 0x88]
       let source_a_joined = 0x18F03A44
       let source_b_joined = 0x370FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.add(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -466,8 +466,8 @@ Describe Vim.Type.Blob
       let source_x = [0x37, 0xFF, 0xDD, 0x88]
       let source_a_joined =   0xF03A44
       let source_b_joined = 0x370FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.add(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -479,8 +479,8 @@ Describe Vim.Type.Blob
       let source_x = [0x18, 0xFF, 0xDD, 0x88]
       let source_a_joined = 0x18F03A44
       let source_b_joined =   0x0FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.add(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))
@@ -492,8 +492,8 @@ Describe Vim.Type.Blob
       let source_x = [0x01, 0x4F, 0xFF, 0xDD, 0x88]
       let source_a_joined = 0x98F03A44
       let source_b_joined = 0xB70FA344
-      let data_a = b.uint32bit(source_a_joined)
-      let data_b = b.uint32bit(source_b_joined)
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
       let data_x = b.add(data_a, data_b)
       Assert Equals(type(data_x), typeval)
       Assert Equals(len(data_x),  len(source_x))

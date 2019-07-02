@@ -22,19 +22,19 @@ FUNCTIONS				*Vital.Vim.Type.Blob-functions*
 new({length})				  *Vital.Vim.Type.Blob.new()*
 	Return new blob ({length} byte), data fill in 0.
 
-uint8bit({initial value})		  *Vital.Vim.Type.Blob.uint8bit()*
+uint8({initial value})			  *Vital.Vim.Type.Blob.uint8()*
 	Return uint8 (1 byte) blob.
 	Optional, data fill in {initial value}.
 
-uint16bit({initial value})		  *Vital.Vim.Type.Blob.uint16bit()*
+uint16({initial value})			  *Vital.Vim.Type.Blob.uint16()*
 	Return uint16 (2 byte) blob.
 	Optional, data fill in {initial value}.
 
-uint32bit({initial value})		  *Vital.Vim.Type.Blob.uint32bit()*
+uint32({initial value})			  *Vital.Vim.Type.Blob.uint32()*
 	Return uint32 (4 byte) blob.
 	Optional, data fill in {initial value}.
 
-uint64bit({initial value})		  *Vital.Vim.Type.Blob.uint64bit()*
+uint64({initial value})			  *Vital.Vim.Type.Blob.uint64()*
 	Return uint64 (8 byte) blob.
 	Optional, data fill in {initial value}.
 

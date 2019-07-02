@@ -19,23 +19,23 @@ function! s:new(length) abort
   return s:ByteArray.to_blob(retval)
 endfunction
 
-function! s:uint8bit(...) abort
-  return  s:_uintXbit(1,a:000)
+function! s:uint8(...) abort
+  return  s:_uintX(1,a:000)
 endfunction
 
-function! s:uint16bit(...) abort
-  return  s:_uintXbit(2,a:000)
+function! s:uint16(...) abort
+  return  s:_uintX(2,a:000)
 endfunction
 
-function! s:uint32bit(...) abort
-  return  s:_uintXbit(4,a:000)
+function! s:uint32(...) abort
+  return  s:_uintX(4,a:000)
 endfunction
 
-function! s:uint64bit(...) abort
-  return  s:_uintXbit(8,a:000)
+function! s:uint64(...) abort
+  return  s:_uintX(8,a:000)
 endfunction
 
-function! s:_uintXbit(length, initial) abort
+function! s:_uintX(length, initial) abort
   let length = a:length
   let inital = 0
   if !empty(a:initial)
