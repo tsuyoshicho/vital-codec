@@ -86,11 +86,11 @@ endfunction
 function! s:rotl(x, bits) abort
   let length = len(a:x)
   let retval = s:new(length)
-  let blocknum = a:bits / length
-  let shift    = a:bits % length
+  let blocknum = a:bits / 8
+  let shift    = a:bits % 8
   for i in range(length)
-    let targetindex = (i + blocknum) % length
-    let previndex = (i + length - 1) % length
+    let targetindex = (i + length - blocknum) % length
+    let previndex = (i + 1) % length
     let retval[targetindex] = s:int.uint8(s:bitwise.or(s:bitwise.lshift(a:x[i], shift),
                                                      \ s:bitwise.rshift(a:x[previndex], 8 - shift)))
   endfor
@@ -129,23 +129,23 @@ function! s:add(x, y) abort
     " skip
   elseif lenx < leny
     " expand x
-    let x = repeat([0], leny - lenx)+ x
+    let x = repeat([0], leny - lenx) + x
   else
     " expand y
-    let y = repeat([0], lenx - leny)+ y
+    let y = repeat([0], lenx - leny) + y
   endif
 
-  let length = len(a:x)
+  let length = len(x)
   let retval = repeat([0], length)
   let carry = 0
-  for i in range(length, 0, -1)
-    let retval[i] = s:int.uint8(a:x[i] + a:y[i] + carry)
-    let carry = (a:x[i] + a:y[i]) / 0xFF
+  for i in range(length - 1, 0, -1)
+    let retval[i] = s:int.uint8(x[i] + y[i] + carry)
+    let carry = (x[i] + y[i]) / 0x100
   endfor
   if carry
     let retval = [1] + retval
   endif
-  return  s:ByteArray.from_blob(retval)
+  return  s:ByteArray.to_blob(retval)
 endfunction
 
 function! s:_throw(message) abort
