@@ -137,12 +137,12 @@ function! s:siphash_state.setkey(key) abort
 endfunction
 
 function! s:siphash_state.round() abort
-  let self.v[0] = s:blob.uint_add(self.v[0], self.v[1])  " v0 += v1;
+  let self.v[0] = s:blob.uint_add(self.v[0], self.v[1], 'nooverflow')  " v0 += v1;
   let self.v[1] = s:blob.rotl(self.v[1], 13)             " v1 = ROTL(v1, 13);
   let self.v[1] = s:blob.xor(self.v[1], self.v[0])       " v1 ^= v0;
   let self.v[0] = s:blob.rotl(self.v[0], 32)             " v0 = ROTL(v0, 32);
 
-  let self.v[2] = s:blob.uint_add(self.v[2], self.v[3])  " v2 += v3;
+  let self.v[2] = s:blob.uint_add(self.v[2], self.v[3],  'nooverflow')  " v2 += v3;
   let self.v[3] = s:blob.rotl(self.v[3], 16)             " v3 = ROTL(v3, 16);
   let self.v[3] = s:blob.xor(self.v[3], self.v[2])       " v3 ^= v2;
 
