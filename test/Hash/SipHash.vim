@@ -224,7 +224,7 @@ function! s:suite.encode() abort
     else
       let outputdata = s:SipHash.digest_raw(inputdata[0:i-1])
     endif
-    call s:assert.equal(outputdata, s:ByteArray.to_blob(vectors_sip64[i]))
+    call s:assert.equal(s:ByteArray.from_blob(outputdata), vectors_sip64[i])
     " for j in range(len(outputdata))
     "   call s:assert.equal(outputdata[j], vectors_sip64[i][j])
     " endfor
