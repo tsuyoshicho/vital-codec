@@ -31,8 +31,8 @@ uint32({int})				  *Vital.Vim.Type.Number.uint32()*
 
 uint64({int})				  *Vital.Vim.Type.Number.uint64()*
 	Return uint64 (8 byte) casted integer from {int}.
+	Note:Support only |+num64|.
 
-Note: below functions will be moved to |Bitwise|.
 rotate8l({int}, {bits})			  *Vital.Vim.Type.Number.rotate8l()*
 	Return value that is {bits}-bit left bit-rotated with {int} as uint8.
 	Ex. >
@@ -57,9 +57,12 @@ rotate32r({int}, {bits})		  *Vital.Vim.Type.Number.rotate32r()*
 
 rotate64l({int}, {bits})		  *Vital.Vim.Type.Number.rotate64l()*
 	Return value that is {bits}-bit left bit-rotated with {int} as uint64.
+	Note:Support only |+num64|.
 
 rotate64r({int}, {bits})		  *Vital.Vim.Type.Number.rotate64r()*
 	Same as |Vital.Vim.Type.Number.rotate64l()|, shift right.
+	Note:Support only |+num64|.
+
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:

@@ -16,20 +16,22 @@ Describe Vim.Type.Number
   End
 
   Describe .uint32()
-    if has('num64')
-      It cast data
+    It cast data
+      if has('num64')
         Assert Equals(n.uint32(0x123456789), 0x23456789)
-      End
-    else
-      It cast data
-        Skip currently 32bit over not support in Vim
-      End
-    endif
+      else
+        Assert Equals(n.uint32(0x23456789), 0x23456789)
+      endif
+    End
   End
 
   Describe .uint64()
     It cast data
-      Skip currently 64bit over not support in Vim
+      if has('num64')
+        Assert Equals(n.uint64(0x2345678923456789), 0x2345678923456789)
+      else
+        Throws /^vital: Vim.Type.Number:/ n.uint64(0)
+      endif
     End
   End
 
@@ -92,7 +94,7 @@ Describe Vim.Type.Number
       End
     else
       It cast data
-        Skip currently 32bit over not support in Vim
+        Throws /^vital: Vim.Type.Number:/ n.rotate64l(0,0)
       End
     endif
   End
@@ -109,7 +111,7 @@ Describe Vim.Type.Number
       End
     else
       It cast data
-        Skip currently 32bit over not support in Vim
+        Throws /^vital: Vim.Type.Number:/ n.rotate64r(0,0)
       End
     endif
   End
