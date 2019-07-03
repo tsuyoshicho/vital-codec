@@ -112,8 +112,13 @@ function! s:uint_add(x, y,...) abort
       let overflow_check = 0
     endif
   endif
-  if overflow_check && (length < len(retval))
-    call s:_throw(printf('overflow %d byte uint.', length))
+  if length < len(retval)
+    if overflow_check
+      call s:_throw(printf('overflow %d byte uint.', length))
+    else
+      " treat size
+      let retval = retval[-length : -1]
+    endif
   endif
   return retval
 endfunction
