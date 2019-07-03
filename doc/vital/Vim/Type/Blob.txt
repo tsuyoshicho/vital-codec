@@ -19,6 +19,7 @@ INTERFACE				*Vital.Vim.Type.Blob-interface*
 ------------------------------------------------------------------------------
 FUNCTIONS				*Vital.Vim.Type.Blob-functions*
 
+Create Function
 new({length})				  *Vital.Vim.Type.Blob.new()*
 	Return new blob ({length} byte), data fill in 0.
 
@@ -38,7 +39,7 @@ uint64({initial value})			  *Vital.Vim.Type.Blob.uint64()*
 	Return uint64 (8 byte) blob.
 	Optional, data fill in {initial value}.
 
-
+Bitwise Function
 or({X}, {Y})				  *Vital.Vim.Type.Blob.or()*
 	Return new blob that is {X} or {Y} value.
 	NOTE: {X} and {Y} as same size.
@@ -55,13 +56,22 @@ invert({X})				  *Vital.Vim.Type.Blob.xor()*
 	Return new blob that is invert {X} value.
 
 rotl({X},{bits})			  *Vital.Vim.Type.Blob.rotl()*
+rotateleft({X},{bits})			  *Vital.Vim.Type.Blob.rotateleft()*
 	Return new blob that is {X} rotate {bits} bit left value.
+	NOTE:rotl is shorage function.
 
+rotr({X},{bits})			  *Vital.Vim.Type.Blob.rotr()*
+rotateright({X},{bits})			  *Vital.Vim.Type.Blob.rotateright()*
+	Return new blob that is {X} rotate {bits} bit right value.
+	NOTE:rotr is shorage function.
+
+Arithmetic Function
 add({X}, {Y})				  *Vital.Vim.Type.Blob.add()*
 	Return new blob that is {X} + {Y} value.
 
 uint_add({X}, {Y},{flag})		  *Vital.Vim.Type.Blob.uint_add()*
 	Return new blob that is {X} + {Y} value.
+	Value keep as {X}/{Y} uint size.
 	NOTE: {X} and {Y} as same size.
 	NOTE: When {flag} set 'nooverflow', then skip overflow check.
 	Otherwise result overflow throw exception.
