@@ -80,16 +80,14 @@ Describe Vim.Type.Blob
       Assert Equals(len(data),  8)
     End
     It cast any data
-      Skip 64bit data exist; When test process fail in themis
-      " let source = [0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08]
-      " let source_joined = 0x0F0E0D0C0B0A0908
-      " let data = b.uint64(source_joined)
-      " Assert Equals(type(data), typeval)
-      " Assert Equals(len(data),  len(source))
-      " for i in range(len(source))
-      "   :qa
-      "   Assert Equals(data[i],  source[i])
-      " endfor
+      let source = [0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08]
+      let source_joined = 0x0F0E0D0C0B0A0908
+      let data = b.uint64(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
     End
   End
 
