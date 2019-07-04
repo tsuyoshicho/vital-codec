@@ -83,6 +83,16 @@ function! s:invert(x) abort
   return retval
 endfunction
 
+function! s:rotateright(x, bits) abort
+  return s:rotr(a:x, a:bits)
+endfunction
+function! s:rotateleft(x, bits) abort
+  return s:rotl(a:x, a:bits)
+endfunction
+
+function! s:rotr(x, bits) abort
+  return s:rotl(a:x, len(a:x) - a:bits)
+endfunction
 function! s:rotl(x, bits) abort
   let length = len(a:x)
   let retval = s:new(length)

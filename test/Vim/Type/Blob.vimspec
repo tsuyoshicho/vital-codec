@@ -309,6 +309,13 @@ Describe Vim.Type.Blob
 
   " rotl(x, bits)
   Describe .rotl()
+    It non work
+      Skip all rotate function call for rotr()
+    End
+  End
+
+  " rotr(x, bits)
+  Describe .rotl()
     It size 1 byte
       let source_x = [0xC0]
       let rot = 3 + (8 * (1 - 1))
@@ -356,6 +363,20 @@ Describe Vim.Type.Blob
       for i in range(len(source_x))
         Assert Equals(data_x[i],  source_x[i])
       endfor
+    End
+  End
+
+  " rotateright(x, bits)
+  Describe .rotateright()
+    It non work
+      Skip all rotate function call for rotr()
+    End
+  End
+
+  " rotateleft(x, bits)
+  Describe .rotateleft()
+    It non work
+      Skip all rotate function call for rotr()
     End
   End
 
