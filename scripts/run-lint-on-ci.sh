@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# vital-codec do not work
-exit 0
-
 if [[ "$TRAVIS" != "true" ]]; then
   echo "This script is intended to be run on Travis CI" 1>&2
   exit 1
@@ -41,5 +38,5 @@ reviewdog -reporter=github-pr-check
 # Check tag name conflicts
 vim --cmd "try | helptags doc/ | catch | cquit | endtry" --cmd quit
 
-# Validate changelog
-ruby scripts/check-changelog.rb
+# # Validate changelog
+# ruby scripts/check-changelog.rb
