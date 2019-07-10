@@ -72,7 +72,7 @@ function! s:new(...) abort
 endfunction
 
 function! s:setkey(key) abort
-  call s:_common_hash().state.setkey(a:key)
+  call s:_common_hash().setkey(a:key)
 endfunction
 
 " compatible interface
@@ -93,6 +93,10 @@ function! s:digest_raw(bytes) abort
 endfunction
 
 " object interface
+function! s:OBJECT.setkey(key) abort
+  call self.state.setkey(a:key)
+endfunction
+
 function! s:OBJECT.sum(data) abort
   let bytes = s:ByteArray.from_string(a:data)
   return self.sum_raw(bytes)
