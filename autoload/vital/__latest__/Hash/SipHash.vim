@@ -205,7 +205,7 @@ function! s:siphash_state.hash(data) abort
       let self.v[3] = s:blob.xor(self.v[3], m) " v3 ^= m;
 
       " debug
-      cal self.trace(len(data))
+      call self.trace(len(data))
 
       for j in range(self.rounds.c)
         call self.round()
@@ -242,7 +242,7 @@ function! s:siphash_state.hash(data) abort
   let self.v[3] = s:blob.xor(self.v[3], blockshift) " v3 ^= b;
 
   " debug
-  cal self.trace(len(data))
+  call self.trace(len(data))
 
   for i in range(self.rounds.c)
     call self.round()
@@ -257,7 +257,7 @@ function! s:siphash_state.hash(data) abort
   endif
 
   " debug
-  cal self.trace(len(data))
+  call self.trace(len(data))
 
   for i in range(self.rounds.d)
     call self.round()
@@ -278,7 +278,7 @@ function! s:siphash_state.hash(data) abort
   let self.v[1] = s:bitwise.xor(self.v[1], 0xdd) " v1 ^= 0xdd;
 
   " debug
-  cal self.trace(len(data))
+  call self.trace(len(data))
 
   for i in range(self.rounds.d)
     call self.round()
