@@ -4,22 +4,13 @@ let s:assert = themis#helper('assert')
 function! s:suite.before()
   let s:SipHash = vital#vital#new().import('Hash.SipHash')
   let s:ByteArray = vital#vital#new().import('Data.List.Byte')
-endfunction
 
-function! s:suite.after()
-  unlet! s:SipHash
-endfunction
-
-function! s:suite.prop() abort
-   call s:assert.is_string(s:SipHash.name)
-   call s:assert.is_number(s:SipHash.hash_length)
-endfunction
-
-function! s:suite.encode() abort
   " key data
   let key = range(0,15)
+  call s:SipHash.setkey(key)
+
   " data define
-  let vectors_sip64 = [
+  let s:vectors_sip64 = [
         \ [
         \  0x31, 0x0e, 0x0e, 0xdd, 0x47, 0xdb, 0x6f, 0x72,
         \ ],
@@ -213,20 +204,48 @@ function! s:suite.encode() abort
         \  0x72, 0x45, 0x06, 0xeb, 0x4c, 0x32, 0x8a, 0x95,
         \ ],
         \]
+endfunction
 
-  call s:SipHash.setkey(key)
+function! s:suite.after()
+  unlet! s:SipHash
+  unlet! s:vectors_sip64
+endfunction
 
-  let inputdata = repeat([0], len(vectors_sip64))
-  for i in range(len(vectors_sip64))
+function! s:suite.prop() abort
+   call s:assert.is_string(s:SipHash.name)
+   call s:assert.is_number(s:SipHash.hash_length)
+endfunction
+
+function! s:suite.encode() abort
+  let inputdata = repeat([0], len(s:vectors_sip64))
+  for i in range(len(s:vectors_sip64))
     let inputdata[i] = i
     if i == 0
       let outputdata = s:SipHash.digest_raw([])
     else
       let outputdata = s:SipHash.digest_raw(inputdata[0:i-1])
     endif
-    call s:assert.equal(s:ByteArray.from_blob(outputdata), vectors_sip64[i])
+    call s:assert.equal(s:ByteArray.from_blob(outputdata), s:vectors_sip64[i],'sip64 test case:' . string(i))
     " for j in range(len(outputdata))
-    "   call s:assert.equal(outputdata[j], vectors_sip64[i][j])
+    "   call s:assert.equal(outputdata[j], s:vectors_sip64[i][j])
     " endfor
   endfor
 endfunction
+" function! s:suite.__encode__() abort
+"   let encode = themis#suite('encode')
+"   function! encode.sip64()
+"     let inputdata = repeat([0], len(s:vectors_sip64))
+"     for i in range(len(s:vectors_sip64))
+"       let inputdata[i] = i
+"       if i == 0
+"         let outputdata = s:SipHash.digest_raw([])
+"       else
+"         let outputdata = s:SipHash.digest_raw(inputdata[0:i-1])
+"       endif
+"       call s:assert.equal(s:ByteArray.from_blob(outputdata), s:vectors_sip64[i],'sip64 test case:' . string(i))
+"       " for j in range(len(outputdata))
+"       "   call s:assert.equal(outputdata[j], s:vectors_sip64[i][j])
+"       " endfor
+"     endfor
+"   endfunction
+" endfunction
