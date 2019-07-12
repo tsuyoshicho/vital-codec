@@ -46,9 +46,13 @@ HMAC.key({str|bytes})			  *Vital.Crypt.MAC.HMAC-HMAC.key()*
 HMAC.calc({data})			  *Vital.Crypt.MAC.HMAC-HMAC.calc()*
 	Calculate and return HMAC value that was bytes list.
 
-HMAC.hmac({data})			  *Vital.Crypt.MAC.HMAC-HMAC.hmac()*
+HMAC.mac({data})			  *Vital.Crypt.MAC.HMAC-HMAC.mac()*
 	Calculate and return HMAC value that was string
 	(calc result converted value).
+
+HMAC.hmac({data})			  *Vital.Crypt.MAC.HMAC-HMAC.hmac()*
+	This function is |Vital.Crypt.MAC.HMAC-HMAC.mac()|'s alias.
+
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
