@@ -96,8 +96,12 @@ function! s:HMAC.calc(data) abort
   return digest
 endfunction
 
-function! s:HMAC.hmac(data) abort
+function! s:HMAC.mac(data) abort
   return s:ByteArray.to_hexstring(self.calc(a:data))
+endfunction
+
+function! s:HMAC.hmac(data) abort
+  return self.mac(a:data)
 endfunction
 
 function! s:_throw(message) abort
