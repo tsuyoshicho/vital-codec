@@ -83,7 +83,7 @@ function! poly1305_state.init(key) abort
   let t[0] = s:blob.or(t[0], s:blob.lshift(t[1], 6))
 
   " state->r1 = t0 & 0x3ffff03; t1 >>= 20; t1 |= t2 << 12;
-  let self.r[1] = s:blob.and(t[1], 0z3ffff03)
+  let self.r[1] = s:blob.and(t[0], 0z3ffff03)
   let t[1] = s:blob.rshift(t[1], 20)
   let t[1] = s:blob.or(t[1], s:blob.lshift(t[2],12))
 
@@ -93,26 +93,26 @@ function! poly1305_state.init(key) abort
   let t[2] = s:blob.or(t[2], s:blob.lshift(t[3],18))
 
   " state->r3 = t2 & 0x3f03fff; t3 >>= 8;
-  let self.r[3] = s:blob.and(t[3], 0z3f03fff)
+  let self.r[3] = s:blob.and(t[2], 0z3f03fff)
   let t[3] = s:blob.rshift(t[3],  8)
 
   " state->r4 = t3 & 0x00fffff;
   let self.r[4] = s:blob.and(t[3], 0z00fffff)
 
-  let self.s[1] = self.r[1] * 5 " state->s1 = state->r1 * 5;
-  let self.s[2] = self.r[2] * 5 " state->s2 = state->r2 * 5;
-  let self.s[3] = self.r[3] * 5 " state->s3 = state->r3 * 5;
-  let self.s[4] = self.r[4] * 5 " state->s4 = state->r4 * 5;
+  let self.s[1] = s:blob.mul(self.r[1], 5) " state->s1 = state->r1 * 5;
+  let self.s[2] = s:blob.mul(self.r[2], 5) " state->s2 = state->r2 * 5;
+  let self.s[3] = s:blob.mul(self.r[3], 5) " state->s3 = state->r3 * 5;
+  let self.s[4] = s:blob.mul(self.r[4], 5) " state->s4 = state->r4 * 5;
 
   " init state
-  let self.h[0] = 0 " state->h0 = 0;
-  let self.h[1] = 0 " state->h1 = 0;
-  let self.h[2] = 0 " state->h2 = 0;
-  let self.h[3] = 0 " state->h3 = 0;
-  let self.h[4] = 0 " state->h4 = 0;
+  let self.h[0] = s:blob.uint32(0) " state->h0 = 0;
+  let self.h[1] = s:blob.uint32(0) " state->h1 = 0;
+  let self.h[2] = s:blob.uint32(0) " state->h2 = 0;
+  let self.h[3] = s:blob.uint32(0) " state->h3 = 0;
+  let self.h[4] = s:blob.uint32(0) " state->h4 = 0;
 
-  let self.buf_used = 0;    " state->buf_used = 0;
-  let self.key = a:key[16:] " memcpy(state->key, key + 16, sizeof(state->key));
+  let self.buf_used = 0                          " state->buf_used = 0;
+  let self.key = s:ByteArray.to_blob(a:key[16:]) " memcpy(state->key, key + 16, sizeof(state->key));
 endfunction
 
 function! poly1305_state.update(in) abort
@@ -124,9 +124,10 @@ function! poly1305_state.update(in) abort
     if (todo > in_len)                     "   if (todo > in_len)
       todo = in_len;                       "       todo = in_len;
     endif
-    for i in range(in_len)                 "   for (i = 0; i < todo; i++)
-      self.buf[self.buf_used + i] = in[i]; "       state->buf[state->buf_used + i] = in[i];
-    endfor
+
+    "   for (i = 0; i < todo; i++)
+    "       state->buf[state->buf_used + i] = in[i];
+    self.buf[self.buf_used : ] = in[0:todo]
 
     let self.buf_used += todo        "   state->buf_used += todo;
     let in_len        -= todo        "   in_len -= todo;
@@ -145,11 +146,14 @@ function! poly1305_state.update(in) abort
     let in_len = s:bitwise.and(in_len, 0x0000000f) "      in_len &= 0xf;
   endif                                            "  }
 
-  if in_len                      "  if (in_len) {
-    for i in range(in_len)       "      for (i = 0; i < in_len; i++)
-      let self.buf[i] = in[i]    "          state->buf[i] = in[i];
-      let self.buf_used = in_len "      state->buf_used = in_len;
-    endfor                       "  }
+  if in_len
+    "  if (in_len) {
+    "      for (i = 0; i < in_len; i++)
+    "          state->buf[i] = in[i];
+    "      state->buf_used = in_len;
+    "  }
+    let self.buf[:] = in[:]
+    let self.buf_used = in_len
   endif
 endfunction
 
@@ -251,8 +255,8 @@ function! poly1305_state.finish() abort
   let b = 0
   let nb = 0
 
-  if self.buf_used                         " if (state->buf_used)
-    self._update(self.buf, self.buf_used)  "     update(state, state->buf, state->buf_used);
+  if self.buf_used                              " if (state->buf_used)
+    call self._update(self.buf, self.buf_used)  "     update(state, state->buf, state->buf_used);
   endif
 
   " b = state->h0 >> 26; state->h0 = state->h0 & 0x3ffffff;
@@ -260,72 +264,87 @@ function! poly1305_state.finish() abort
   let self.h[0] = s:blob.and(self.h[0], 0z3ffffff)
 
   " state->h1 +=     b; b = state->h1 >> 26; state->h1 = state->h1 & 0x3ffffff;
-  state->h1 +=     b
-  b = state->h1 >> 26
-  state->h1 = state->h1 & 0x3ffffff
+  let self.h[1] = s:blob.uint_add(self.h[1], b, 'nooverflow')
+  let b = s:blob.rshift(self.h[1], 26)
+  let self.h[1] = s:blob.and(self.h[1], 0z3ffffff)
 
   " state->h2 +=     b; b = state->h2 >> 26; state->h2 = state->h2 & 0x3ffffff;
-  state->h2 +=     b
-  b = state->h2 >> 26
-  state->h2 = state->h2 & 0x3ffffff
+  let self.h[2] = s:blob.uint_add(self.h[2], b, 'nooverflow')
+  let b = s:blob.rshift(self.h[2], 26)
+  let self.h[2] = s:blob.and(self.h[2], 0z3ffffff)
 
   " state->h3 +=     b; b = state->h3 >> 26; state->h3 = state->h3 & 0x3ffffff;
-  state->h3 +=     b
-  b = state->h3 >> 26
-  state->h3 = state->h3 & 0x3ffffff
+  let self.h[3] = s:blob.uint_add(self.h[3], b, 'nooverflow')
+  let b = s:blob.rshift(self.h[3], 26)
+  let self.h[3] = s:blob.and(self.h[3], 0z3ffffff)
 
   " state->h4 +=     b; b = state->h4 >> 26; state->h4 = state->h4 & 0x3ffffff;
-  state->h4 +=     b
-  b = state->h4 >> 26
-  state->h4 = state->h4 & 0x3ffffff
+  let self.h[4] = s:blob.uint_add(self.h[4], b, 'nooverflow')
+  let b = s:blob.rshift(self.h[4], 26)
+  let self.h[4] = s:blob.and(self.h[4], 0z3ffffff)
 
   " state->h0 += b * 5;
-  state->h0 += b * 5
+  let self.h[0] = s:blob.mul(b, 5)
 
   " g0 = state->h0 + 5; b = g0 >> 26; g0 &= 0x3ffffff;
-  g0 = state->h0 + 5; b = g0 >> 26; g0 &= 0x3ffffff;
+  let g[0] = s:blob.uint_add(self.h[0], s:blob.uint32(5), 'nooverflow')
+  let b = s:blob.rshift(g[0], 26)
+  let g[0] = s:blob.and(g[0], 0z3ffffff)
 
   " g1 = state->h1 + b; b = g1 >> 26; g1 &= 0x3ffffff;
-  g1 = state->h1 + b; b = g1 >> 26; g1 &= 0x3ffffff;
+  let g[1] = s:blob.uint_add(self.h[1], b, 'nooverflow')
+  let b = s:blob.rshift(g[1], 26)
+  let g[1] = s:blob.and(g[1], 0z3ffffff)
 
   " g2 = state->h2 + b; b = g2 >> 26; g2 &= 0x3ffffff;
-  g2 = state->h2 + b; b = g2 >> 26; g2 &= 0x3ffffff;
+  let g[2] = s:blob.uint_add(self.h[2], b, 'nooverflow')
+  let b = s:blob.rshift(g[2], 26)
+  let g[1] = s:blob.and(g[2], 0z3ffffff)
 
   " g3 = state->h3 + b; b = g3 >> 26; g3 &= 0x3ffffff;
-  g3 = state->h3 + b; b = g3 >> 26; g3 &= 0x3ffffff;
+  let g[3] = s:blob.uint_add(self.h[3], b, 'nooverflow')
+  let b = s:blob.rshift(g[3], 26)
+  let g[1] = s:blob.and(g[3], 0z3ffffff)
 
   " g4 = state->h4 + b - (1 << 26);
   g4 = state->h4 + b - (1 << 26);
+  let g[4] = s:blob.uint_add(self.h[4], b, 'nooverflow')
+  let g[4] = s:blob.uint_sub(g[4], s:blob.uint32(s:bitwise.lshift(1, 26)), 'nounderflow')
 
-  b = (g4 >> 31) - 1;  " b = (g4 >> 31) - 1;
-  nb = ~b;             " nb = ~b;
-  state->h0 = (state->h0 & nb) | (g0 & b);  " state->h0 = (state->h0 & nb) | (g0 & b);
-  state->h1 = (state->h1 & nb) | (g1 & b);  " state->h1 = (state->h1 & nb) | (g1 & b);
-  state->h2 = (state->h2 & nb) | (g2 & b);  " state->h2 = (state->h2 & nb) | (g2 & b);
-  state->h3 = (state->h3 & nb) | (g3 & b);  " state->h3 = (state->h3 & nb) | (g3 & b);
-  state->h4 = (state->h4 & nb) | (g4 & b);  " state->h4 = (state->h4 & nb) | (g4 & b);
+  " b = (g4 >> 31) - 1;
+  let b = s:blob.rshift(g4, 31)
+  let b = s:blob.uint_sub(b, s:blob.uint32(1), 'nounderflow')
+  let nb = s:blob.invert(b) " nb = ~b;
 
-  f0 = ((state->h0      ) | (state->h1 << 26)) + (uint64_t)U8TO32_LE(&state->key[0]);   " f0 = ((state->h0      ) | (state->h1 << 26)) + (uint64_t)U8TO32_LE(&state->key[0]);
-  f1 = ((state->h1 >>  6) | (state->h2 << 20)) + (uint64_t)U8TO32_LE(&state->key[4]);   " f1 = ((state->h1 >>  6) | (state->h2 << 20)) + (uint64_t)U8TO32_LE(&state->key[4]);
-  f2 = ((state->h2 >> 12) | (state->h3 << 14)) + (uint64_t)U8TO32_LE(&state->key[8]);   " f2 = ((state->h2 >> 12) | (state->h3 << 14)) + (uint64_t)U8TO32_LE(&state->key[8]);
-  f3 = ((state->h3 >> 18) | (state->h4 <<  8)) + (uint64_t)U8TO32_LE(&state->key[12]);  " f3 = ((state->h3 >> 18) | (state->h4 <<  8)) + (uint64_t)U8TO32_LE(&state->key[12]);
+  " state->h0 = (state->h0 & nb) | (g0 & b);
+  " state->h1 = (state->h1 & nb) | (g1 & b);
+  " state->h2 = (state->h2 & nb) | (g2 & b);
+  " state->h3 = (state->h3 & nb) | (g3 & b);
+  " state->h4 = (state->h4 & nb) | (g4 & b);
+  for i in range(5)
+    let self.h[i] = s:blob.or(s:blob.and(self.h[i], nb), s:blob.and(g[i], b))
+  endfor
+
+  let f[0] = s:blob.add(s:blob.or(             (self.h[0]    ), s:blob.lshift(self.h[1], 26)), self.key[ 0 :  3])) " f0 = ((state->h0      ) | (state->h1 << 26)) + (uint64_t)U8TO32_LE(&state->key[0]);
+  let f[1] = s:blob.add(s:blob.or(s:blob.rshift(self.h[1],  6), s:blob.lshift(self.h[2], 20)), self.key[ 4 :  7])) " f1 = ((state->h1 >>  6) | (state->h2 << 20)) + (uint64_t)U8TO32_LE(&state->key[4]);
+  let f[2] = s:blob.add(s:blob.or(s:blob.rshift(self.h[2], 12), s:blob.lshift(self.h[3], 14)), self.key[ 8 : 11])) " f2 = ((state->h2 >> 12) | (state->h3 << 14)) + (uint64_t)U8TO32_LE(&state->key[8]);
+  let f[3] = s:blob.add(s:blob.or(s:blob.rshift(self.h[3], 18), s:blob.lshift(self.h[4],  8)), self.key[12 : 15])) " f3 = ((state->h3 >> 18) | (state->h4 <<  8)) + (uint64_t)U8TO32_LE(&state->key[12]);
 
   " U32TO8_LE(&mac[ 0], f0); f1 += (f0 >> 32);
-  U32TO8_LE(&mac[ 0], f0); f1 += (f0 >> 32);
   " U32TO8_LE(&mac[ 4], f1); f2 += (f1 >> 32);
-  U32TO8_LE(&mac[ 4], f1); f2 += (f1 >> 32);
   " U32TO8_LE(&mac[ 8], f2); f3 += (f2 >> 32);
-  U32TO8_LE(&mac[ 8], f2); f3 += (f2 >> 32);
   " U32TO8_LE(&mac[12], f3);
-  U32TO8_LE(&mac[12], f3);
 
+  " FIXIT:output create
+  " layout 0..3 f0 le byte list
+  " layout 4..7 f1 le byte list carry add
+  " ...
   return mac
 endfunction
 
 function! s:Poly1305.calc(data) abort
   return digest
 endfunction
-
 
 function! s:Poly1305.mac(data) abort
   return s:ByteArray.to_hexstring(self.calc(a:data))
