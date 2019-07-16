@@ -215,27 +215,28 @@ function! s:siphash_state.hash(data) abort
     endfor
   endif
 
+  let offset = (len(data) / 8) * 8
   if 0 != leftshift
     if leftshift > 6
-      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[6], 48))) " b |= ((uint64_t)in[6]) << 48;
+      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[offset + 6], 48))) " b |= ((uint64_t)in[6]) << 48;
     endif
     if leftshift > 5
-      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[5], 40))) " b |= ((uint64_t)in[5]) << 40;
+      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[offset + 5], 40))) " b |= ((uint64_t)in[5]) << 40;
     endif
     if leftshift > 4
-      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[4], 32))) " b |= ((uint64_t)in[4]) << 32;
+      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[offset + 4], 32))) " b |= ((uint64_t)in[4]) << 32;
     endif
     if leftshift > 3
-      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[3], 24))) " b |= ((uint64_t)in[3]) << 24;
+      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[offset + 3], 24))) " b |= ((uint64_t)in[3]) << 24;
     endif
     if leftshift > 2
-      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[2], 16))) " b |= ((uint64_t)in[2]) << 16;
+      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[offset + 2], 16))) " b |= ((uint64_t)in[2]) << 16;
     endif
     if leftshift > 1
-      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[1],  8))) " b |= ((uint64_t)in[1]) << 8;
+      let blockshift = s:blob.or(blockshift, s:blob.uint64(s:bitwise.lshift(data[offset + 1],  8))) " b |= ((uint64_t)in[1]) << 8;
     endif
     if leftshift > 0
-      let blockshift = s:blob.or(blockshift, s:blob.uint64(                 data[0],    )) " b |= ((uint64_t)in[0]);
+      let blockshift = s:blob.or(blockshift, s:blob.uint64(                 data[offset + 0],    )) " b |= ((uint64_t)in[0]);
     endif
   endif
 
