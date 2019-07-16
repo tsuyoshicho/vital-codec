@@ -154,8 +154,9 @@ function! s:add(x, y) abort
   let retval = repeat([0], length)
   let carry = 0
   for i in range(length - 1, 0, -1)
-    let retval[i] = s:int.uint8(x[i] + y[i] + carry)
-    let carry = (x[i] + y[i]) / 0x100
+    let sumvalue = x[i] + y[i] + carry
+    let retval[i] = s:int.uint8(sumvalue)
+    let carry = sumvalue / 0x100
   endfor
   if carry
     let retval = [1] + retval
