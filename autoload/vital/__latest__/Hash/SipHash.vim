@@ -280,7 +280,7 @@ function! s:siphash_state.hash(data) abort
     return output
   endif
 
-  let self.v[1] = s:bitwise.xor(self.v[1], 0xdd) " v1 ^= 0xdd;
+  let self.v[1] = s:blob.xor(self.v[1], s:blob.uint64(0xdd)) " v1 ^= 0xdd;
 
   " debug
   call self.trace(len(data))
