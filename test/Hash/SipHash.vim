@@ -501,3 +501,22 @@ function! s:suite.hash128() abort
     call s:assert.equal(s:ByteArray.from_blob(outputdata), s:vectors_sip128[i],'sip128 test case:' . string(i))
   endfor
 endfunction
+
+function! s:suite.__excepton__() abort
+  let excepton = themis#suite('excepton')
+
+  function! excepton.newlen() abort
+    Throws /^vital: Hash.Siphash:/ s:SipHash.new(100)
+  endfunction
+
+  function! excepton.argcount() abort
+    Throws /^vital: Hash.Siphash:/ s:SipHash.new(1,2)
+    Throws /^vital: Hash.Siphash:/ s:SipHash.new(1,2,3,4)
+  endfunction
+
+  function! excepton.keylen() abort
+    let hash = s:SipHash.new()
+    Throws /^vital: Hash.Siphash:/ hash.setkey([1,2])
+    Throws /^vital: Hash.Siphash:/ s:SipHash.setkey([1,2])
+  endfunction
+endfunction

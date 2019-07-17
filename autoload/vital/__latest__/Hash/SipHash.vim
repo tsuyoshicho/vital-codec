@@ -60,12 +60,12 @@ function! s:new(...) abort
     let obj.rounds.c = a:2
     let obj.rounds.d = a:3
   else
-    " throw e
+    call s:_throw(printf('unsupport arguments count:%d', a:0))
   endif
   if obj.hash_length == 64 || obj.hash_length == 128
     " legal
   else
-    " throw e
+    call s:_throw(printf('unsupport hash length:%d', obj.hash_length))
   endif
   let obj.state = deepcopy(s:siphash_state)
   return obj
@@ -135,7 +135,7 @@ let s:siphash_state = {
 
 function! s:siphash_state.setkey(key) abort
   if len(a:key) != 16
-    " throw e
+    call s:_throw(printf('unsupport key length:%d', len(a:key)))
   endif
   let self.key = copy(a:key)
 endfunction
@@ -298,6 +298,10 @@ function! s:siphash_state.hash(data) abort
   let output = output + s:ByteArray.endian_convert(s:ByteArray.from_blob(blockshift))
 
   return output
+endfunction
+
+function! s:_throw(message) abort
+  throw 'vital: Hash.SipHash: ' . a:message
 endfunction
 
 let &cpo = s:save_cpo
