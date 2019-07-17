@@ -203,7 +203,7 @@ function! s:siphash_state.hash(data) abort
     for i in range(0, len(data) - 7, 8)
       let tmp = data[i : i+7]
       if len(tmp) != 8
-        call add(tmp, repeat([0],8 - len(tmp)))
+        let tmp = tmp + repeat([0],8 - len(tmp))
       endif
       let m = s:ByteArray.to_blob(s:ByteArray.endian_convert(tmp))
       let self.v[3] = s:blob.xor(self.v[3], m) " v3 ^= m;
