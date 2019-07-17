@@ -200,7 +200,7 @@ function! s:siphash_state.hash(data) abort
   endif
 
   if len(data) >= 8
-    for i in range(0, len(data) - 7, 8)
+    for i in range(0, len(data) - 8, 8)
       let tmp = data[i : i+7]
       if len(tmp) != 8
         let tmp = tmp + repeat([0],8 - len(tmp))
