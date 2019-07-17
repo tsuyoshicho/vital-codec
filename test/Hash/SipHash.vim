@@ -506,21 +506,21 @@ function! s:suite.__excepton__()
   let excepton = themis#suite('excepton')
 
   function! excepton.before()
-    let s:SipHash = vital#vital#new().import('Hash.SipHash')
+    let self.SipHash = vital#vital#new().import('Hash.SipHash')
   endfunction
 
   function! excepton.newlen()
-    Throws /^vital: Hash.SipHash:/ s:SipHash.new(100)
+    Throws /^vital: Hash.SipHash:/ self.SipHash.new(100)
   endfunction
 
   function! excepton.argcount()
-    Throws /^vital: Hash.SipHash:/ s:SipHash.new(1,2)
-    Throws /^vital: Hash.SipHash:/ s:SipHash.new(1,2,3,4)
+    Throws /^vital: Hash.SipHash:/ self.SipHash.new(1,2)
+    Throws /^vital: Hash.SipHash:/ self.SipHash.new(1,2,3,4)
   endfunction
 
   function! excepton.keylen()
     let hash = s:SipHash.new()
     Throws /^vital: Hash.SipHash:/ hash.setkey([1,2])
-    Throws /^vital: Hash.SipHash:/ s:SipHash.setkey([1,2])
+    Throws /^vital: Hash.SipHash:/ self.SipHash.setkey([1,2])
   endfunction
 endfunction
