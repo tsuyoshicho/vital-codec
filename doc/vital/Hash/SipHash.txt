@@ -1,0 +1,76 @@
+*vital/Hash/SipHash.txt*		siphash utilities library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Hash.SipHash-contents*
+
+INTRODUCTION		                |Vital.Hash.SipHash-introduction|
+INTERFACE		                |Vital.Hash.SipHash-interface|
+  Functions                             |Vital.Hash.SipHash-functions|
+OBJECTS                                 |Vital.Hash.SipHash-objects|
+  Hash Object                           |Vital.Hash.SipHash-Hash|
+
+==============================================================================
+INTRODUCTION				*Vital.Hash.SipHash-introduction*
+
+*Vital.Hash.SipHash* is a SipHash Utilities Library.
+It provides functions to return the SipHash sum/digest of a given string as
+hex/bytes list.
+
+SipHash need initial key data.
+
+SipHash support Hash object creation. Hash object has custom length, hashing
+rounds setting.(example: length 128 bits, round 1-3 etc.)
+
+SipHash: a fast short-input PRF
+https://131002.net/siphash/
+
+==============================================================================
+INTERFACE				*Vital.Hash.SipHash-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Hash.SipHash-functions*
+
+new(...)				*Vital.Hash.SipHash.new()*
+	Create SipHash object.
+	Arguments support 0,1 or 3
+	0 is default SipHash setting, length 64 bits, and round 2-4 configuration.
+	1 is SipHash length x, and default setting round 2-4 configuration.
+	3 is SipHash length x and round y-z configuration.
+
+setkey({key})				*Vital.Hash.SipHash.setkey()*
+	Set default SipHash object's initial {key} data.
+	{key} is just 16 bytes bytes-list data.
+
+sum({str})				*Vital.Hash.SipHash.sum()*
+sum_raw({bytes})			*Vital.Hash.SipHash.sum_raw()*
+	Return SipHash hashed string from {str} or raw {bytes} list.
+	Use default SipHash object.
+
+digest({str})				*Vital.Hash.SipHash.digest()*
+digest_raw({bytes})			*Vital.Hash.SipHash.digest_raw()*
+	Return SipHash hashed bytes list from {str} or raw {bytes} list.
+	Use default SipHash object.
+
+
+==============================================================================
+OBJECTS                                 *Vital.Hash.SipHash-objects*
+
+------------------------------------------------------------------------------
+Hash Object                             *Vital.Hash.SipHash-Hash*
+
+setkey({key})				*Vital.Hash.SipHash-Hash.setkey()*
+	Set SipHash object's initial {key} data.
+	{key} is just 16 bytes bytes-list data.
+
+sum({str})				*Vital.Hash.SipHash-Hash.sum()*
+sum_raw({bytes})			*Vital.Hash.SipHash-Hash.sum_raw()*
+	Return SipHash hashed string from {str} or raw {bytes} list.
+
+digest({str})				*Vital.Hash.SipHash-Hash.digest()*
+digest_raw({bytes})			*Vital.Hash.SipHash-Hash.digest_raw()*
+	Return SipHash hashed bytes list from {str} or raw {bytes} list.
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
