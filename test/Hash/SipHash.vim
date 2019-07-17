@@ -470,12 +470,12 @@ function! s:suite.after()
   unlet! s:vectors_sip64
 endfunction
 
-function! s:suite.prop() abort
+function! s:suite.prop()
   call s:assert.is_string(s:SipHash.name)
   call s:assert.is_number(s:SipHash.hash_length)
 endfunction
 
-function! s:suite.hash64() abort
+function! s:suite.hash64()
   let inputdata = repeat([0], len(s:vectors_sip64))
   for i in range(len(s:vectors_sip64))
     let inputdata[i] = i
@@ -488,7 +488,7 @@ function! s:suite.hash64() abort
   endfor
 endfunction
 
-function! s:suite.hash128() abort
+function! s:suite.hash128()
   let inputdata = repeat([0], len(s:vectors_sip128))
   let hash = s:SipHash.new(128)
   for i in range(len(s:vectors_sip128))
@@ -502,21 +502,25 @@ function! s:suite.hash128() abort
   endfor
 endfunction
 
-function! s:suite.__excepton__() abort
+function! s:suite.__excepton__()
   let excepton = themis#suite('excepton')
 
-  function! excepton.newlen() abort
-    Throws /^vital: Hash.Siphash:/ s:SipHash.new(100)
+  function! excepton.before()
+    let s:SipHash = vital#vital#new().import('Hash.SipHash')
   endfunction
 
-  function! excepton.argcount() abort
-    Throws /^vital: Hash.Siphash:/ s:SipHash.new(1,2)
-    Throws /^vital: Hash.Siphash:/ s:SipHash.new(1,2,3,4)
+  function! excepton.newlen()
+    Throws /^vital: Hash.SipHash:/ s:SipHash.new(100)
   endfunction
 
-  function! excepton.keylen() abort
+  function! excepton.argcount()
+    Throws /^vital: Hash.SipHash:/ s:SipHash.new(1,2)
+    Throws /^vital: Hash.SipHash:/ s:SipHash.new(1,2,3,4)
+  endfunction
+
+  function! excepton.keylen()
     let hash = s:SipHash.new()
-    Throws /^vital: Hash.Siphash:/ hash.setkey([1,2])
-    Throws /^vital: Hash.Siphash:/ s:SipHash.setkey([1,2])
+    Throws /^vital: Hash.SipHash:/ hash.setkey([1,2])
+    Throws /^vital: Hash.SipHash:/ s:SipHash.setkey([1,2])
   endfunction
 endfunction
