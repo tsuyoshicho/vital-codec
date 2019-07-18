@@ -157,96 +157,140 @@ function! poly1305_state.update(in) abort
   endif
 endfunction
 
-function! poly1305_state._update(in,size) abort
-" 	uint32_t t0,t1,t2,t3;
-" 	uint64_t t[5];
-" 	uint32_t b;
-" 	uint64_t c;
-" 	size_t j;
-" 	unsigned char mp[16];
-"
-"     if (len < 16)
-" 		goto poly1305_donna_atmost15bytes;
-"
-" poly1305_donna_16bytes:
-" 	t0 = U8TO32_LE(in);
-" 	t1 = U8TO32_LE(in+4);
-" 	t2 = U8TO32_LE(in+8);
-" 	t3 = U8TO32_LE(in+12);
-"
-"     in += 16;
-" 	len -= 16;
-"
-"     state->h0 += t0 & 0x3ffffff;
-" 	state->h1 += ((((uint64_t)t1 << 32) | t0) >> 26) & 0x3ffffff;
-" 	state->h2 += ((((uint64_t)t2 << 32) | t1) >> 20) & 0x3ffffff;
-" 	state->h3 += ((((uint64_t)t3 << 32) | t2) >> 14) & 0x3ffffff;
-" 	state->h4 += (t3 >> 8) | (1 << 24);
-"
-" poly1305_donna_mul:
-" 	t[0] = mul32x32_64(state->h0,state->r0) +
-" 	       mul32x32_64(state->h1,state->s4) +
-" 	       mul32x32_64(state->h2,state->s3) +
-" 	       mul32x32_64(state->h3,state->s2) +
-" 	       mul32x32_64(state->h4,state->s1);
-" 	t[1] = mul32x32_64(state->h0,state->r1) +
-" 	       mul32x32_64(state->h1,state->r0) +
-" 	       mul32x32_64(state->h2,state->s4) +
-" 	       mul32x32_64(state->h3,state->s3) +
-" 	       mul32x32_64(state->h4,state->s2);
-" 	t[2] = mul32x32_64(state->h0,state->r2) +
-" 	       mul32x32_64(state->h1,state->r1) +
-" 	       mul32x32_64(state->h2,state->r0) +
-" 	       mul32x32_64(state->h3,state->s4) +
-" 	       mul32x32_64(state->h4,state->s3);
-" 	t[3] = mul32x32_64(state->h0,state->r3) +
-" 	       mul32x32_64(state->h1,state->r2) +
-" 	       mul32x32_64(state->h2,state->r1) +
-" 	       mul32x32_64(state->h3,state->r0) +
-" 	       mul32x32_64(state->h4,state->s4);
-" 	t[4] = mul32x32_64(state->h0,state->r4) +
-" 	       mul32x32_64(state->h1,state->r3) +
-" 	       mul32x32_64(state->h2,state->r2) +
-" 	       mul32x32_64(state->h3,state->r1) +
-" 	       mul32x32_64(state->h4,state->r0);
-"
-"                state->h0 = (uint32_t)t[0] & 0x3ffffff; c =           (t[0] >> 26);
-" 	t[1] += c; state->h1 = (uint32_t)t[1] & 0x3ffffff; b = (uint32_t)(t[1] >> 26);
-" 	t[2] += b; state->h2 = (uint32_t)t[2] & 0x3ffffff; b = (uint32_t)(t[2] >> 26);
-" 	t[3] += b; state->h3 = (uint32_t)t[3] & 0x3ffffff; b = (uint32_t)(t[3] >> 26);
-" 	t[4] += b; state->h4 = (uint32_t)t[4] & 0x3ffffff; b = (uint32_t)(t[4] >> 26);
-" 	state->h0 += b * 5;
-"
-"     if (len >= 16)
-" 		goto poly1305_donna_16bytes;
-"
-"     /* final bytes */
-" poly1305_donna_atmost15bytes:
-" 	if (!len)
-" 		return;
-"
-"     for (j = 0; j < len; j++)
-" 		mp[j] = in[j];
-" 	mp[j++] = 1;
-" 	for (; j < 16; j++)
-" 		mp[j] = 0;
-" 	len = 0;
-"
-"     t0 = U8TO32_LE(mp+0);
-" 	t1 = U8TO32_LE(mp+4);
-" 	t2 = U8TO32_LE(mp+8);
-" 	t3 = U8TO32_LE(mp+12);
-"
-"     state->h0 += t0 & 0x3ffffff;
-" 	state->h1 += ((((uint64_t)t1 << 32) | t0) >> 26) & 0x3ffffff;
-" 	state->h2 += ((((uint64_t)t2 << 32) | t1) >> 20) & 0x3ffffff;
-" 	state->h3 += ((((uint64_t)t3 << 32) | t2) >> 14) & 0x3ffffff;
-" 	state->h4 += (t3 >> 8);
-"
-"     goto poly1305_donna_mul;
-" }
-endfunction
+function! poly1305_state._update(in, size) abort
+  let in = a:in
+  let size = a:size
 
+  let t_x   = repeat([0],4)   " uint32_t t0,t1,t2,t3;
+  let t_buf = repeat([0],5)   " uint64_t t[5];
+  let b     = 0               " uint32_t b;
+  let c     = 0               " uint64_t c;
+  let j     = 0               " size_t j;
+  let mp    = repeat([0,16])  " unsigned char mp[16];
+
+  let offset = 0
+
+  "     if (len < 16)
+  " 		goto poly1305_donna_atmost15bytes;
+  while size >= 16
+    " poly1305_donna_16bytes:
+    " 	t0 = U8TO32_LE(in);
+    " 	t1 = U8TO32_LE(in+4);
+    " 	t2 = U8TO32_LE(in+8);
+    " 	t3 = U8TO32_LE(in+12);
+    for i in range(4)
+      let t_x[i] = in[offset + (i * 4): offset + (i * 4) + 3]
+    endfor
+
+    let offset += 16 " in += 16;
+    let len    -= 16 " len -= 16;
+
+    " state->h0 += t0 & 0x3ffffff;
+    let self.h[0] = s:blob.uint_add(self.h[0], s:blob.and(t_x[0], 0z3ffffff), 'nooverflow')
+    " state->h1 += ((((uint64_t)t1 << 32) | t0) >> 26) & 0x3ffffff;
+    let self.h[1] = s:blob.uint_add(self.h[1],
+          \ s:blob.and(
+          \  s:blob.rshift(
+          \   s:blob.or(
+          \    s:blob.lshift(t_x[1], 32),
+          \    t_x[0]),
+          \   26),
+          \ 0z3ffffff),
+          \ 'nooverflow')
+    " state->h2 += ((((uint64_t)t2 << 32) | t1) >> 20) & 0x3ffffff;
+    let self.h[2] = s:blob.uint_add(self.h[2],
+          \ s:blob.and(
+          \  s:blob.rshift(
+          \   s:blob.or(
+          \    s:blob.lshift(t_x[2], 32),
+          \    t_x[1]),
+          \   20),
+          \ 0z3ffffff),
+          \ 'nooverflow')
+    " state->h3 += ((((uint64_t)t3 << 32) | t2) >> 14) & 0x3ffffff;
+    let self.h[3] = s:blob.uint_add(self.h[3],
+          \ s:blob.and(
+          \  s:blob.rshift(
+          \   s:blob.or(
+          \    s:blob.lshift(t_x[3], 32),
+          \    t_x[2]),
+          \   14),
+          \ 0z3ffffff),
+          \ 'nooverflow')
+    " state->h4 += (t3 >> 8) | (1 << 24);
+    let self.h[4] = s:blob.uint_add(self.h[4],
+          \ s:blob.or(
+          \  s:blob.lshift(t_x[3], 32),
+          \  s:blob.rshift(     1, 24),
+          \ 'nooverflow')
+
+    " poly1305_donna_mul:
+    " 	t[0] = mul32x32_64(state->h0,state->r0) +
+    " 	       mul32x32_64(state->h1,state->s4) +
+    " 	       mul32x32_64(state->h2,state->s3) +
+    " 	       mul32x32_64(state->h3,state->s2) +
+    " 	       mul32x32_64(state->h4,state->s1);
+    " 	t[1] = mul32x32_64(state->h0,state->r1) +
+    " 	       mul32x32_64(state->h1,state->r0) +
+    " 	       mul32x32_64(state->h2,state->s4) +
+    " 	       mul32x32_64(state->h3,state->s3) +
+    " 	       mul32x32_64(state->h4,state->s2);
+    " 	t[2] = mul32x32_64(state->h0,state->r2) +
+    " 	       mul32x32_64(state->h1,state->r1) +
+    " 	       mul32x32_64(state->h2,state->r0) +
+    " 	       mul32x32_64(state->h3,state->s4) +
+    " 	       mul32x32_64(state->h4,state->s3);
+    " 	t[3] = mul32x32_64(state->h0,state->r3) +
+    " 	       mul32x32_64(state->h1,state->r2) +
+    " 	       mul32x32_64(state->h2,state->r1) +
+    " 	       mul32x32_64(state->h3,state->r0) +
+    " 	       mul32x32_64(state->h4,state->s4);
+    " 	t[4] = mul32x32_64(state->h0,state->r4) +
+    " 	       mul32x32_64(state->h1,state->r3) +
+    " 	       mul32x32_64(state->h2,state->r2) +
+    " 	       mul32x32_64(state->h3,state->r1) +
+    " 	       mul32x32_64(state->h4,state->r0);
+    "
+    "                state->h0 = (uint32_t)t[0] & 0x3ffffff; c =           (t[0] >> 26);
+    " 	t[1] += c; state->h1 = (uint32_t)t[1] & 0x3ffffff; b = (uint32_t)(t[1] >> 26);
+    " 	t[2] += b; state->h2 = (uint32_t)t[2] & 0x3ffffff; b = (uint32_t)(t[2] >> 26);
+    " 	t[3] += b; state->h3 = (uint32_t)t[3] & 0x3ffffff; b = (uint32_t)(t[3] >> 26);
+    " 	t[4] += b; state->h4 = (uint32_t)t[4] & 0x3ffffff; b = (uint32_t)(t[4] >> 26);
+    " 	state->h0 += b * 5;
+    "
+    "     if (len >= 16)
+    " 		goto poly1305_donna_16bytes;
+  endwhile
+
+  "     /* final bytes */
+  " poly1305_donna_atmost15bytes:
+  " 	if (!len)
+  " 		return;
+  if !size
+    return
+  endif
+  "
+  "     for (j = 0; j < len; j++)
+  " 		mp[j] = in[j];
+  " 	mp[j++] = 1;
+  " 	for (; j < 16; j++)
+  " 		mp[j] = 0;
+  " 	len = 0;
+  "
+  "     t0 = U8TO32_LE(mp+0);
+  " 	t1 = U8TO32_LE(mp+4);
+  " 	t2 = U8TO32_LE(mp+8);
+  " 	t3 = U8TO32_LE(mp+12);
+  "
+  "     state->h0 += t0 & 0x3ffffff;
+  " 	state->h1 += ((((uint64_t)t1 << 32) | t0) >> 26) & 0x3ffffff;
+  " 	state->h2 += ((((uint64_t)t2 << 32) | t1) >> 20) & 0x3ffffff;
+  " 	state->h3 += ((((uint64_t)t3 << 32) | t2) >> 14) & 0x3ffffff;
+  " 	state->h4 += (t3 >> 8);
+  "
+  "     goto poly1305_donna_mul;
+  " }
+endfunction
 
 function! poly1305_state.finish() abort
   let mac = repeat([0],16)
@@ -325,20 +369,26 @@ function! poly1305_state.finish() abort
     let self.h[i] = s:blob.or(s:blob.and(self.h[i], nb), s:blob.and(g[i], b))
   endfor
 
-  let f[0] = s:blob.add(s:blob.or(             (self.h[0]    ), s:blob.lshift(self.h[1], 26)), self.key[ 0 :  3])) " f0 = ((state->h0      ) | (state->h1 << 26)) + (uint64_t)U8TO32_LE(&state->key[0]);
-  let f[1] = s:blob.add(s:blob.or(s:blob.rshift(self.h[1],  6), s:blob.lshift(self.h[2], 20)), self.key[ 4 :  7])) " f1 = ((state->h1 >>  6) | (state->h2 << 20)) + (uint64_t)U8TO32_LE(&state->key[4]);
-  let f[2] = s:blob.add(s:blob.or(s:blob.rshift(self.h[2], 12), s:blob.lshift(self.h[3], 14)), self.key[ 8 : 11])) " f2 = ((state->h2 >> 12) | (state->h3 << 14)) + (uint64_t)U8TO32_LE(&state->key[8]);
-  let f[3] = s:blob.add(s:blob.or(s:blob.rshift(self.h[3], 18), s:blob.lshift(self.h[4],  8)), self.key[12 : 15])) " f3 = ((state->h3 >> 18) | (state->h4 <<  8)) + (uint64_t)U8TO32_LE(&state->key[12]);
+  let f[0] = s:blob.uint_add(s:blob.or(             (self.h[0]    ), s:blob.lshift(self.h[1], 26)), self.key[ 0 :  3]), 'nooverflow') " f0 = ((state->h0      ) | (state->h1 << 26)) + (uint64_t)U8TO32_LE(&state->key[0]);
+  let f[1] = s:blob.uint_add(s:blob.or(s:blob.rshift(self.h[1],  6), s:blob.lshift(self.h[2], 20)), self.key[ 4 :  7]), 'nooverflow') " f1 = ((state->h1 >>  6) | (state->h2 << 20)) + (uint64_t)U8TO32_LE(&state->key[4]);
+  let f[2] = s:blob.uint_add(s:blob.or(s:blob.rshift(self.h[2], 12), s:blob.lshift(self.h[3], 14)), self.key[ 8 : 11]), 'nooverflow') " f2 = ((state->h2 >> 12) | (state->h3 << 14)) + (uint64_t)U8TO32_LE(&state->key[8]);
+  let f[3] = s:blob.uint_add(s:blob.or(s:blob.rshift(self.h[3], 18), s:blob.lshift(self.h[4],  8)), self.key[12 : 15]), 'nooverflow') " f3 = ((state->h3 >> 18) | (state->h4 <<  8)) + (uint64_t)U8TO32_LE(&state->key[12]);
 
   " U32TO8_LE(&mac[ 0], f0); f1 += (f0 >> 32);
-  " U32TO8_LE(&mac[ 4], f1); f2 += (f1 >> 32);
-  " U32TO8_LE(&mac[ 8], f2); f3 += (f2 >> 32);
-  " U32TO8_LE(&mac[12], f3);
+  let mac[ 0: 3] = s:ByteArray.from_blob(f[0])
+  let f[1] = s:blob.uint_add(f[1], s:blob.rshift(f[0], 32), 'nooverflow')
 
-  " FIXIT:output create
-  " layout 0..3 f0 le byte list
-  " layout 4..7 f1 le byte list carry add
-  " ...
+  " U32TO8_LE(&mac[ 4], f1); f2 += (f1 >> 32);
+  let mac[ 4: 7] = s:ByteArray.from_blob(f[1])
+  let f[2] = s:blob.uint_add(f[2], s:blob.rshift(f[1], 32), 'nooverflow')
+
+  " U32TO8_LE(&mac[ 8], f2); f3 += (f2 >> 32);
+  let mac[ 8:11] = s:ByteArray.from_blob(f[2])
+  let f[3] = s:blob.uint_add(f[3], s:blob.rshift(f[2], 32), 'nooverflow')
+
+  " U32TO8_LE(&mac[12], f3);
+  let mac[12:15] = s:ByteArray.from_blob(f[3])
+
   return mac
 endfunction
 
