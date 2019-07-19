@@ -22,9 +22,79 @@ Describe Vim.Type.Blob
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  1)
     End
-    It cast any data
+    It cast any data number
       let source = [0x0F]
       let source_joined = 0x0F
+      let data = b.uint8(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+    It cast any data oversize number
+      let source = [0x0F]
+      let source_joined = 0x0A0F
+      let data = b.uint8(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+    It cast any data string
+      let source = [0x0F]
+      let source_joined = '16'
+      let data = b.uint8(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+    It cast any data oversize string
+      let source = [0x0F]
+      let source_joined = '2575'
+      let data = b.uint8(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+    It cast any data list
+      let source = [0x0F]
+      let source_joined = [0x0F]
+      let data = b.uint8(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+    It cast any data oversize list
+      let source = [0x0F]
+      let source_joined = [0x0A, 0x0F]
+      let data = b.uint8(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+    It cast any data blob
+      let source = [0x0F]
+      let source_joined = 0z0F
+      let data = b.uint8(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
+    It cast any data oversize blob
+      let source = [0x0F]
+      let source_joined = 0z0A0F
       let data = b.uint8(source_joined)
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  len(source))

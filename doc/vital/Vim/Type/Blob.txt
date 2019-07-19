@@ -26,18 +26,26 @@ new({length})				  *Vital.Vim.Type.Blob.new()*
 uint8({initial value})			  *Vital.Vim.Type.Blob.uint8()*
 	Return uint8 (1 byte) blob.
 	Optional, data fill in {initial value}.
+	{initial value} support for:
+	  - Number(positive int)
+	  - String(digits number like)
+	  - Bytes-like List(unmatch size ok)
+	  - Blob(unmatch size ok)
 
 uint16({initial value})			  *Vital.Vim.Type.Blob.uint16()*
 	Return uint16 (2 byte) blob.
-	Optional, data fill in {initial value}.
+	Optional, data fill in {initial value}.{initial value} support same as
+	|Vital.Vim.Type.Blob.uint8()|.
 
 uint32({initial value})			  *Vital.Vim.Type.Blob.uint32()*
 	Return uint32 (4 byte) blob.
-	Optional, data fill in {initial value}.
+	Optional, data fill in {initial value}.{initial value} support same as
+	|Vital.Vim.Type.Blob.uint8()|.
 
 uint64({initial value})			  *Vital.Vim.Type.Blob.uint64()*
 	Return uint64 (8 byte) blob.
-	Optional, data fill in {initial value}.
+	Optional, data fill in {initial value}.{initial value} support same as
+	|Vital.Vim.Type.Blob.uint8()|.
 
 Bitwise Function
 or({X}, {Y})				  *Vital.Vim.Type.Blob.or()*
@@ -65,10 +73,13 @@ rotateright({X},{bits})			  *Vital.Vim.Type.Blob.rotateright()*
 	Return new blob that is {X} rotate {bits} bit right value.
 	NOTE:rotr is shorage function.
 
+
 Arithmetic Function
 add({X}, {Y})				  *Vital.Vim.Type.Blob.add()*
 	Return new blob that is {X} + {Y} value.
 
+
+Arithmetic Unsigned Integer Function
 uint_add({X}, {Y},{flag})		  *Vital.Vim.Type.Blob.uint_add()*
 	Return new blob that is {X} + {Y} value.
 	Value keep as {X}/{Y} uint size.

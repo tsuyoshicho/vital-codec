@@ -6,45 +6,77 @@ set cpo&vim
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:Bitwise   = s:V.import('Bitwise')
+  let s:Type      = s:V.import('Vim.Type')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Data.List.Byte']
+  return ['Bitwise', 'Vim.Type', 'Data.List.Byte']
 endfunction
 
 function! s:new(length) abort
-  let retval = repeat([0],a:length)
+  let retval = repeat([0], a:length)
   return s:ByteArray.to_blob(retval)
 endfunction
 
 function! s:uint8(...) abort
-  return  s:_uintX(1,a:000)
+  return  s:_uintX( 8, a:000)
 endfunction
 
 function! s:uint16(...) abort
-  return  s:_uintX(2,a:000)
+  return  s:_uintX(16, a:000)
 endfunction
 
 function! s:uint32(...) abort
-  return  s:_uintX(4,a:000)
+  return  s:_uintX(32, a:000)
 endfunction
 
 function! s:uint64(...) abort
-  return  s:_uintX(8,a:000)
+  return  s:_uintX(64, a:000)
 endfunction
 
-function! s:_uintX(length, initial) abort
-  let length = a:length
-  let initial = 0
-  if !empty(a:initial)
+function! s:_uintX(bits, initial) abort
+  let bits = a:bits
+  let length = bits / 8
+
+  if empty(a:initial)
+    let data = repeat([0], length)
+  else
     let initial = a:initial[0]
+    let typeval = type(initial)
+
+    if typeval == s:Type.types.number
+      if bits == 8
+        let uintval = s:Bitwise.uint8(initial)
+      elseif bits == 16
+        let uintval = s:Bitwise.uint16(initial)
+      elseif bits == 32
+        let uintval = s:Bitwise.uint32(initial)
+      elseif bits == 64
+        let uintval = s:Bitwise.uint64(initial)
+      endif
+      let data = s:ByteArray.from_int(uintval, bits)
+    elseif typeval == s:Type.types.string
+      let data = s:ByteArray.from_string(initial)
+    elseif typeval == s:Type.types.list && s:ByteArray.validate(initial)
+      let data = initial
+    " types.blob currently not support
+    " elseif typeval == s:Type.types.blob
+    " temporary fix
+    elseif typeval == type(0z00)
+      let data = s:ByteArray.from_blob(initial)
+    else
+      call s:_throw('non-support value type')
+    endif
   endif
-  let retval = s:new(length)
-  for i in range(length)
-    let retval[i] = s:Bitwise.uint8(s:Bitwise.rshift(initial, (8 * (length - (i + 1)))))
-  endfor
-  return retval
+
+  if length > len(data)
+    let data = repeat([0], length - len(data)) + data
+  elseif length < len(data)
+    let data = data[-length:-1]
+  endif
+
+  return s:ByteArray.to_blob(data)
 endfunction
 
 " bit operation
