@@ -28,7 +28,7 @@ uint8({initial value})			  *Vital.Vim.Type.Blob.uint8()*
 	Optional, data fill in {initial value}.
 	{initial value} support for:
 	  - Number(positive int)
-	  - String(digits number like)
+	  - String(hex num string)
 	  - Bytes-like List(unmatch size ok)
 	  - Blob(unmatch size ok)
 

@@ -57,11 +57,11 @@ function! s:_uintX(bits, initial) abort
       endif
       let data = s:ByteArray.from_int(uintval, bits)
     elseif typeval == s:Type.types.string
-      let data = s:ByteArray.from_string(initial)
+      let data = s:ByteArray.from_hexstring(initial)
     elseif typeval == s:Type.types.list && s:ByteArray.validate(initial)
       let data = initial
     " types.blob currently not support
-    " elseif typeval == s:Type.types.blob
+    " elseif typeval == s:type.types.blob
     " temporary fix
     elseif typeval == type(0z00)
       let data = s:ByteArray.from_blob(initial)
