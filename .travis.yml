@@ -1,4 +1,4 @@
-aanguage: generic
+language: generic
 dist: xenial
 git:
   depth: 10
