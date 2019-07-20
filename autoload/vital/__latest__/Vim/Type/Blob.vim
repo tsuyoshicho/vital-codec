@@ -142,8 +142,7 @@ endfunction
 
 " Arithmetic Function
 function! s:add(x, y) abort
-  let x = s:ByteArray.from_blob(a:x)
-  let y = s:ByteArray.from_blob(a:y)
+  let [x, y] = s:_arith_arg_to_list(a:x, a:y)
 
   let lenx = len(x)
   let leny = len(y)
@@ -225,6 +224,25 @@ function! s:lshift(x, bits) abort
   let retval[0 : len(shifted) - 1] = shifted[:]
 
   return retval
+endfunction
+
+function! s:_arith_arg_to_list(x, y) abort
+  let x = s:ByteArray.from_blob(a:x)
+
+  let typeval = type(a:y)
+  if typeval == s:type.types.number
+    let y = s:ByteArray.from_int(a:y, len(x) * 8)
+  " types.blob currently not support
+  " elseif typeval == s:type.types.blob
+  " temporary fix
+  elseif typeval == type(0z00)
+    let y = s:ByteArray.from_blob(a:y)
+  else
+    call s:_throw('non-support value type')
+  endif
+  unlet typeval
+
+  return [x,y]
 endfunction
 
 " Arithmetic Unsigned Integer Function

@@ -541,6 +541,19 @@ Describe Vim.Type.Blob
         Assert Equals(data_x[i],  source_x[i])
       endfor
     End
+    It size 4 byte y is small, b as number
+      let source_x = [0x18, 0xF0, 0xDD, 0x88]
+      let source_a_joined = 0x18F03A44
+      let source_b_joined =     0xA344
+      let data_a = b.uint32(source_a_joined)
+      let data_b = source_b_joined
+      let data_x = b.add(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
   End
 
   " rshift(x, bits)
