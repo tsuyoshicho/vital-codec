@@ -22,6 +22,9 @@ Describe Vim.Type.Blob
       Assert Equals(type(data), typeval)
       Assert Equals(len(data),  1)
     End
+    It cast unsupport data
+      Throws /^vital: Vim.Type.Blob:/ b.uint8({})
+    End
     It cast any data number
       let source = [0x0F]
       let source_joined = 0x0F
@@ -327,6 +330,13 @@ Describe Vim.Type.Blob
         Assert Equals(data_x[i],  source_x[i])
       endfor
     End
+    It size unmatch
+      let source_a_joined = 0x18F03A44
+      let source_b_joined = 0x370F
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint16(source_b_joined)
+      Throws /^vital: Vim.Type.Blob:/ b.and(data_a, data_b)
+    End
   End
 
   " invert(x)
@@ -377,14 +387,23 @@ Describe Vim.Type.Blob
     End
   End
 
-  " rotl(x, bits)
-  Describe .rotl()
-    It non work
-      Skip all rotate function call for rotr()
+  " rotr(x, bits)
+  Describe .rotr()
+    It call only test function call for rotl()
+      let source_x = [0x03, 0x1E]
+      let rot = 3
+      let source_a_joined = 0x18F0
+      let data_a = b.uint16(source_a_joined)
+      let data_x = b.rotr(data_a, rot)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
     End
   End
 
-  " rotr(x, bits)
+  " rotl(x, bits)
   Describe .rotl()
     It size 1 byte
       let source_x = [0xC0]
@@ -438,15 +457,33 @@ Describe Vim.Type.Blob
 
   " rotateright(x, bits)
   Describe .rotateright()
-    It non work
-      Skip all rotate function call for rotr()
+    It call only test function call for rotr()
+      let source_x = [0x03, 0x1E]
+      let rot = 3
+      let source_a_joined = 0x18F0
+      let data_a = b.uint16(source_a_joined)
+      let data_x = b.rotateright(data_a, rot)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
     End
   End
 
   " rotateleft(x, bits)
   Describe .rotateleft()
-    It non work
-      Skip all rotate function call for rotr()
+    It call only test function call for rotl()
+      let source_x = [0x80, 0xC7]
+      let rot = 3 + (8 * (2 - 1))
+      let source_a_joined = 0x18F0
+      let data_a = b.uint16(source_a_joined)
+      let data_x = b.rotateleft(data_a, rot)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
     End
   End
 

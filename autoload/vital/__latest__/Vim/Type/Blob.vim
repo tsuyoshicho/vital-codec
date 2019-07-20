@@ -122,7 +122,7 @@ function! s:rotateleft(x, bits) abort
 endfunction
 
 function! s:rotr(x, bits) abort
-  return s:rotl(a:x, len(a:x) - a:bits)
+  return s:rotl(a:x, (len(a:x) * 8) - a:bits)
 endfunction
 function! s:rotl(x, bits) abort
   let length = len(a:x)
