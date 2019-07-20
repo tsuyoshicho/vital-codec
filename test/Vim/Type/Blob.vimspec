@@ -487,6 +487,141 @@ Describe Vim.Type.Blob
     End
   End
 
+  " add(x, y)
+  Describe .add()
+    It size 4 byte same size
+      let source_x = [0x4F, 0xFF, 0xDD, 0x88]
+      let source_a_joined = 0x18F03A44
+      let source_b_joined = 0x370FA344
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
+      let data_x = b.add(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 4 byte x is samll
+      let source_x = [0x37, 0x0F, 0xDD, 0x88]
+      let source_a_joined =     0x3A44
+      let source_b_joined = 0x370FA344
+      let data_a = b.uint16(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
+      let data_x = b.add(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 4 byte y is small
+      let source_x = [0x18, 0xF0, 0xDD, 0x88]
+      let source_a_joined = 0x18F03A44
+      let source_b_joined =     0xA344
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint16(source_b_joined)
+      let data_x = b.add(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 4 byte carry over
+      let source_x = [0x01, 0x4F, 0xFF, 0xDD, 0x88]
+      let source_a_joined = 0x98F03A44
+      let source_b_joined = 0xB70FA344
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
+      let data_x = b.add(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+  End
+
+  " rshift(x, bits)
+  Describe .rshift()
+    It shift check
+      let source_x = [0xAB]
+      let shift = 8
+      let source_a_joined = 0xABCD
+      let data_a = b.uint16(source_a_joined)
+      let data_x = b.rshift(data_a, shift)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It non_block shift check
+      let source_x = [0x0A, 0xBC]
+      let shift = 4
+      let source_a_joined = 0xABCD
+      let data_a = b.uint16(source_a_joined)
+      let data_x = b.rshift(data_a, shift)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It -1 block/top cut shift check
+      let source_x = [0xBC, 0xD0]
+      let shift = 12
+      let source_a_joined = 0x0BCD0000
+      let data_a = b.uint32(source_a_joined)
+      let data_x = b.rshift(data_a, shift)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+  End
+
+  " lshift(x, bits)
+  Describe .lshift()
+    It shift check
+      let source_x = [0xAB, 0x00]
+      let shift = 8
+      let source_a_joined = 0xAB
+      let data_a = b.uint8(source_a_joined)
+      let data_x = b.lshift(data_a, shift)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It non-block shift check
+      let source_x = [0x0A, 0xB0]
+      let shift = 4
+      let source_a_joined = 0xAB
+      let data_a = b.uint8(source_a_joined)
+      let data_x = b.lshift(data_a, shift)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It +1 block/top cut shift check
+      let source_x = [0xB0, 0x00]
+      let shift = 12
+      let source_a_joined = 0x0B
+      let data_a = b.uint8(source_a_joined)
+      let data_x = b.lshift(data_a, shift)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+  End
 
   " uint_add(x, y)
   Describe .uint_add()
@@ -567,62 +702,6 @@ Describe Vim.Type.Blob
       let data_b = b.uint32(source_b_joined)
       let result = b.uint_add(data_a, data_b)
       Assert NotEmpty(result)
-    End
-  End
-
-  " add(x, y)
-  Describe .add()
-    It size 4 byte same size
-      let source_x = [0x4F, 0xFF, 0xDD, 0x88]
-      let source_a_joined = 0x18F03A44
-      let source_b_joined = 0x370FA344
-      let data_a = b.uint32(source_a_joined)
-      let data_b = b.uint32(source_b_joined)
-      let data_x = b.add(data_a, data_b)
-      Assert Equals(type(data_x), typeval)
-      Assert Equals(len(data_x),  len(source_x))
-      for i in range(len(source_x))
-        Assert Equals(data_x[i],  source_x[i])
-      endfor
-    End
-    It size 4 byte x is samll
-      let source_x = [0x37, 0x0F, 0xDD, 0x88]
-      let source_a_joined =     0x3A44
-      let source_b_joined = 0x370FA344
-      let data_a = b.uint16(source_a_joined)
-      let data_b = b.uint32(source_b_joined)
-      let data_x = b.add(data_a, data_b)
-      Assert Equals(type(data_x), typeval)
-      Assert Equals(len(data_x),  len(source_x))
-      for i in range(len(source_x))
-        Assert Equals(data_x[i],  source_x[i])
-      endfor
-    End
-    It size 4 byte y is small
-      let source_x = [0x18, 0xF0, 0xDD, 0x88]
-      let source_a_joined = 0x18F03A44
-      let source_b_joined =     0xA344
-      let data_a = b.uint32(source_a_joined)
-      let data_b = b.uint16(source_b_joined)
-      let data_x = b.add(data_a, data_b)
-      Assert Equals(type(data_x), typeval)
-      Assert Equals(len(data_x),  len(source_x))
-      for i in range(len(source_x))
-        Assert Equals(data_x[i],  source_x[i])
-      endfor
-    End
-    It size 4 byte carry over
-      let source_x = [0x01, 0x4F, 0xFF, 0xDD, 0x88]
-      let source_a_joined = 0x98F03A44
-      let source_b_joined = 0xB70FA344
-      let data_a = b.uint32(source_a_joined)
-      let data_b = b.uint32(source_b_joined)
-      let data_x = b.add(data_a, data_b)
-      Assert Equals(type(data_x), typeval)
-      Assert Equals(len(data_x),  len(source_x))
-      for i in range(len(source_x))
-        Assert Equals(data_x[i],  source_x[i])
-      endfor
     End
   End
 End

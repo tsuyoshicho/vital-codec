@@ -23,6 +23,7 @@ Create Function
 new({length})				  *Vital.Vim.Type.Blob.new()*
 	Return new blob ({length} byte), data fill in 0.
 
+Unsigned Integer Create/Cast Function
 uint8({initial value})			  *Vital.Vim.Type.Blob.uint8()*
 	Return uint8 (1 byte) blob.
 	Optional, data fill in {initial value}.
@@ -63,13 +64,13 @@ and({X}, {Y})				  *Vital.Vim.Type.Blob.and()*
 invert({X})				  *Vital.Vim.Type.Blob.invert()*
 	Return new blob that is invert {X} value.
 
-rotl({X},{bits})			  *Vital.Vim.Type.Blob.rotl()*
-rotateleft({X},{bits})			  *Vital.Vim.Type.Blob.rotateleft()*
+rotl({X}, {bits})			  *Vital.Vim.Type.Blob.rotl()*
+rotateleft({X}, {bits})			  *Vital.Vim.Type.Blob.rotateleft()*
 	Return new blob that is {X} rotate {bits} bit left value.
 	NOTE:rotl is shorage function.
 
-rotr({X},{bits})			  *Vital.Vim.Type.Blob.rotr()*
-rotateright({X},{bits})			  *Vital.Vim.Type.Blob.rotateright()*
+rotr({X}, {bits})			  *Vital.Vim.Type.Blob.rotr()*
+rotateright({X}, {bits})			  *Vital.Vim.Type.Blob.rotateright()*
 	Return new blob that is {X} rotate {bits} bit right value.
 	NOTE:rotr is shorage function.
 
@@ -78,9 +79,15 @@ Arithmetic Function
 add({X}, {Y})				  *Vital.Vim.Type.Blob.add()*
 	Return new blob that is {X} + {Y} value.
 
+rshift({X}, {bits})			  *Vital.Vim.Type.Blob.rshift()*
+	Return new blob that is {X} right shift {bits} bit value.
+
+lshift({X}, {bits})			  *Vital.Vim.Type.Blob.lshift()*
+	Return new blob that is {X} left shift {bits} bit value.
+
 
 Arithmetic Unsigned Integer Function
-uint_add({X}, {Y},{flag})		  *Vital.Vim.Type.Blob.uint_add()*
+uint_add({X}, {Y}, {flag})		  *Vital.Vim.Type.Blob.uint_add()*
 	Return new blob that is {X} + {Y} value.
 	Value keep as {X}/{Y} uint size.
 	NOTE: {X} and {Y} as same size.

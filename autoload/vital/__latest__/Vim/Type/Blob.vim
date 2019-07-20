@@ -14,11 +14,13 @@ function! s:_vital_depends() abort
   return ['Bitwise', 'Vim.Type', 'Data.List.Byte']
 endfunction
 
+" Create Function
 function! s:new(length) abort
   let retval = repeat([0], a:length)
   return s:ByteArray.to_blob(retval)
 endfunction
 
+" Unsigned Integer Create/Cast Function
 function! s:uint8(...) abort
   return  s:_uintX( 8, a:000)
 endfunction
@@ -79,7 +81,7 @@ function! s:_uintX(bits, initial) abort
   return s:ByteArray.to_blob(data)
 endfunction
 
-" bit operation
+" Bitwise Function
 function! s:or(x, y) abort
   return s:_bitop(a:x, a:y, s:Bitwise.or)
 endfunction
@@ -138,32 +140,7 @@ function! s:rotl(x, bits) abort
   return retval
 endfunction
 
-" Arithmetic operation
-function! s:uint_add(x, y,...) abort
-  " same size check
-  if len(a:x) != len(a:y)
-    call s:_throw('argments x and y''s size discrepancy.')
-  endif
-  let length = len(a:x)
-  let retval = s:add(a:x, a:y)
-
-  let overflow_check = 0
-  if a:0 > 0
-    if a:1 is? 'overflow'
-      let overflow_check = 1
-    endif
-  endif
-  if length < len(retval)
-    if overflow_check
-      call s:_throw(printf('overflow %d byte uint.', length))
-    else
-      " treat size
-      let retval = retval[-length : -1]
-    endif
-  endif
-  return retval
-endfunction
-
+" Arithmetic Function
 function! s:add(x, y) abort
   let x = s:ByteArray.from_blob(a:x)
   let y = s:ByteArray.from_blob(a:y)
@@ -194,6 +171,93 @@ function! s:add(x, y) abort
   endif
   return  s:ByteArray.to_blob(retval)
 endfunction
+
+function! s:rshift(x, bits) abort
+  if (len(a:x) * 8) <= a:bits
+    call s:_throw('shift size over.')
+  endif
+
+  let blocknum = a:bits / 8
+  let shift    = a:bits % 8
+
+  " blocknum lower cut
+  let value = a:x[ : (len(a:x) - blocknum) - 1]
+
+  " create data : size+1 and save it
+  let data = s:new(len(value) + 1)
+  let data[1:] = value[:]
+
+  " rotr
+  let shifted = s:rotr(data, shift)
+  " cut top
+  let shifted = shifted[1 : ]
+
+  " if top is all 0 cut
+  if shifted[0] == 0
+    let shifted_new = s:new(len(shifted) - 1)
+    let shifted_new[:] = shifted[1 : ]
+    let shifted = shifted_new
+  endif
+
+  return shifted
+endfunction
+
+function! s:lshift(x, bits) abort
+  let blocknum = a:bits / 8
+  let shift    = a:bits % 8
+
+  " +1 data create
+  let data = s:new(len(a:x) + 1)
+
+  " save data and shift(rotl)
+  let data[1:] = a:x[:]
+  let shifted = s:rotl(data, shift)
+
+  " if top is all 0 cut
+  if shifted[0] == 0
+    let shifted_new = s:new(len(shifted) - 1)
+    let shifted_new[:] = shifted[1 : ]
+    let shifted = shifted_new
+  endif
+
+  " add blocknum all 0 data
+  let retval = s:new(len(shifted) + blocknum)
+  let retval[0 : len(shifted) - 1] = shifted[:]
+
+  return retval
+endfunction
+
+" Arithmetic Unsigned Integer Function
+function! s:uint_add(x, y,...) abort
+  " same size check
+  if len(a:x) != len(a:y)
+    call s:_throw('argments x and y''s size discrepancy.')
+  endif
+  let length = len(a:x)
+  let retval = s:add(a:x, a:y)
+
+  let overflow_check = 0
+  if a:0 > 0
+    if a:1 is? 'overflow'
+      let overflow_check = 1
+    endif
+  endif
+  if length < len(retval)
+    if overflow_check
+      call s:_throw(printf('overflow %d byte uint.', length))
+    else
+      " treat size
+      let retval = retval[-length : -1]
+    endif
+  endif
+  return retval
+endfunction
+
+" uint_sub,sub
+" uint_mul,mul
+" uint_div,div
+" uint_mod,mod
+" uint_rshift/lshift, rshift/lshift
 
 function! s:_throw(message) abort
   throw "vital: Vim.Type.Blob: " . a:message
