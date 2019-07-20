@@ -84,8 +84,8 @@ uint_add({X}, {Y},{flag})		  *Vital.Vim.Type.Blob.uint_add()*
 	Return new blob that is {X} + {Y} value.
 	Value keep as {X}/{Y} uint size.
 	NOTE: {X} and {Y} as same size.
-	NOTE: When {flag} set 'nooverflow', then skip overflow check.
-	Otherwise result overflow throw exception.
+	NOTE: When {flag} set 'overflow', check overflow.
+	If result overflow, then throw exception.
 
 
 ==============================================================================

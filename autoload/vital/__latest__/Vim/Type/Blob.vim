@@ -147,10 +147,10 @@ function! s:uint_add(x, y,...) abort
   let length = len(a:x)
   let retval = s:add(a:x, a:y)
 
-  let overflow_check = 1
+  let overflow_check = 0
   if a:0 > 0
-    if a:1 is? 'nooverflow'
-      let overflow_check = 0
+    if a:1 is? 'overflow'
+      let overflow_check = 1
     endif
   endif
   if length < len(retval)

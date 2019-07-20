@@ -557,7 +557,7 @@ Describe Vim.Type.Blob
       let source_b_joined = 0xB70FA344
       let data_a = b.uint32(source_a_joined)
       let data_b = b.uint32(source_b_joined)
-      Throws /^vital: Vim.Type.Blob:/ b.uint_add(data_a, data_b)
+      Throws /^vital: Vim.Type.Blob:/ b.uint_add(data_a, data_b, 'overflow')
     End
     " overflow Skip
     It size 4 byte carry over skip
@@ -565,7 +565,7 @@ Describe Vim.Type.Blob
       let source_b_joined = 0xB70FA344
       let data_a = b.uint32(source_a_joined)
       let data_b = b.uint32(source_b_joined)
-      let result = b.uint_add(data_a, data_b, 'nooverflow')
+      let result = b.uint_add(data_a, data_b)
       Assert NotEmpty(result)
     End
   End

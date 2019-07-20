@@ -140,23 +140,23 @@ function! s:siphash_state.setkey(key) abort
 endfunction
 
 function! s:siphash_state.round() abort
-  let self.v[0] = s:Blob.uint_add(self.v[0], self.v[1], 'nooverflow')  " v0 += v1;
-  let self.v[1] = s:Blob.rotl(self.v[1], 13)                           " v1 = ROTL(v1, 13);
-  let self.v[1] = s:Blob.xor(self.v[1], self.v[0])                     " v1 ^= v0;
-  let self.v[0] = s:Blob.rotl(self.v[0], 32)                           " v0 = ROTL(v0, 32);
+  let self.v[0] = s:Blob.uint_add(self.v[0], self.v[1])  " v0 += v1;
+  let self.v[1] = s:Blob.rotl(self.v[1], 13)             " v1 = ROTL(v1, 13);
+  let self.v[1] = s:Blob.xor(self.v[1], self.v[0])       " v1 ^= v0;
+  let self.v[0] = s:Blob.rotl(self.v[0], 32)             " v0 = ROTL(v0, 32);
 
-  let self.v[2] = s:Blob.uint_add(self.v[2], self.v[3], 'nooverflow')  " v2 += v3;
-  let self.v[3] = s:Blob.rotl(self.v[3], 16)                           " v3 = ROTL(v3, 16);
-  let self.v[3] = s:Blob.xor(self.v[3], self.v[2])                     " v3 ^= v2;
+  let self.v[2] = s:Blob.uint_add(self.v[2], self.v[3])  " v2 += v3;
+  let self.v[3] = s:Blob.rotl(self.v[3], 16)             " v3 = ROTL(v3, 16);
+  let self.v[3] = s:Blob.xor(self.v[3], self.v[2])       " v3 ^= v2;
 
-  let self.v[0] = s:Blob.uint_add(self.v[0], self.v[3], 'nooverflow')  " v0 += v3;
-  let self.v[3] = s:Blob.rotl(self.v[3], 21)                           " v3 = ROTL(v3, 21);
-  let self.v[3] = s:Blob.xor(self.v[3], self.v[0])                     " v3 ^= v0;
+  let self.v[0] = s:Blob.uint_add(self.v[0], self.v[3])  " v0 += v3;
+  let self.v[3] = s:Blob.rotl(self.v[3], 21)             " v3 = ROTL(v3, 21);
+  let self.v[3] = s:Blob.xor(self.v[3], self.v[0])       " v3 ^= v0;
 
-  let self.v[2] = s:Blob.uint_add(self.v[2], self.v[1], 'nooverflow')  " v2 += v1;
-  let self.v[1] = s:Blob.rotl(self.v[1], 17)                           " v1 = ROTL(v1, 17);
-  let self.v[1] = s:Blob.xor(self.v[1], self.v[2])                     " v1 ^= v2;
-  let self.v[2] = s:Blob.rotl(self.v[2], 32)                           " v2 = ROTL(v2, 32);
+  let self.v[2] = s:Blob.uint_add(self.v[2], self.v[1])  " v2 += v1;
+  let self.v[1] = s:Blob.rotl(self.v[1], 17)             " v1 = ROTL(v1, 17);
+  let self.v[1] = s:Blob.xor(self.v[1], self.v[2])       " v1 ^= v2;
+  let self.v[2] = s:Blob.rotl(self.v[2], 32)             " v2 = ROTL(v2, 32);
 endfunction
 
 " trace disable
@@ -186,7 +186,7 @@ function! s:siphash_state.hash(data) abort
   let self.k[1] = s:ByteArray.to_blob(s:ByteArray.endian_convert(self.key[8 : 15]))
 
   let leftshift = s:Bitwise.and(len(data), 7)
-  let blockshift = s:Blob.uint64(s:Bitwise.lshift(len(data), 56))
+  let blockshift = s:Blob.uint64(s:bitwise.lshift(len(data), 56))
 
   " initial xor
   let self.v[3] = s:Blob.xor(self.v[3], self.k[1]) " v3 ^= k1;
