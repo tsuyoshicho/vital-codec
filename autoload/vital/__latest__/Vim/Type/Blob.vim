@@ -48,15 +48,7 @@ function! s:_uintX(bits, initial) abort
     let typeval = type(initial)
 
     if typeval == s:Type.types.number
-      if bits == 8
-        let uintval = s:Bitwise.uint8(initial)
-      elseif bits == 16
-        let uintval = s:Bitwise.uint16(initial)
-      elseif bits == 32
-        let uintval = s:Bitwise.uint32(initial)
-      elseif bits == 64
-        let uintval = s:Bitwise.uint64(initial)
-      endif
+      let uintval = s:Bitwise['uint' . string(bits)](initial)
       let data = s:ByteArray.from_int(uintval, bits)
     elseif typeval == s:Type.types.string
       let data = s:ByteArray.from_hexstring(initial)
