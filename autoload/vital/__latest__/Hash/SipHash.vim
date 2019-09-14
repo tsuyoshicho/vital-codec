@@ -186,7 +186,7 @@ function! s:siphash_state.hash(data) abort
   let self.k[1] = s:ByteArray.to_blob(s:ByteArray.endian_convert(self.key[8 : 15]))
 
   let leftshift = s:Bitwise.and(len(data), 7)
-  let blockshift = s:Blob.uint64(s:bitwise.lshift(len(data), 56))
+  let blockshift = s:Blob.uint64(s:Bitwise.lshift(len(data), 56))
 
   " initial xor
   let self.v[3] = s:Blob.xor(self.v[3], self.k[1]) " v3 ^= k1;

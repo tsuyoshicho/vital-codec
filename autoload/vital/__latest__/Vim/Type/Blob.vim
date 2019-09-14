@@ -55,7 +55,7 @@ function! s:_uintX(bits, initial) abort
     elseif typeval == s:Type.types.list && s:ByteArray.validate(initial)
       let data = initial
     " types.blob currently not support
-    " elseif typeval == s:type.types.blob
+    " elseif typeval == s:Type.types.blob
     " temporary fix
     elseif typeval == type(0z00)
       let data = s:ByteArray.from_blob(initial)
@@ -222,10 +222,10 @@ function! s:_arith_arg_to_list(x, y) abort
   let x = s:ByteArray.from_blob(a:x)
 
   let typeval = type(a:y)
-  if typeval == s:type.types.number
+  if typeval == s:Type.types.number
     let y = s:ByteArray.from_int(a:y, len(x) * 8)
   " types.blob currently not support
-  " elseif typeval == s:type.types.blob
+  " elseif typeval == s:Type.types.blob
   " temporary fix
   elseif typeval == type(0z00)
     let y = s:ByteArray.from_blob(a:y)
