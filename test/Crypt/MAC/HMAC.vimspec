@@ -3,6 +3,7 @@ Describe Crypt.MAC.HMAC
     let HMAC = vital#vital#new().import('Crypt.MAC.HMAC')
     let MD5  = vital#vital#new().import('Hash.MD5x')
     let SHA1 = vital#vital#new().import('Hash.SHA1x')
+    let B    = vital#vital#new().import('Data.List.Byte')
 
     " https://tools.ietf.org/html/rfc2202
     " RFC TestVector
@@ -166,6 +167,18 @@ Describe Crypt.MAC.HMAC
     It add after construction add normal only algo new
       let hmacmd5 = HMAC.new(MD5)
       call hmacmd5.key(test_case_md5[0].key)
+      Assert Equals(test_case_md5[0].digest_str, hmacmd5.hmac(test_case_md5[0].data))
+    End
+    It add after construction add normal only algo new (String)
+      let hmacmd5 = HMAC.new(MD5)
+      let hexstrkey = B.to_string(test_case_md5[1].key)
+      call hmacmd5.key(hexstrkey)
+      Assert Equals(test_case_md5[1].digest_str, hmacmd5.hmac(test_case_md5[1].data))
+    End
+    It add after construction add normal only algo new (Blob)
+      let hmacmd5 = HMAC.new(MD5)
+      let blobkey = B.to_blob(test_case_md5[0].key))
+      call hmacmd5.key(blobkey)
       Assert Equals(test_case_md5[0].digest_str, hmacmd5.hmac(test_case_md5[0].data))
     End
 
