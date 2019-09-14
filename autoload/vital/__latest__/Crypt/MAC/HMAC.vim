@@ -4,7 +4,7 @@
 function! s:_vital_loaded(V) abort
   let s:V = a:V
 
-  let s:bitwise = s:V.import('Bitwise')
+  let s:Bitwise = s:V.import('Bitwise')
   let s:List = s:V.import('Data.List')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
@@ -86,8 +86,8 @@ function! s:HMAC.calc(data) abort
   endfor
 
   for i in range(64)
-    let ipad[i] = s:bitwise.xor(ipad[i],0x36)
-    let opad[i] = s:bitwise.xor(opad[i],0x5c)
+    let ipad[i] = s:Bitwise.xor(ipad[i],0x36)
+    let opad[i] = s:Bitwise.xor(opad[i],0x5c)
   endfor
 
   let digest = hash.digest_raw(ipad + data)

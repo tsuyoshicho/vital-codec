@@ -6,7 +6,7 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V        = a:V
-  let s:type     = s:V.import('Vim.Type')
+  let s:Type     = s:V.import('Vim.Type')
   let s:Random   = s:V.import('Random')
   let s:List     = s:V.import('Data.List')
   let s:BigNum   = s:V.import('Data.BigNum')
@@ -40,9 +40,9 @@ function! s:_ulid_generate(...) abort
   let random_arglist = a:000[:1]
   if a:0 > 2
     let typeval = type(a:3)
-    if typeval == s:type.types.number
+    if typeval == s:Type.types.number
       let datetime = s:DateTime.from_unix_time(a:3)
-    elseif typeval == s:type.types.dict && 'DateTime' == get(a:3,'class','')
+    elseif typeval == s:Type.types.dict && 'DateTime' ==# get(a:3,'class','')
       let datetime = a:3
     else
       call s:_throw('non-support extra datetime data (support only unix epoch int value or DateTime object)')

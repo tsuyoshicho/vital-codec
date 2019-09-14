@@ -8,7 +8,7 @@ function! s:_vital_loaded(V) abort
   let s:V       = a:V
   let s:MD5     = s:V.import('Hash.MD5x')
   let s:SHA1    = s:V.import('Hash.SHA1x')
-  let s:bitwise = s:V.import('Bitwise')
+  let s:Bitwise = s:V.import('Bitwise')
   let s:Random  = s:V.import('Random')
   let s:List    = s:V.import('Data.List')
   let s:ByteArray = s:V.import('Data.List.Byte')
@@ -301,11 +301,11 @@ function! s:_variant_embedded(uuid) abort
   " clock high byte msb 0..2 (5bit >>, remain 3bit)
   let variant_mask = 0b00000000
   let value_mask   = 0b11111111
-  if 0b000 == s:bitwise.and(uuid.variant, 0b100)
+  if 0b000 == s:Bitwise.and(uuid.variant, 0b100)
     "  bit 0xx Network Computing System Compatible
     let variant_mask = 0b10000000
     let value_mask   = 0b01111111
-  elseif 0b100 == s:bitwise.and(uuid.variant, 0b110)
+  elseif 0b100 == s:Bitwise.and(uuid.variant, 0b110)
     "  bit 10x RFC4122
     let variant_mask = 0b11000000
     let value_mask   = 0b00111111
@@ -315,15 +315,15 @@ function! s:_variant_embedded(uuid) abort
     let variant_mask = 0b11100000
     let value_mask   = 0b00011111
   endif
-  let uuid.value.clk_seq_hi_res[0] = s:bitwise.or(
-        \ s:bitwise.and(s:bitwise.lshift(uuid.variant, 5), variant_mask),
-        \ s:bitwise.and(uuid.value.clk_seq_hi_res[0],      value_mask))
+  let uuid.value.clk_seq_hi_res[0] = s:Bitwise.or(
+        \ s:Bitwise.and(s:Bitwise.lshift(uuid.variant, 5), variant_mask),
+        \ s:Bitwise.and(uuid.value.clk_seq_hi_res[0],      value_mask))
 
-  if 0b100 == s:bitwise.and(uuid.variant, 0b110)
+  if 0b100 == s:Bitwise.and(uuid.variant, 0b110)
     " time_hi_and_version high byte 0..4 (4bit >>, remain 4bit)
-    let uuid.value.time_hi_and_version[0] = s:bitwise.or(
-          \ s:bitwise.and(s:bitwise.lshift(uuid.version, 4), 0b11110000),
-          \ s:bitwise.and(uuid.value.time_hi_and_version[0], 0b00001111))
+    let uuid.value.time_hi_and_version[0] = s:Bitwise.or(
+          \ s:Bitwise.and(s:Bitwise.lshift(uuid.version, 4), 0b11110000),
+          \ s:Bitwise.and(uuid.value.time_hi_and_version[0], 0b00001111))
   endif
 endfunction
 
@@ -331,13 +331,13 @@ function! s:_variant_detect(uuid) abort
   let uuid = a:uuid
 
   " clock high byte msb 0..2 (5bit >>, remain 3bit)
-  let variant = s:bitwise.and(s:bitwise.rshift(
+  let variant = s:Bitwise.and(s:Bitwise.rshift(
         \ uuid.value.clk_seq_hi_res[0], 5), 0b111)
 
-  if 0b000 == s:bitwise.and(variant, 0b100)
+  if 0b000 == s:Bitwise.and(variant, 0b100)
     "  bit 0xx Network Computing System Compatible
     let uuid.variant = 0
-  elseif 0b100 == s:bitwise.and(variant, 0b110)
+  elseif 0b100 == s:Bitwise.and(variant, 0b110)
     "  bit 10x RFC4122
     let uuid.variant = 4
   elseif 0b110 == variant
@@ -349,7 +349,7 @@ function! s:_variant_detect(uuid) abort
 
   if 4 == uuid.variant
     " time_hi_and_version high byte 0..4 (4bit >>, remain 4bit)
-    let uuid.version = s:bitwise.and(s:bitwise.rshift(
+    let uuid.version = s:Bitwise.and(s:Bitwise.rshift(
           \ uuid.value.time_hi_and_version[0], 4), 0b1111)
   endif
 endfunction
