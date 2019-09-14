@@ -11,13 +11,12 @@ endfunction
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
-  let s:bitwise = s:V.import('Bitwise')
-  let s:int     = s:V.import('Vim.Type.Number')
+  let s:Bitwise = s:V.import('Bitwise')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Vim.Type.Number', 'Data.List.Byte']
+  return ['Bitwise', 'Data.List.Byte']
 endfunction
 
 let s:shift = [
@@ -94,16 +93,16 @@ function! s:digest_raw(bytes) abort
       let l:F = 0
       let l:g = 0
       if 0 <= l:i && l:i <= 15
-        let l:F = s:bitwise.or(s:bitwise.and(l:B, l:C), s:bitwise.and(s:bitwise.invert(l:B), l:D))
+        let l:F = s:Bitwise.or(s:Bitwise.and(l:B, l:C), s:Bitwise.and(s:Bitwise.invert(l:B), l:D))
         let l:g = l:i
       elseif 16 <= l:i && l:i <= 31
-        let l:F = s:bitwise.or(s:bitwise.and(l:B, l:D), s:bitwise.and(s:bitwise.invert(l:D), l:C))
+        let l:F = s:Bitwise.or(s:Bitwise.and(l:B, l:D), s:Bitwise.and(s:Bitwise.invert(l:D), l:C))
         let l:g = fmod((5 * l:i) + 1, 16)
       elseif 32 <= l:i && l:i <= 47
-        let l:F = s:bitwise.xor(l:B, s:bitwise.xor(l:C, l:D))
+        let l:F = s:Bitwise.xor(l:B, s:Bitwise.xor(l:C, l:D))
         let l:g = fmod((3 * l:i) + 5, 16)
       elseif 48 <= l:i  && l:i <= 63
-        let l:F = s:bitwise.xor(l:C, s:bitwise.or(l:B, s:bitwise.invert(l:D)))
+        let l:F = s:Bitwise.xor(l:C, s:Bitwise.or(l:B, s:Bitwise.invert(l:D)))
         let l:g = fmod(7 * l:i, 16)
       endif
 
@@ -111,7 +110,7 @@ function! s:digest_raw(bytes) abort
       let l:A = l:D
       let l:D = l:C
       let l:C = l:B
-      let l:B = l:B + s:int.rotate32l(l:F, s:shift[l:i])
+      let l:B = l:B + s:Bitwise.rotate32l(l:F, s:shift[l:i])
 
     endfor
     let l:a0 = l:a0 + l:A
