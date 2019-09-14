@@ -23,21 +23,30 @@ Create Function
 new({length})				  *Vital.Vim.Type.Blob.new()*
 	Return new blob ({length} byte), data fill in 0.
 
+Unsigned Integer Create/Cast Function
 uint8({initial value})			  *Vital.Vim.Type.Blob.uint8()*
 	Return uint8 (1 byte) blob.
 	Optional, data fill in {initial value}.
+	{initial value} support for:
+	  - Number(positive int)
+	  - String(hex num string)
+	  - Bytes-like List(unmatch size ok)
+	  - Blob(unmatch size ok)
 
 uint16({initial value})			  *Vital.Vim.Type.Blob.uint16()*
 	Return uint16 (2 byte) blob.
-	Optional, data fill in {initial value}.
+	Optional, data fill in {initial value}.{initial value} support same as
+	|Vital.Vim.Type.Blob.uint8()|.
 
 uint32({initial value})			  *Vital.Vim.Type.Blob.uint32()*
 	Return uint32 (4 byte) blob.
-	Optional, data fill in {initial value}.
+	Optional, data fill in {initial value}.{initial value} support same as
+	|Vital.Vim.Type.Blob.uint8()|.
 
 uint64({initial value})			  *Vital.Vim.Type.Blob.uint64()*
 	Return uint64 (8 byte) blob.
-	Optional, data fill in {initial value}.
+	Optional, data fill in {initial value}.{initial value} support same as
+	|Vital.Vim.Type.Blob.uint8()|.
 
 Bitwise Function
 or({X}, {Y})				  *Vital.Vim.Type.Blob.or()*
@@ -55,26 +64,36 @@ and({X}, {Y})				  *Vital.Vim.Type.Blob.and()*
 invert({X})				  *Vital.Vim.Type.Blob.invert()*
 	Return new blob that is invert {X} value.
 
-rotl({X},{bits})			  *Vital.Vim.Type.Blob.rotl()*
-rotateleft({X},{bits})			  *Vital.Vim.Type.Blob.rotateleft()*
+rotl({X}, {bits})			  *Vital.Vim.Type.Blob.rotl()*
+rotateleft({X}, {bits})			  *Vital.Vim.Type.Blob.rotateleft()*
 	Return new blob that is {X} rotate {bits} bit left value.
 	NOTE:rotl is shorage function.
 
-rotr({X},{bits})			  *Vital.Vim.Type.Blob.rotr()*
-rotateright({X},{bits})			  *Vital.Vim.Type.Blob.rotateright()*
+rotr({X}, {bits})			  *Vital.Vim.Type.Blob.rotr()*
+rotateright({X}, {bits})			  *Vital.Vim.Type.Blob.rotateright()*
 	Return new blob that is {X} rotate {bits} bit right value.
 	NOTE:rotr is shorage function.
+
 
 Arithmetic Function
 add({X}, {Y})				  *Vital.Vim.Type.Blob.add()*
 	Return new blob that is {X} + {Y} value.
+	NOTE: {X} is blob, {Y} blob or number.
 
-uint_add({X}, {Y},{flag})		  *Vital.Vim.Type.Blob.uint_add()*
+rshift({X}, {bits})			  *Vital.Vim.Type.Blob.rshift()*
+	Return new blob that is {X} right shift {bits} bit value.
+
+lshift({X}, {bits})			  *Vital.Vim.Type.Blob.lshift()*
+	Return new blob that is {X} left shift {bits} bit value.
+
+
+Arithmetic Unsigned Integer Function
+uint_add({X}, {Y}, {flag})		  *Vital.Vim.Type.Blob.uint_add()*
 	Return new blob that is {X} + {Y} value.
 	Value keep as {X}/{Y} uint size.
 	NOTE: {X} and {Y} as same size.
-	NOTE: When {flag} set 'nooverflow', then skip overflow check.
-	Otherwise result overflow throw exception.
+	NOTE: When {flag} set 'overflow', check overflow.
+	If result overflow, then throw exception.
 
 
 ==============================================================================
