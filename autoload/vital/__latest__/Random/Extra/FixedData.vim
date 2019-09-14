@@ -6,7 +6,7 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V    = a:V
-  let s:type = s:V.import('Vim.Type')
+  let s:Type = s:V.import('Vim.Type')
 endfunction
 
 function! s:_vital_depends() abort
@@ -45,9 +45,9 @@ endfunction
 function! s:Generator.seed(...) abort
   if a:0 > 0
     let typeval = type(a:1)
-    if typeval == s:type.types.number
+    if typeval == s:Type.types.number
       let data = [a:1, a:1 + 1]
-    elseif typeval == s:type.types.list
+    elseif typeval == s:Type.types.list
       let data = a:1
     endif
   endif
