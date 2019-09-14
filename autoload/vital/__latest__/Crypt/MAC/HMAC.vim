@@ -5,19 +5,20 @@ function! s:_vital_loaded(V) abort
   let s:V = a:V
 
   let s:Bitwise = s:V.import('Bitwise')
+  let s:Type = s:V.import('Vim.Type')
   let s:List = s:V.import('Data.List')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Data.List', 'Data.List.Byte']
+  return ['Bitwise', 'Vim.Type', 'Data.List', 'Data.List.Byte']
 endfunction
 
 let s:HMAC = {
       \   '__type__': 'HMAC',
       \   '_dict': {
-      \     'hash':v:null,
-      \     'key' :v:null,
+      \     'hash': {},
+      \     'key' : [],
       \   }
       \ }
 
@@ -38,38 +39,46 @@ function! s:new(...) abort
 endfunction
 
 function! s:HMAC.key(key) abort
-  if type(a:key) is# type([])
-    let self._dict['key'] = a:key
-  elseif type(a:key) is# type('')
-    let self._dict['key'] = s:ByteArray.from_string(a:key)
+  let keytype = type(a:key)
+
+  if keytype == s:Type.types.list
+    let self._dict.key = a:key
+  elseif keytype == s:Type.types.string
+    let self._dict.key = s:ByteArray.from_string(a:key)
+  elseif has('patch-8.1.0735') && keytype == s:Type.types.blob
+    let self._dict.key = s:ByteArray.from_blob(a:key)
   else
     call s:_throw('given argument is not key data')
   endif
 endfunction
 
 function! s:HMAC.hash(hashobj) abort
-  if type(a:hashobj) is# type({})
+  if type(a:hashobj) == s:Type.types.dict
         \ && has_key(a:hashobj,'digest_raw')
-        \ && type(a:hashobj.digest_raw) is# type(function('tr'))
-    let self._dict['hash'] = a:hashobj
+        \ && type(a:hashobj.digest_raw) == s:Type.types.func
+    let self._dict.hash = a:hashobj
   else
     call s:_throw('given argument is not HASH API object')
   endif
 endfunction
 
 function! s:HMAC.calc(data) abort
-  if type(a:data) is# type([])
+  let datatype = type(a:data)
+
+  if datatype == s:Type.types.list
     let data = a:data
-  elseif type(a:data) is# type('')
+  elseif datatype == s:Type.types.string
     let data = s:ByteArray.from_string(a:data)
+  elseif has('patch-8.1.0735') && datatype == s:Type.types.blob
+    let data = s:ByteArray.from_blog(a:data)
   else
     call s:_throw('given argument is not valid data')
   endif
 
-  let key  = self._dict['key']
-  let hash = self._dict['hash']
+  let key  = self._dict.key
+  let hash = self._dict.hash
 
-  if (type(key) isnot# type([])) || (type(hash) isnot# type({}))
+  if empty(key) || empty(hash)
     call s:_throw('setup invalid key or hashobj')
   endif
 

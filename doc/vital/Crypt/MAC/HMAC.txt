@@ -41,7 +41,7 @@ HMAC.hash({hashobj})			  *Vital.Crypt.MAC.HMAC-HMAC.hash()*
 	ex. |Vital.Hash.MD5|, |Vital.Hash.SHA1|.
 
 HMAC.key({str|bytes})			  *Vital.Crypt.MAC.HMAC-HMAC.key()*
-	Set HMAC secret key {str|bytes}. key is string or bytes list.
+	Set HMAC secret key {str|bytes}. key is |String|, |Blob| or bytes list.
 
 HMAC.calc({data})			  *Vital.Crypt.MAC.HMAC-HMAC.calc()*
 	Calculate and return HMAC value that was bytes list.
