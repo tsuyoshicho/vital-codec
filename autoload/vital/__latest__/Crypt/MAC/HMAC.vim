@@ -5,7 +5,7 @@ function! s:_vital_loaded(V) abort
   let s:V = a:V
 
   let s:Bitwise = s:V.import('Bitwise')
-  let s:type = s:V.import('Vim.Type')
+  let s:Type = s:V.import('Vim.Type')
   let s:List = s:V.import('Data.List')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
@@ -41,11 +41,11 @@ endfunction
 function! s:HMAC.key(key) abort
   let keytype = type(a:key)
 
-  if keytype == s:type.types.list
+  if keytype == s:Type.types.list
     let self._dict.key = a:key
-  elseif keytype == s:type.types.string
+  elseif keytype == s:Type.types.string
     let self._dict.key = s:ByteArray.from_string(a:key)
-  elseif has('patch-8.1.0735') && keytype == s:type.types.blob
+  elseif has('patch-8.1.0735') && keytype == s:Type.types.blob
     let self._dict.key = s:ByteArray.from_blob(a:key)
   else
     call s:_throw('given argument is not key data')
@@ -53,9 +53,9 @@ function! s:HMAC.key(key) abort
 endfunction
 
 function! s:HMAC.hash(hashobj) abort
-  if type(a:hashobj) == s:type.types.dict
+  if type(a:hashobj) == s:Type.types.dict
         \ && has_key(a:hashobj,'digest_raw')
-        \ && type(a:hashobj.digest_raw) == s:type.types.func
+        \ && type(a:hashobj.digest_raw) == s:Type.types.func
     let self._dict.hash = a:hashobj
   else
     call s:_throw('given argument is not HASH API object')
@@ -65,11 +65,11 @@ endfunction
 function! s:HMAC.calc(data) abort
   let datatype = type(a:data)
 
-  if datatype == s:type.types.list
+  if datatype == s:Type.types.list
     let data = a:data
-  elseif datatype == s:type.types.string
+  elseif datatype == s:Type.types.string
     let data = s:ByteArray.from_string(a:data)
-  elseif has('patch-8.1.0735') && datatype == s:type.types.blob
+  elseif has('patch-8.1.0735') && datatype == s:Type.types.blob
     let data = s:ByteArray.from_blog(a:data)
   else
     call s:_throw('given argument is not valid data')
