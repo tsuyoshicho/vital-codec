@@ -64,7 +64,7 @@ function! s:_uintX(bits, initial) abort
   if length > len(data)
     let data = repeat([0], length - len(data)) + data
   elseif length < len(data)
-    let data = data[-length:-1]
+    let data = data[-length : -1]
   endif
 
   return s:ByteArray.to_blob(data)
