@@ -36,13 +36,13 @@ endfunction
 
 function! s:_uintX(length, initial) abort
   let length = a:length
-  let inital = 0
+  let initial = 0
   if !empty(a:initial)
-    let inital = a:initial[0]
+    let initial = a:initial[0]
   endif
   let retval = s:new(length)
   for i in range(length)
-    let retval[i] = s:Bitwise.uint8(s:Bitwise.rshift(inital, (8 * (length - (i + 1)))))
+    let retval[i] = s:Bitwise.uint8(s:Bitwise.rshift(initial, (8 * (length - (i + 1)))))
   endfor
   return retval
 endfunction
