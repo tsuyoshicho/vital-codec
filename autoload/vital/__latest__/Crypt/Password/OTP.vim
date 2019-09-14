@@ -24,9 +24,8 @@ endfunction
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
-  let s:bitwise  = s:V.import('Bitwise')
-  let s:type     = s:V.import('Vim.Type')
-  let s:int      = s:V.import('Vim.Type.Number')
+  let s:Bitwise  = s:V.import('Bitwise')
+  let s:Type     = s:V.import('Vim.Type')
   let s:HMAC     = s:V.import('Crypt.MAC.HMAC')
   let s:List     = s:V.import('Data.List')
   let s:DateTime = s:V.import('DateTime')
@@ -36,7 +35,6 @@ endfunction
 function! s:_vital_depends() abort
   return ['Bitwise',
         \ 'Vim.Type',
-        \ 'Vim.Type.Number',
         \ 'Crypt.MAC.HMAC',
         \ 'Data.List',
         \ 'DateTime',
@@ -60,8 +58,8 @@ function! s:hotp(key, counter, algo, digit) abort
 
   let hmac_list =  hmac.calc(counter)
 
-  let offset = s:bitwise.and(hmac_list[-1],0xf)
-  let bincode = s:bitwise.and(s:ByteArray.to_int(hmac_list[offset : offset+3]), 0x7FFFFFFF)
+  let offset = s:Bitwise.and(hmac_list[-1],0xf)
+  let bincode = s:Bitwise.and(s:ByteArray.to_int(hmac_list[offset : offset+3]), 0x7FFFFFFF)
 
   let modulo_base = float2nr(pow(10, a:digit))
   let hotp_value = bincode % modulo_base
@@ -72,9 +70,9 @@ endfunction
 function! s:totp(key, period, algo, digit, ...) abort
   if a:0
     let typeval = type(a:1)
-    if typeval == s:type.types.number
+    if typeval == s:Type.types.number
       let datetime = s:DateTime.from_unix_time(a:1)
-    elseif typeval == s:type.types.dict && 'DateTime' ==# get(a:1,'class','')
+    elseif typeval == s:Type.types.dict && 'DateTime' ==# get(a:1,'class','')
       let datetime = a:1
     else
       call s:_throw('non-support extra datetime data (support only unix epoch int value or DateTime object)')

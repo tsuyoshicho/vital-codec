@@ -6,9 +6,8 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V         = a:V
-  let s:bitwise   = s:V.import('Bitwise')
-  let s:type      = s:V.import('Vim.Type')
-  let s:int       = s:V.import('Vim.Type.Number')
+  let s:Bitwise   = s:V.import('Bitwise')
+  let s:Type      = s:V.import('Vim.Type')
   let s:HMAC      = s:V.import('Crypt.MAC.HMAC')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
@@ -16,7 +15,6 @@ endfunction
 function! s:_vital_depends() abort
   return ['Bitwise',
         \ 'Vim.Type',
-        \ 'Vim.Type.Number',
         \ 'Crypt.MAC.HMAC',
         \ 'Data.List.Byte']
 endfunction
@@ -24,9 +22,9 @@ endfunction
 function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
   " password
   let typeval = type(a:password)
-  if typeval == s:type.types.string
+  if typeval == s:Type.types.string
     let password = s:ByteArray.from_string(a:password)
-  elseif typeval == s:type.types.list
+  elseif typeval == s:Type.types.list
     let password = a:password
   else
     call s:_throw('non-support password type (suport only string or bytes-list)')
@@ -35,9 +33,9 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
 
   " salt
   let typeval = type(a:salt)
-  if typeval == s:type.types.string
+  if typeval == s:Type.types.string
     let salt = s:ByteArray.from_string(a:salt)
-  elseif typeval == s:type.types.list
+  elseif typeval == s:Type.types.list
     let salt = a:salt
   else
     call s:_throw('non-support salt type (suport only string or bytes-list)')
@@ -58,12 +56,12 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
 
   for i in range(1,l)
     " calc U_1
-    let u = s:HMAC.new(a:algo, password).calc(salt[:] + s:ByteArray.from_int(s:int.uint32(i), 32))
+    let u = s:HMAC.new(a:algo, password).calc(salt[:] + s:ByteArray.from_int(s:Bitwise.uint32(i), 32))
     let t = u[:]
 
     for j in range(2, a:iteration)
       let u = s:HMAC.new(a:algo, password).calc(u)
-      call map(t, { i, v -> s:bitwise.xor(v, u[i])})
+      call map(t, { i, v -> s:Bitwise.xor(v, u[i])})
     endfor
 
     " fill to derivedKey

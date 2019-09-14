@@ -16,13 +16,12 @@ endfunction
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
-  let s:bitwise = s:V.import('Bitwise')
-  let s:int     = s:V.import('Vim.Type.Number')
+  let s:Bitwise = s:V.import('Bitwise')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Vim.Type.Number', 'Data.List.Byte']
+  return ['Bitwise', 'Data.List.Byte']
 endfunction
 
 function! s:sum(data) abort
@@ -85,7 +84,7 @@ let s:sha1context = {
       \}
 
 function! s:_sha1circular_shift(bits, word) abort
-  return s:int.rotate32l(a:word, a:bits)
+  return s:Bitwise.rotate32l(a:word, a:bits)
 endfunction
 
 function! s:sha1context.init() dict abort
@@ -120,10 +119,10 @@ function! s:sha1context.result(digest) dict abort
   endif
 
   for i in range(s:sha1hashsize)
-    let a:digest[i] = s:int.uint8(
-          \   s:bitwise.rshift32(
-          \     self.intermediatehash[s:bitwise.rshift32(i, 2)],
-          \     8 * (3 - s:bitwise.and(i, 0x03))
+    let a:digest[i] = s:Bitwise.uint8(
+          \   s:Bitwise.rshift32(
+          \     self.intermediatehash[s:Bitwise.rshift32(i, 2)],
+          \     8 * (3 - s:Bitwise.and(i, 0x03))
           \   )
           \ )
   endfor
@@ -152,7 +151,7 @@ function! s:sha1context.input(bytes) dict abort
     if self.Corrupted
       break
     endif
-    call self.messageblock.push(s:int.uint8(x))
+    call self.messageblock.push(s:Bitwise.uint8(x))
 
     if self.messageblock.index == s:sha1blocksize
       call self.process()
@@ -179,14 +178,14 @@ function! s:sha1context.process() dict abort
   "  Initialize the first 16 words in the array W
   "
   for t in range(16)
-    let W[t] = s:bitwise.lshift32(self.messageblock.data[t * 4], 24)
-    let W[t] = s:bitwise.or(W[t], s:bitwise.lshift32(self.messageblock.data[t * 4 + 1], 16))
-    let W[t] = s:bitwise.or(W[t], s:bitwise.lshift32(self.messageblock.data[t * 4 + 2], 8))
-    let W[t] = s:bitwise.or(W[t], self.messageblock.data[t * 4 + 3])
+    let W[t] = s:Bitwise.lshift32(self.messageblock.data[t * 4], 24)
+    let W[t] = s:Bitwise.or(W[t], s:Bitwise.lshift32(self.messageblock.data[t * 4 + 1], 16))
+    let W[t] = s:Bitwise.or(W[t], s:Bitwise.lshift32(self.messageblock.data[t * 4 + 2], 8))
+    let W[t] = s:Bitwise.or(W[t], self.messageblock.data[t * 4 + 3])
   endfor
 
   for t in range(16, 79)
-    let W[t] = s:_sha1circular_shift(1, s:bitwise.xor(s:bitwise.xor(s:bitwise.xor(W[t-3], W[t-8]), W[t-14]), W[t-16]))
+    let W[t] = s:_sha1circular_shift(1, s:Bitwise.xor(s:Bitwise.xor(s:Bitwise.xor(W[t-3], W[t-8]), W[t-14]), W[t-16]))
   endfor
 
   let A = self.intermediatehash[0]
@@ -197,7 +196,7 @@ function! s:sha1context.process() dict abort
 
   for t in range(20)
     let temp = s:_sha1circular_shift(5,A) +
-          \ s:bitwise.or(s:bitwise.and(B, C), s:bitwise.and(s:bitwise.invert(B), D)) +
+          \ s:Bitwise.or(s:Bitwise.and(B, C), s:Bitwise.and(s:Bitwise.invert(B), D)) +
           \ E + W[t] + K[0]
     let E = D
     let D = C
@@ -207,7 +206,7 @@ function! s:sha1context.process() dict abort
   endfor
 
   for t in range(20, 39)
-    let temp = s:_sha1circular_shift(5,A) + s:bitwise.xor(s:bitwise.xor(B, C), D) + E + W[t] + K[1]
+    let temp = s:_sha1circular_shift(5,A) + s:Bitwise.xor(s:Bitwise.xor(B, C), D) + E + W[t] + K[1]
     let E = D
     let D = C
     let C = s:_sha1circular_shift(30,B)
@@ -217,7 +216,7 @@ function! s:sha1context.process() dict abort
 
   for t in range(40, 59)
     let temp = s:_sha1circular_shift(5,A) +
-          \ s:bitwise.or(s:bitwise.or(s:bitwise.and(B, C), s:bitwise.and(B, D)), s:bitwise.and(C, D)) +
+          \ s:Bitwise.or(s:Bitwise.or(s:Bitwise.and(B, C), s:Bitwise.and(B, D)), s:Bitwise.and(C, D)) +
           \ E + W[t] + K[2]
     let E = D
     let D = C
@@ -228,7 +227,7 @@ function! s:sha1context.process() dict abort
 
   for t in range(60, 79)
     let temp = s:_sha1circular_shift(5,A) +
-          \ s:bitwise.xor(s:bitwise.xor(B, C), D) + E + W[t] + K[3]
+          \ s:Bitwise.xor(s:Bitwise.xor(B, C), D) + E + W[t] + K[3]
     let E = D
     let D = C
     let C = s:_sha1circular_shift(30,B)
@@ -274,14 +273,14 @@ function! s:sha1context.padding() dict abort
   "  Store the message length as the last 8 octets
   "
   " as data[-8]..data[-1]
-  let self.messageblock.data[56] = s:int.uint8(s:bitwise.rshift32(self.length.high, 24))
-  let self.messageblock.data[57] = s:int.uint8(s:bitwise.rshift32(self.length.high, 16))
-  let self.messageblock.data[58] = s:int.uint8(s:bitwise.rshift32(self.length.high,  8))
-  let self.messageblock.data[59] = s:int.uint8(                   self.length.high     )
-  let self.messageblock.data[60] = s:int.uint8(s:bitwise.rshift32(self.length.low , 24))
-  let self.messageblock.data[61] = s:int.uint8(s:bitwise.rshift32(self.length.low , 16))
-  let self.messageblock.data[62] = s:int.uint8(s:bitwise.rshift32(self.length.low ,  8))
-  let self.messageblock.data[63] = s:int.uint8(                   self.length.low      )
+  let self.messageblock.data[56] = s:Bitwise.uint8(s:Bitwise.rshift32(self.length.high, 24))
+  let self.messageblock.data[57] = s:Bitwise.uint8(s:Bitwise.rshift32(self.length.high, 16))
+  let self.messageblock.data[58] = s:Bitwise.uint8(s:Bitwise.rshift32(self.length.high,  8))
+  let self.messageblock.data[59] = s:Bitwise.uint8(                   self.length.high     )
+  let self.messageblock.data[60] = s:Bitwise.uint8(s:Bitwise.rshift32(self.length.low , 24))
+  let self.messageblock.data[61] = s:Bitwise.uint8(s:Bitwise.rshift32(self.length.low , 16))
+  let self.messageblock.data[62] = s:Bitwise.uint8(s:Bitwise.rshift32(self.length.low ,  8))
+  let self.messageblock.data[63] = s:Bitwise.uint8(                   self.length.low      )
 
   call self.process()
 endfunction
@@ -313,12 +312,12 @@ function! s:sha1context.length.sizeset(data) dict abort
     " 3.b high shift  = 0x0000000l >> (32 - 3)
   " endif
   " 32/64bit work use shift
-  let self.high = s:int.uint32(s:bitwise.rshift(len(a:data), 32 - 3))
-  let self.low  = s:int.uint32(s:bitwise.lshift(len(a:data),      3))
+  let self.high = s:Bitwise.uint32(s:Bitwise.rshift(len(a:data), 32 - 3))
+  let self.low  = s:Bitwise.uint32(s:Bitwise.lshift(len(a:data),      3))
 
   " SHA1 2^64 - 1 overflow check
   " 0xh0000000 is not 0, then overflow it(byte data are Vim List;it can contains 2^64 - 1 item)
-  if (has('num64') && (0 != s:int.uint32(s:bitwise.rshift(len(a:data), 32 + (32 - 3)))))
+  if (has('num64') && (0 != s:Bitwise.uint32(s:Bitwise.rshift(len(a:data), 32 + (32 - 3)))))
     let self.high = 0
     let self.low  = 0
     return s:input_long

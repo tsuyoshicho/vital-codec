@@ -5,13 +5,12 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
-  let s:bitwise   = s:V.import('Bitwise')
-  let s:int       = s:V.import('Vim.Type.Number')
+  let s:Bitwise   = s:V.import('Bitwise')
   let s:ByteArray = s:V.import('Data.List.Byte')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Vim.Type.Number', 'Data.List.Byte']
+  return ['Bitwise', 'Data.List.Byte']
 endfunction
 
 function! s:new(length) abort
@@ -37,28 +36,28 @@ endfunction
 
 function! s:_uintX(length, initial) abort
   let length = a:length
-  let inital = 0
+  let initial = 0
   if !empty(a:initial)
-    let inital = a:initial[0]
+    let initial = a:initial[0]
   endif
   let retval = s:new(length)
   for i in range(length)
-    let retval[i] = s:int.uint8(s:bitwise.rshift(inital, (8 * (length - (i + 1)))))
+    let retval[i] = s:Bitwise.uint8(s:Bitwise.rshift(initial, (8 * (length - (i + 1)))))
   endfor
   return retval
 endfunction
 
 " bit operation
 function! s:or(x, y) abort
-  return s:_bitop(a:x, a:y, s:bitwise.or)
+  return s:_bitop(a:x, a:y, s:Bitwise.or)
 endfunction
 
 function! s:xor(x, y) abort
-  return s:_bitop(a:x, a:y, s:bitwise.xor)
+  return s:_bitop(a:x, a:y, s:Bitwise.xor)
 endfunction
 
 function! s:and(x, y) abort
-  return s:_bitop(a:x, a:y, s:bitwise.and)
+  return s:_bitop(a:x, a:y, s:Bitwise.and)
 endfunction
 
 function! s:_bitop(x, y, op) abort
@@ -78,7 +77,7 @@ function! s:invert(x) abort
   let length = len(a:x)
   let retval = s:new(length)
   for i in range(length)
-    let retval[i] = s:bitwise.invert(a:x[i])
+    let retval[i] = s:Bitwise.invert(a:x[i])
   endfor
   return retval
 endfunction
@@ -101,8 +100,8 @@ function! s:rotl(x, bits) abort
   for i in range(length)
     let targetindex = (i + length - blocknum) % length
     let previndex = (i + 1) % length
-    let retval[targetindex] = s:int.uint8(s:bitwise.or(s:bitwise.lshift(a:x[i], shift),
-                                                     \ s:bitwise.rshift(a:x[previndex], 8 - shift)))
+    let retval[targetindex] = s:Bitwise.uint8(s:Bitwise.or(s:Bitwise.lshift(a:x[i], shift),
+                                                     \ s:Bitwise.rshift(a:x[previndex], 8 - shift)))
   endfor
   return retval
 endfunction
@@ -155,7 +154,7 @@ function! s:add(x, y) abort
   let carry = 0
   for i in range(length - 1, 0, -1)
     let sumvalue = x[i] + y[i] + carry
-    let retval[i] = s:int.uint8(sumvalue)
+    let retval[i] = s:Bitwise.uint8(sumvalue)
     let carry = sumvalue / 0x100
   endfor
   if carry
