@@ -1,5 +1,0 @@
-runner:
-  vital-throw-message:
-    cmd: go run ./scripts/lint-throw.go $(find autoload/vital/__vital__/ | grep -e '\.vim$')
-    errorformat:
-      - "%f:%l:%c: %m"

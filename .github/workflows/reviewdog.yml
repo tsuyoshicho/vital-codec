@@ -43,3 +43,18 @@ jobs:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           locale: "US"
+  vital-throw-message:
+    name: runner / vital-throw-message
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
+        uses: actions/checkout@v1
+      - name: vital-throw-message
+        uses: ./.github/actions/vital-throw-message
+        with:
+          github_token: ${{ secrets.github_token }}
+      - name: vital-throw-message-pr-review
+        uses: ./.github/actions/vital-throw-message
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
