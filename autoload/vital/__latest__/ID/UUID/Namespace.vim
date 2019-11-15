@@ -10,7 +10,7 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_created(module) abort
-  " not wrok
+  " not work
   " let a:module.nil  = s:UUID.decode('00000000-0000-0000-0000-000000000000')
   " let a:module.DNS  = s:UUID.decode('6ba7b810-9dad-11d1-80b4-00c04fd430c8')
   " let a:module.URL  = s:UUID.decode('6ba7b811-9dad-11d1-80b4-00c04fd430c8')

@@ -217,6 +217,7 @@ endfunction
 
 function! s:_arith_arg_to_list(x, y) abort
   let x = s:ByteArray.from_blob(a:x)
+  let y = 0
 
   let typeval = type(a:y)
   if typeval == s:Type.types.number
@@ -264,7 +265,7 @@ endfunction
 " uint_rshift/lshift, rshift/lshift
 
 function! s:_throw(message) abort
-  throw "vital: Vim.Type.Blob: " . a:message
+  throw 'vital: Vim.Type.Blob: ' . a:message
 endfunction
 
 let &cpo = s:save_cpo
