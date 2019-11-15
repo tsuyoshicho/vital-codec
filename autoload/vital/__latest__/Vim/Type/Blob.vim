@@ -264,7 +264,7 @@ endfunction
 " uint_rshift/lshift, rshift/lshift
 
 function! s:_throw(message) abort
-  throw "vital: Vim.Type.Blob: " . a:message
+  throw 'vital: Vim.Type.Blob: ' . a:message
 endfunction
 
 let &cpo = s:save_cpo

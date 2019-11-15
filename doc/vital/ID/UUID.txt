@@ -106,7 +106,7 @@ UUID Object				   *Vital.ID.UUID-UUID*
 	endian is inner params that mean hex string data byte's endianess.
 	bytes is decoded bytes-list; big-endian style.
 	value is inner params that split bytes-list to block.
-	varian is inner params that mean RFC defined vairant.
+	varian is inner params that mean RFC defined variant.
 	version is inner params that mean RFC variant's version.
 
 

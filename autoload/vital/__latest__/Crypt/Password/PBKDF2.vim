@@ -27,7 +27,7 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
   elseif typeval == s:Type.types.list
     let password = a:password
   else
-    call s:_throw('non-support password type (suport only string or bytes-list)')
+    call s:_throw('non-support password type (support only string or bytes-list)')
   endif
   unlet typeval
 
@@ -38,7 +38,7 @@ function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
   elseif typeval == s:Type.types.list
     let salt = a:salt
   else
-    call s:_throw('non-support salt type (suport only string or bytes-list)')
+    call s:_throw('non-support salt type (support only string or bytes-list)')
   endif
   unlet typeval
 
