@@ -43,6 +43,8 @@ function! s:Generator.max() abort
 endfunction
 
 function! s:Generator.seed(...) abort
+  let data = [0x00,0xFF]
+
   if a:0 > 0
     let typeval = type(a:1)
     if typeval == s:Type.types.number
@@ -50,10 +52,6 @@ function! s:Generator.seed(...) abort
     elseif typeval == s:Type.types.list
       let data = a:1
     endif
-  endif
-
-  if !exists('data') || 0 == len(data)
-    let data = [0x00,0xFF]
   endif
 
   let self.data = data

@@ -21,22 +21,24 @@ endfunction
 
 function! s:pbkdf2(password, salt, iteration, derivedKeyLength, algo) abort
   " password
+  let password = a:password
   let typeval = type(a:password)
   if typeval == s:Type.types.string
     let password = s:ByteArray.from_string(a:password)
   elseif typeval == s:Type.types.list
-    let password = a:password
+    " already set
   else
     call s:_throw('non-support password type (support only string or bytes-list)')
   endif
   unlet typeval
 
   " salt
+  let salt = a:salt
   let typeval = type(a:salt)
   if typeval == s:Type.types.string
     let salt = s:ByteArray.from_string(a:salt)
   elseif typeval == s:Type.types.list
-    let salt = a:salt
+    " already set
   else
     call s:_throw('non-support salt type (support only string or bytes-list)')
   endif

@@ -63,6 +63,7 @@ function! s:Generator_core.min() abort
   return self.info.min
 endfunction
 
+" @vimlint(EVL103, 1, a:seeds)
 function! s:Generator_core.seed(seeds) abort
   " not work
 endfunction
