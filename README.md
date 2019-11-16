@@ -1,4 +1,4 @@
-# vital-codec [![Build Status](https://travis-ci.com/tsuyoshicho/vital-codec.svg?branch=master)](https://travis-ci.com/tsuyoshicho/vital-codec) [![Build status](https://ci.appveyor.com/api/projects/status/vqc0lwvxyxbr5tia/branch/master?svg=true)](https://ci.appveyor.com/project/tsuyoshicho/vital-codec/branch/master) [![codecov](https://codecov.io/gh/tsuyoshicho/vital-codec/branch/master/graph/badge.svg)](https://codecov.io/gh/tsuyoshicho/vital-codec)
+# vital-codec [![Matrix Test status](https://github.com/tsuyoshicho/vital-codec/workflows/build%20and%20test%20at%20vim/badge.svg)](https://github.com/tsuyoshicho/vital-codec/actions)
 
 vital module for Encode/Decode logics
 
@@ -29,5 +29,5 @@ Some packages come from vital.vim.
 
 ## CI setting/Test/Documents
 Copying from vital.vim except a part (non-formal)
-- almost copy
+- almost copied, and converted to GitHub Action Setting.
 - a part as under development
