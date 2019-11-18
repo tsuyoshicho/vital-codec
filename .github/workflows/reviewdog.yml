@@ -1,5 +1,5 @@
 name: reviewdog
-on: [pull_request]
+on: [push, pull_request]
 jobs:
   vint:
     name: runner / vint
@@ -13,6 +13,7 @@ jobs:
           github_token: ${{ secrets.github_token }}
       - name: vint-pr-review
         uses: reviewdog/action-vint@v1
+        if: github.event_name == 'pull_request'
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
@@ -28,6 +29,7 @@ jobs:
           github_token: ${{ secrets.github_token }}
       - name: vimlint-pr-review
         uses: tsuyoshicho/action-vimlint@v1
+        if: github.event_name == 'pull_request'
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
@@ -37,8 +39,9 @@ jobs:
     steps:
       - name: Check out code.
         uses: actions/checkout@v1
-      - name: misspell
+      - name: misspell-pr-review
         uses: reviewdog/action-misspell@v1
+        if: github.event_name == 'pull_request'
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
@@ -55,6 +58,7 @@ jobs:
           github_token: ${{ secrets.github_token }}
       - name: vital-throw-message-pr-review
         uses: ./.github/actions/vital-throw-message
+        if: github.event_name == 'pull_request'
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
