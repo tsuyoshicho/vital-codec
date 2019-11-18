@@ -118,7 +118,7 @@ UUID.generatev1({mac})			*Vital.ID.UUID-UUID.generatev1()*
 UUID.generatev3({ns}, {value})	       	*Vital.ID.UUID-UUID.generatev3()*
         Generate and fill version 3 UUID data.
         Version 3 use |Vital.Hash.MD5| module.
-	{ns} as |ID.UUID.Namespace| defined value or other namespace UUID object or
+	{ns} as |Vital.ID.UUID.Namespace| defined value or other namespace UUID object or
         hex string.
 	{value} as unique value.
 
@@ -130,7 +130,7 @@ UUID.generatev4()                       *Vital.ID.UUID-UUID.generatev4()*
 UUID.generatev5({ns}, {value})	       	*Vital.ID.UUID-UUID.generatev5()*
         Generate and fill version 5 UUID data.
         Version 5 use |Vital.Hash.SHA1| module.
-	{ns} as |ID.UUID.Namespace| defined value or other namespace UUID object or
+	{ns} as |Vital.ID.UUID.Namespace| defined value or other namespace UUID object or
         hex string.
 	{value} as unique value.
 
