@@ -78,14 +78,14 @@ jobs:
           for /f "usebackq" %%A in (`dir /b %GITHUB_WORKSPACE%\vim\`) do set VIM_DIR=%%A
           set THEMIS_VIM=%GITHUB_WORKSPACE%\vim\%VIM_DIR%\vim.exe
           set VER=${{ matrix.vim }}
-          set THEMIS_PROFILE=%GITHUB_WORKSPACE%\vim-profile-win-%VER:~0,5%.txt
+          set THEMIS_PROFILE=%GITHUB_WORKSPACE%\vim-profile-win-%VER:~0,4%.txt
           %GITHUB_WORKSPACE%\vim-themis\bin\themis.bat --runtimepath %GITHUB_WORKSPACE%\vimproc --runtimepath %GITHUB_WORKSPACE%\vital.vim --exclude ConcurrentProcess --reporter dot
       - name: coverage
         shell: pwsh
         env:
           CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
         run: |
-          $Env:THEMIS_PROFILE = ${Env:GITHUB_WORKSPACE} + '\vim-profile-win-' + '${{ matrix.vim }}'.Substring(0,5) + '.txt'
+          $Env:THEMIS_PROFILE = ${Env:GITHUB_WORKSPACE} + '\vim-profile-win-' + '${{ matrix.vim }}'.Substring(0,4) + '.txt'
           pip install codecov
           pip install covimerage
           covimerage write_coverage ${Env:THEMIS_PROFILE}
