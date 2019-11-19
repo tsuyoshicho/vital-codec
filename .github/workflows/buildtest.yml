@@ -82,6 +82,8 @@ jobs:
           %GITHUB_WORKSPACE%\vim-themis\bin\themis.bat --runtimepath %GITHUB_WORKSPACE%\vimproc --runtimepath %GITHUB_WORKSPACE%\vital.vim --exclude ConcurrentProcess --reporter dot
       - name: coverage
         shell: pwsh
+        env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
         run: |
           $Env:THEMIS_PROFILE = ${Env:GITHUB_WORKSPACE} + '\vim-profile-win-' + '${{ matrix.vim }}'.Substring(0,5) + '.txt'
           pip install codecov
@@ -115,10 +117,12 @@ jobs:
           (cd ${GITHUB_WORKSPACE}/vimproc && make)
           ${GITHUB_WORKSPACE}/vim-themis/bin/themis --runtimepath ${GITHUB_WORKSPACE}/vimproc --runtimepath ${GITHUB_WORKSPACE}/vital.vim --exclude ConcurrentProcess --reporter dot
       - name: coverage
+        env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
         run: |
           export VIM_VERSION=${{ matrix.vim }}
           export THEMIS_PROFILE=${GITHUB_WORKSPACE}/vim-profile-macos-${VIM_VERSION}.txt
           export PATH=$(python3 -m site --user-base)/bin:${PATH}
           covimerage write_coverage "${THEMIS_PROFILE}"
           coverage xml
-          bash <(curl -s https://codecov.io/bash)
+          codecov -f coverage.xml
