@@ -6,8 +6,8 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:V       = a:V
-  let s:MD5     = s:V.import('Hash.MD5x')
-  let s:SHA1    = s:V.import('Hash.SHA1x')
+  let s:MD5     = s:V.import('Hash.MD5')
+  let s:SHA1    = s:V.import('Hash.SHA1')
   let s:Bitwise = s:V.import('Bitwise')
   let s:Random  = s:V.import('Random')
   let s:List    = s:V.import('Data.List')
@@ -38,7 +38,7 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Hash.MD5x', 'Hash.SHA1x', 'Bitwise', 'Random', 'Data.List', 'Data.List.Byte']
+  return ['Hash.MD5', 'Hash.SHA1', 'Bitwise', 'Random', 'Data.List', 'Data.List.Byte']
 endfunction
 
 "  UUID
