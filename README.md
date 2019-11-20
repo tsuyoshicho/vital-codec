@@ -31,3 +31,7 @@ Some packages come from vital.vim.
 Copying from vital.vim except a part (non-formal)
 - almost copied, and converted to GitHub Action Setting.
 - a part as under development
+
+### Currently CI configuration warning.
+
+GitHub Action build and test workflow : Windows is currently failed, temporarily disabled.
