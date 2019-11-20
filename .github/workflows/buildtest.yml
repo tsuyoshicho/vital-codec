@@ -49,6 +49,8 @@ jobs:
           file: ./coverage.xml
   vim-win:
     name: vim version/windows matrix test
+    if: # temp disable
+      false
     strategy:
       matrix:
         vim: [vim80/oldest, latest]
