@@ -1,4 +1,4 @@
-# vital-codec [![Matrix Test status](https://github.com/tsuyoshicho/vital-codec/workflows/build%20and%20test%20at%20vim/badge.svg)](https://github.com/tsuyoshicho/vital-codec/actions)
+# vital-codec [![Matrix Test status](https://github.com/tsuyoshicho/vital-codec/workflows/build%20and%20test%20at%20vim/badge.svg)](https://github.com/tsuyoshicho/vital-codec/actions) [![codecov](https://codecov.io/gh/tsuyoshicho/vital-codec/branch/master/graph/badge.svg)](https://codecov.io/gh/tsuyoshicho/vital-codec)
 
 vital module for Encode/Decode logics
 
