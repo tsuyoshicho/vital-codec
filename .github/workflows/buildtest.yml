@@ -92,6 +92,7 @@ jobs:
           set TEMP=%GITHUB_WORKSPACE%\tmp
           set TMP=%TEMP%
           mkdir %TEMP%
+          vim --version
           %GITHUB_WORKSPACE%\vim-themis\bin\themis.bat --runtimepath %GITHUB_WORKSPACE%\vimproc --runtimepath %GITHUB_WORKSPACE%\vital.vim --exclude ConcurrentProcess --reporter dot
       - name: coverage collect
         shell: pwsh
@@ -134,6 +135,7 @@ jobs:
           git clone --depth 1 --single-branch https://github.com/vim-jp/vital.vim ${GITHUB_WORKSPACE}/vital.vim
           git clone --depth 1 https://github.com/Shougo/vimproc.vim ${GITHUB_WORKSPACE}/vimproc
           (cd ${GITHUB_WORKSPACE}/vimproc && make)
+          vim --version
           ${GITHUB_WORKSPACE}/vim-themis/bin/themis --runtimepath ${GITHUB_WORKSPACE}/vimproc --runtimepath ${GITHUB_WORKSPACE}/vital.vim --exclude ConcurrentProcess --reporter dot
       - name: coverage collect
         run: |
