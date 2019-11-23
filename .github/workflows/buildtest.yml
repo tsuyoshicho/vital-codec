@@ -16,11 +16,8 @@ jobs:
           export PATH=/home/runner/.local/bin:${PATH}
           export VIM_VERSION=${{ matrix.vim }}
           sudo apt-get update
-          sudo python3 -m pip uninstall pip
-          sudo apt autoremove python3-pip
+          sudo pip3 install -U pip
           sudo apt-get install python3-dev python3-distutils
-          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-          python3 get-pip.py --user
           pip3 install --user covimerage
           sh scripts/install-vim.sh
       - name: test
@@ -67,6 +64,7 @@ jobs:
       - name: build
         shell: pwsh
         run: |
+          pip install -U pip
           $zip = ${Env:GITHUB_WORKSPACE} + '\vim.zip'
           $vim = ${Env:GITHUB_WORKSPACE} + '\vim\'
           $vim_url = 'http://vim-jp.org/redirects/koron/vim-kaoriya/' + '${{ matrix.vim }}' + '/win64/'
@@ -135,6 +133,7 @@ jobs:
       - name: build
         run: |
           brew update
+          sudo pip3 install -U pip
           brew install macvim
           ln -fs "$(brew --prefix macvim)/bin/mvim" "/usr/local/bin/vim"
           pip3 install --user covimerage
