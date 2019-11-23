@@ -11,14 +11,26 @@ jobs:
       - name: checkout
         uses: actions/checkout@master
         # do not need python setup in linux
+      - name: setup
+        run: |
+          sudo apt-get update
+          sudo pip3 install -U pip
+      - name: Get pip cache
+        id: pip-cache
+        run: |
+          python3 -c "from pip._internal.locations import USER_CACHE_DIR; print('::set-output name=dir::' + USER_CACHE_DIR)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       - name: build
         run: |
           export PATH=/home/runner/.local/bin:${PATH}
           export VIM_VERSION=${{ matrix.vim }}
-          sudo apt-get update
-          sudo pip3 install -U pip
           sudo apt-get install python3-dev python3-distutils
-          pip3 install --user covimerage
+          pip3 install --user -r requirements.txt
           sh scripts/install-vim.sh
       - name: test
         env:
@@ -61,10 +73,22 @@ jobs:
         uses: actions/setup-python@master
         with:
           version: 3.7
+      - name: setup
+        run: |
+          pip install -U pip
+      - name: Get pip cache
+        id: pip-cache
+        run: |
+          python -c "from pip._internal.locations import USER_CACHE_DIR; print('::set-output name=dir::' + USER_CACHE_DIR)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       - name: build
         shell: pwsh
         run: |
-          pip install -U pip
           $zip = ${Env:GITHUB_WORKSPACE} + '\vim.zip'
           $vim = ${Env:GITHUB_WORKSPACE} + '\vim\'
           $vim_url = 'http://vim-jp.org/redirects/koron/vim-kaoriya/' + '${{ matrix.vim }}' + '/win64/'
@@ -96,7 +120,7 @@ jobs:
         shell: pwsh
         run: |
           $Env:THEMIS_PROFILE = ${Env:GITHUB_WORKSPACE} + '\vim-profile-win-' + '${{ matrix.vim }}'.Substring(0,4) + '.txt'
-          pip install covimerage
+          pip install -r requirements.txt
           covimerage write_coverage ${Env:THEMIS_PROFILE}
           coverage xml
       - name: coverage send
@@ -130,13 +154,25 @@ jobs:
         uses: actions/setup-python@master
         with:
           version: 3.7
-      - name: build
+      - name: setup
         run: |
           brew update
           sudo pip3 install -U pip
+      - name: Get pip cache
+        id: pip-cache
+        run: |
+          python3 -c "from pip._internal.locations import USER_CACHE_DIR; print('::set-output name=dir::' + USER_CACHE_DIR)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: build
+        run: |
           brew install macvim
           ln -fs "$(brew --prefix macvim)/bin/mvim" "/usr/local/bin/vim"
-          pip3 install --user covimerage
+          pip3 install --user -r requirements.txt
       - name: test
         run: |
           export VIM_VERSION=${{ matrix.vim }}
