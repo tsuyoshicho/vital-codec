@@ -125,7 +125,9 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ${{ steps.brew-cache.outputs.dir }}
-          key: vim-macos-${{ hashFiles('Brewfile') }}
+          key: ${{ runner.os }}-brew
+      - name: Brew config
+        run: brew config
       - name: Setup Python
         uses: actions/setup-python@master
         with:
