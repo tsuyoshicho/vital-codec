@@ -64,6 +64,7 @@ jobs:
       - name: build
         shell: pwsh
         run: |
+          pip install -U pip
           $zip = ${Env:GITHUB_WORKSPACE} + '\vim.zip'
           $vim = ${Env:GITHUB_WORKSPACE} + '\vim\'
           $vim_url = 'http://vim-jp.org/redirects/koron/vim-kaoriya/' + '${{ matrix.vim }}' + '/win64/'
@@ -132,6 +133,7 @@ jobs:
       - name: build
         run: |
           brew update
+          sudo pip3 install -U pip
           brew install macvim
           ln -fs "$(brew --prefix macvim)/bin/mvim" "/usr/local/bin/vim"
           pip3 install --user covimerage
