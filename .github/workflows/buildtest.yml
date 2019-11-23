@@ -117,6 +117,17 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@master
+      - name: Get brew cache directory
+        # see https://tamakiii.hatenablog.com/entry/2019/11/21/213847
+        id: brew-cache
+        run: echo "::set-output name=dir::$(brew --cache)/downloads"
+      - name: Brew cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.brew-cache.outputs.dir }}
+          key: ${{ runner.os }}-brew
+      - name: Brew config
+        run: brew config
       - name: Setup Python
         uses: actions/setup-python@master
         with:
