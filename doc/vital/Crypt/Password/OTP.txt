@@ -19,7 +19,9 @@ Support HOTP/TOTP.
 
 Usage: >
   let default = s:OTP.default()
-  return s:OTP.totp(secret, default.TOTP.period, g:V.import('Hash.' . default.TOTP.algo), default.TOTP.digit)
+  return s:OTP.totp(secret, default.TOTP.period,
+		  \ g:V.import('Hash.' . default.TOTP.algo),
+		  \ default.TOTP.digit)
 <
 
 ==============================================================================

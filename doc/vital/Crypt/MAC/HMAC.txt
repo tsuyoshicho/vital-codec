@@ -37,7 +37,7 @@ HMAC Object				*Vital.Crypt.MAC.HMAC-HMAC*
 HMAC.hash({hashobj})			  *Vital.Crypt.MAC.HMAC-HMAC.hash()*
 	Set HMAC hash algorithm at {hashobj}.
 	{hashobj} must 'digest_raw' method(input/output {bytes} list).
-	Such as |vital| Hash.* module interfaces
+	Such as Vital.Hash.* module interfaces
 	ex. |Vital.Hash.MD5|, |Vital.Hash.SHA1|.
 
 HMAC.key({str|bytes})			  *Vital.Crypt.MAC.HMAC-HMAC.key()*

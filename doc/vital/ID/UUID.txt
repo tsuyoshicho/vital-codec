@@ -124,7 +124,7 @@ UUID.generatev3({ns}, {value})	       	*Vital.ID.UUID-UUID.generatev3()*
 
 UUID.generatev4()                       *Vital.ID.UUID-UUID.generatev4()*
         Generate and fill version 4 UUID data.
-        Version 4 use|Vital.Random| module.
+        Version 4 use |Vital.Random| module.
         Version 4 generated from all random value.
 
 UUID.generatev5({ns}, {value})	       	*Vital.ID.UUID-UUID.generatev5()*
