@@ -74,8 +74,12 @@ jobs:
         with:
           version: 3.7
       - name: setup
+        id: setup
         run: |
           pip install -U pip
+          $vimzip = ${Env:GITHUB_WORKSPACE} + '\vimzip'
+          New-Item $vimzip -ItemType Directory
+          Write-Host "::set-output name=vimzip::$($vimzip)"
       - name: Get pip cache
         id: pip-cache
         run: |
@@ -86,15 +90,31 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+      - name: Determining the Vim file
+        id: vim-file
+        shell: pwsh
+        run: |
+          $vim_url = 'http://vim-jp.org/redirects/koron/vim-kaoriya/' + '${{ matrix.vim }}' + '/win64/'
+          $redirect = Invoke-WebRequest -URI $vim_url
+          Write-Host "::set-output name=url::$($redirect.Links[0].href)"
+          Write-Output $redirect.Links[0].href | Out-File url.txt
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.setup.outputs.vimzip }}
+          key: ${{ runner.os }}-vimzip-${{ hashFiles('**/url.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-vimzip-
       - name: build
         shell: pwsh
         run: |
-          $zip = ${Env:GITHUB_WORKSPACE} + '\vim.zip'
           $vim = ${Env:GITHUB_WORKSPACE} + '\vim\'
-          $vim_url = 'http://vim-jp.org/redirects/koron/vim-kaoriya/' + '${{ matrix.vim }}' + '/win64/'
-          $redirect = Invoke-WebRequest -URI $vim_url
-          (New-Object Net.WebClient).DownloadFile($redirect.Links[0].href, $zip)
-          [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
+          $zip = ${Env:GITHUB_WORKSPACE} + '\vimzip\vim' + '${{ matrix.vim }}'.Substring(0,4) + '.zip'
+          if (Test-Path $zip) {
+            Write-Host cache hit
+          } else {
+            (New-Object Net.WebClient).DownloadFile('${{ steps.vim-file.outputs.url }}', $zip)
+            [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
+          }
           [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
           $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
           $Env:THEMIS_PROFILE = ${Env:GITHUB_WORKSPACE} + '\vim-profile-win-' + '${{ matrix.vim }}'.Substring(0,4) + '.txt'
