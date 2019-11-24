@@ -101,14 +101,14 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: ${{ steps.setup.outputs.vimzip }}
-          key: ${{ runner.os }}-vimzip-${{ hashFiles('**/url.txt') }}
+          key: ${{ runner.os }}-64-vimzip-${{ hashFiles('**/url.txt') }}
           restore-keys: |
-            ${{ runner.os }}-vimzip-
+            ${{ runner.os }}-64-vimzip-
       - name: build
         shell: pwsh
         run: |
           $vim = ${Env:GITHUB_WORKSPACE} + '\vim\'
-          $zip = ${Env:GITHUB_WORKSPACE} + '\vimzip\vim' + '${{ matrix.vim }}'.Substring(0,4) + '.zip'
+          $zip = ${Env:GITHUB_WORKSPACE} + '\vimzip\vim.zip'
           if (Test-Path $zip) {
             Write-Host cache hit
           } else {
