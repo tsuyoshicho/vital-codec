@@ -215,3 +215,5 @@ jobs:
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage.xml
+      - name: Cleanup some brew downloads
+        run: cd ${{ steps.brew-cache.outputs.dir }} && ls -lsS | head -n 5 | awk '{ print $10 }' | xargs rm -rf
