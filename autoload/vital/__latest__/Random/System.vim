@@ -6,11 +6,20 @@ set cpo&vim
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:Prelude = s:V.import('Prelude')
+  let s:Bitwise = s:V.import('Bitwise')
   let s:Process = s:V.import('System.Process')
   " Fallback
   let s:Mt      = s:V.import('Random.Mt19937ar')
 
-  if s:Prelude.is_windows()
+  let s:allf32bit = s:Bitwise.or(
+        \ s:Bitwise.lshift(0xFFFF, 16),
+        \                  0xFFFF
+        \)
+
+  if exists('*rand')
+      let s:Generator = deepcopy(s:Generator_vim_rand)
+      let s:Generator.info.seed = srand()
+  elseif s:Prelude.is_windows()
     if executable('cmd')
       let s:Generator = deepcopy(s:Generator_windows_cmd)
     endif
@@ -40,7 +49,7 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Prelude', 'System.Process', 'Random.Mt19937ar']
+  return ['Prelude', 'Bitwise', 'System.Process', 'Random.Mt19937ar']
 endfunction
 
 let s:Generator = {}
@@ -63,9 +72,50 @@ function! s:Generator_core.min() abort
   return self.info.min
 endfunction
 
-" @vimlint(EVL103, 1, a:seeds)
-function! s:Generator_core.seed(seeds) abort
+function! s:Generator_core.seed(...) abort
   " not work
+endfunction
+
+" Vim native implement
+" max delay setup
+" seed initial setup
+let s:Generator_vim_rand = extend({
+      \ 'info' : {
+      \   'max' : 0,
+      \   'min' : 0,
+      \   'seed': [0, 0, 0, 0],
+      \ }
+      \}, s:Generator_core, 'keep')
+
+function! s:Generator_vim_rand.next() abort
+  return rand(self.info.seed)
+endfunction
+
+function! s:Generator_vim_rand.max() abort
+  " delay setup
+  if 0 == self.info.max
+    " replace core method
+    unlockvar 3 self
+    let self.info.max = s:allf32bit
+    let self.max = s:Generator_core.max
+    lockvar 3 self
+  endif
+  return self.info.max
+endfunction
+
+function! s:Generator_vim_rand.seed(...) abort
+  unlockvar 3 self
+  if a:0 > 0
+    let seeds = a:1
+    if s:Prelude.is_number(seeds)
+      let self.info.seed = srand(seeds)
+    else " as List
+      let self.info.seed = copy(seeds)
+    endif
+  else
+    let self.info.seed = srand()
+  endif
+  lockvar 3 self
 endfunction
 
 " Windows cmd
@@ -150,7 +200,7 @@ endfunction
 
 function! s:new_generator() abort
   let gen = deepcopy(s:Generator)
-  call gen.seed([0])
+  call gen.seed()
   return gen
 endfunction
 
@@ -162,7 +212,9 @@ function! s:_common_generator() abort
 endfunction
 
 function! s:srand(...) abort
-  " not work
+  if a:0 > 0
+    call s:_common_generator().seed(a:1)
+  endif
 endfunction
 
 function! s:rand() abort
