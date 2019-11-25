@@ -1,5 +1,6 @@
 " Poly1305
 " RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols https://tools.ietf.org/html/rfc7539
+" based on https://github.com/calvinmetcalf/chacha20poly1305
 
 function! s:_vital_loaded(V) abort
   let s:V = a:V
