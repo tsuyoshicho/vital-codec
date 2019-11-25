@@ -309,22 +309,22 @@ function! poly1305_state.finish() abort
   let self.h[0] = s:Blob.and(self.h[0], 0z3ffffff)
 
   " state->h1 +=     b; b = state->h1 >> 26; state->h1 = state->h1 & 0x3ffffff;
-  let self.h[1] = s:Blob.uint_add(self.h[1], b, 'nooverflow')
+  let self.h[1] = s:Blob.uint_add(self.h[1], b)
   let b = s:Blob.rshift(self.h[1], 26)
   let self.h[1] = s:Blob.and(self.h[1], 0z3ffffff)
 
   " state->h2 +=     b; b = state->h2 >> 26; state->h2 = state->h2 & 0x3ffffff;
-  let self.h[2] = s:Blob.uint_add(self.h[2], b, 'nooverflow')
+  let self.h[2] = s:Blob.uint_add(self.h[2], b)
   let b = s:Blob.rshift(self.h[2], 26)
   let self.h[2] = s:Blob.and(self.h[2], 0z3ffffff)
 
   " state->h3 +=     b; b = state->h3 >> 26; state->h3 = state->h3 & 0x3ffffff;
-  let self.h[3] = s:Blob.uint_add(self.h[3], b, 'nooverflow')
+  let self.h[3] = s:Blob.uint_add(self.h[3], b)
   let b = s:Blob.rshift(self.h[3], 26)
   let self.h[3] = s:Blob.and(self.h[3], 0z3ffffff)
 
   " state->h4 +=     b; b = state->h4 >> 26; state->h4 = state->h4 & 0x3ffffff;
-  let self.h[4] = s:Blob.uint_add(self.h[4], b, 'nooverflow')
+  let self.h[4] = s:Blob.uint_add(self.h[4], b)
   let b = s:Blob.rshift(self.h[4], 26)
   let self.h[4] = s:Blob.and(self.h[4], 0z3ffffff)
 
@@ -332,33 +332,33 @@ function! poly1305_state.finish() abort
   let self.h[0] = s:Blob.mul(b, 5)
 
   " g0 = state->h0 + 5; b = g0 >> 26; g0 &= 0x3ffffff;
-  let g[0] = s:Blob.uint_add(self.h[0], s:Blob.uint32(5), 'nooverflow')
+  let g[0] = s:Blob.uint_add(self.h[0], s:Blob.uint32(5))
   let b = s:Blob.rshift(g[0], 26)
   let g[0] = s:Blob.and(g[0], 0z3ffffff)
 
   " g1 = state->h1 + b; b = g1 >> 26; g1 &= 0x3ffffff;
-  let g[1] = s:Blob.uint_add(self.h[1], b, 'nooverflow')
+  let g[1] = s:Blob.uint_add(self.h[1], b)
   let b = s:Blob.rshift(g[1], 26)
   let g[1] = s:Blob.and(g[1], 0z3ffffff)
 
   " g2 = state->h2 + b; b = g2 >> 26; g2 &= 0x3ffffff;
-  let g[2] = s:Blob.uint_add(self.h[2], b, 'nooverflow')
+  let g[2] = s:Blob.uint_add(self.h[2], b)
   let b = s:Blob.rshift(g[2], 26)
   let g[1] = s:Blob.and(g[2], 0z3ffffff)
 
   " g3 = state->h3 + b; b = g3 >> 26; g3 &= 0x3ffffff;
-  let g[3] = s:Blob.uint_add(self.h[3], b, 'nooverflow')
+  let g[3] = s:Blob.uint_add(self.h[3], b)
   let b = s:Blob.rshift(g[3], 26)
   let g[1] = s:Blob.and(g[3], 0z3ffffff)
 
   " g4 = state->h4 + b - (1 << 26);
   g4 = state->h4 + b - (1 << 26);
-  let g[4] = s:Blob.uint_add(self.h[4], b, 'nooverflow')
-  let g[4] = s:Blob.uint_sub(g[4], s:Blob.uint32(s:Bitwise.lshift(1, 26)), 'nounderflow')
+  let g[4] = s:Blob.uint_add(self.h[4], b)
+  let g[4] = s:Blob.uint_sub(g[4], s:Blob.uint32(s:Bitwise.lshift(1, 26)))
 
   " b = (g4 >> 31) - 1;
   let b = s:Blob.rshift(g4, 31)
-  let b = s:Blob.uint_sub(b, s:Blob.uint32(1), 'nounderflow')
+  let b = s:Blob.uint_sub(b, s:Blob.uint32(1))
   let nb = s:Blob.invert(b) " nb = ~b;
 
   " state->h0 = (state->h0 & nb) | (g0 & b);
@@ -370,22 +370,50 @@ function! poly1305_state.finish() abort
     let self.h[i] = s:Blob.or(s:Blob.and(self.h[i], nb), s:Blob.and(g[i], b))
   endfor
 
-  let f[0] = s:Blob.uint_add(s:Blob.or(             (self.h[0]    ), s:Blob.lshift(self.h[1], 26)), self.key[ 0 :  3]), 'nooverflow') " f0 = ((state->h0      ) | (state->h1 << 26)) + (uint64_t)U8TO32_LE(&state->key[0]);
-  let f[1] = s:Blob.uint_add(s:Blob.or(s:Blob.rshift(self.h[1],  6), s:Blob.lshift(self.h[2], 20)), self.key[ 4 :  7]), 'nooverflow') " f1 = ((state->h1 >>  6) | (state->h2 << 20)) + (uint64_t)U8TO32_LE(&state->key[4]);
-  let f[2] = s:Blob.uint_add(s:Blob.or(s:Blob.rshift(self.h[2], 12), s:Blob.lshift(self.h[3], 14)), self.key[ 8 : 11]), 'nooverflow') " f2 = ((state->h2 >> 12) | (state->h3 << 14)) + (uint64_t)U8TO32_LE(&state->key[8]);
-  let f[3] = s:Blob.uint_add(s:Blob.or(s:Blob.rshift(self.h[3], 18), s:Blob.lshift(self.h[4],  8)), self.key[12 : 15]), 'nooverflow') " f3 = ((state->h3 >> 18) | (state->h4 <<  8)) + (uint64_t)U8TO32_LE(&state->key[12]);
+  " f0 = ((state->h0      ) | (state->h1 << 26)) + (uint64_t)U8TO32_LE(&state->key[0]);
+  let f[0] = s:Blob.uint_add(
+        \ s:Blob.or(
+        \               (self.h[0]    ),
+        \  s:Blob.lshift(self.h[1], 26)
+        \ ),
+        \ self.key[ 0 :  3]
+        \)
+  " f1 = ((state->h1 >>  6) | (state->h2 << 20)) + (uint64_t)U8TO32_LE(&state->key[4]);
+  let f[1] = s:Blob.uint_add(
+        \ s:Blob.or(
+        \  s:Blob.rshift(self.h[1],  6),
+        \  s:Blob.lshift(self.h[2], 20)
+        \ ),
+        \ self.key[ 4 :  7]
+        \)
+  " f2 = ((state->h2 >> 12) | (state->h3 << 14)) + (uint64_t)U8TO32_LE(&state->key[8]);
+  let f[2] = s:Blob.uint_add(
+        \ s:Blob.or(
+        \  s:Blob.rshift(self.h[2], 12),
+        \  s:Blob.lshift(self.h[3], 14)
+        \ ),
+        \ self.key[ 8 : 11]
+        \)
+  " f3 = ((state->h3 >> 18) | (state->h4 <<  8)) + (uint64_t)U8TO32_LE(&state->key[12]);
+  let f[3] = s:Blob.uint_add(
+        \ s:Blob.or(
+        \  s:Blob.rshift(self.h[3], 18),
+        \  s:Blob.lshift(self.h[4],  8)
+        \ ),
+        \ self.key[12 : 15]
+        \)
 
   " U32TO8_LE(&mac[ 0], f0); f1 += (f0 >> 32);
   let mac[ 0: 3] = s:ByteArray.from_blob(f[0])
-  let f[1] = s:Blob.uint_add(f[1], s:Blob.rshift(f[0], 32), 'nooverflow')
+  let f[1] = s:Blob.uint_add(f[1], s:Blob.rshift(f[0], 32))
 
   " U32TO8_LE(&mac[ 4], f1); f2 += (f1 >> 32);
   let mac[ 4: 7] = s:ByteArray.from_blob(f[1])
-  let f[2] = s:Blob.uint_add(f[2], s:Blob.rshift(f[1], 32), 'nooverflow')
+  let f[2] = s:Blob.uint_add(f[2], s:Blob.rshift(f[1], 32))
 
   " U32TO8_LE(&mac[ 8], f2); f3 += (f2 >> 32);
   let mac[ 8:11] = s:ByteArray.from_blob(f[2])
-  let f[3] = s:Blob.uint_add(f[3], s:Blob.rshift(f[2], 32), 'nooverflow')
+  let f[3] = s:Blob.uint_add(f[3], s:Blob.rshift(f[2], 32))
 
   " U32TO8_LE(&mac[12], f3);
   let mac[12:15] = s:ByteArray.from_blob(f[3])
@@ -406,5 +434,5 @@ function! s:Poly1305.poly1305(data) abort
 endfunction
 
 function! s:_throw(message) abort
-  throw 'vital: Crypt.MAC.HMAC: ' . a:message
+  throw 'vital: Crypt.MAC.Poly1305: ' . a:message
 endfunction
