@@ -95,15 +95,18 @@ function! s:Generator_vim_rand.max() abort
   " delay setup
   if 0 == self.info.max
     " replace core method
+    " @vimlint(EVL101, 1, l:self)
     unlockvar 3 self
     let self.info.max = s:allf32bit
     let self.max = s:Generator_core.max
+    " @vimlint(EVL101, 1, l:self)
     lockvar 3 self
   endif
   return self.info.max
 endfunction
 
 function! s:Generator_vim_rand.seed(...) abort
+  " @vimlint(EVL101, 1, l:self)
   unlockvar 3 self
   if a:0 > 0
     let seeds = a:1
@@ -115,6 +118,7 @@ function! s:Generator_vim_rand.seed(...) abort
   else
     let self.info.seed = srand()
   endif
+  " @vimlint(EVL101, 1, l:self)
   lockvar 3 self
 endfunction
 
