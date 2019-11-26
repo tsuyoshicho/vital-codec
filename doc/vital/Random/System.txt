@@ -13,14 +13,14 @@ INTERFACE			|Vital.Random.System-interface|
 ==============================================================================
 INTRODUCTION				*Vital.Random.System-introduction*
 
-IMPORTANT NOTICE:
-THIS MODULE IS JOKE MODULE.
-USING AT YOUR OWN RISK.
-
 *Vital.Random.System* provides a Random Number Generator (RNG) using an
 system random source.
-Windows use cmd's %RANDOM%, *nix use bash's $RANDOM / openssl rand /
-/dev/urandom or /dev/random dump with od command.
+If vim has |rand()|/|srand()|, use this.
+Otherwise methods: Windows use cmd's %RANDOM%, *nix use bash's $RANDOM /
+openssl rand / /dev/urandom or /dev/random dump with od command.
+And if these all methods do not work environment, this module fallback to
+|Vital.Random.Mt19937ar|.
+
 This module lower using priority other PRNG algorithm.
 
 >
@@ -45,8 +45,8 @@ INTERFACE				*Vital.Random.System-interface*
 FUNCTIONS				*Vital.Random.System-functions*
 
 srand([{seed}])				*Vital.Random.System.srand()*
-	Initialize the global generator with the given seed number (not
-	affected).
+	Initialize the global generator with the given seed number.
+	{seed} is |Number| or four number |List|.
 
 rand()					*Vital.Random.System.rand()*
 	Generate a random number from the global generator.
@@ -55,7 +55,6 @@ rand()					*Vital.Random.System.rand()*
 
 new_generator()				*Vital.Random.System.new_generator()*
 	Create a new Generator object(|Vital.Random.System-Generator|).
-
 
 
 ==============================================================================
@@ -73,8 +72,9 @@ Generator.min()			*Vital.Random.System-Generator.min()*
 Generator.max()			*Vital.Random.System-Generator.max()*
 	Get the largest possible value in the output range.
 
-Generator.seed({seeds})		*Vital.Random.System-Generator.seed()*
-	Initialze the generator with the given seed list (not affected).                                                  
+Generator.seed({seed})		*Vital.Random.System-Generator.seed()*
+	Initialze the generator with the given seed list.
+	{seed} value: see |Vital.Random.System.srand()|.
 
 
 ==============================================================================
