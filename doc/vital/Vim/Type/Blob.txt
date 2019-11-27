@@ -80,6 +80,10 @@ add({X}, {Y})				  *Vital.Vim.Type.Blob.add()*
 	Return new blob that is {X} + {Y} value.
 	NOTE: {X} is blob, {Y} blob or number.
 
+mul({X}, {Y})				  *Vital.Vim.Type.Blob.mul()*
+	Return new blob that is {X} *  {Y} value.
+	NOTE: {X} is blob, {Y} blob or number.
+
 rshift({X}, {bits})			  *Vital.Vim.Type.Blob.rshift()*
 	Return new blob that is {X} right shift {bits} bit value.
 
