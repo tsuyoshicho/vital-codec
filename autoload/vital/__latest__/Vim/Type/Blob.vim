@@ -281,11 +281,36 @@ function! s:uint_add(x, y,...) abort
   return retval
 endfunction
 
+function! s:uint_mul(x, y,...) abort
+  " same size check
+  if len(a:x) != len(a:y)
+    call s:_throw('argments x and y''s size discrepancy.')
+  endif
+  let length = len(a:x) + len(a:y)
+  let retval = s:mul(a:x, a:y)
+
+  let overflow_check = 0
+  if a:0 > 0
+    if a:1 is? 'overflow'
+      let overflow_check = 1
+    endif
+  endif
+  if length < len(retval)
+    if overflow_check
+      call s:_throw(printf('overflow %d byte uint.', length))
+    else
+      " treat size
+      let retval = retval[-length : -1]
+    endif
+  endif
+  return retval
+endfunction
+
 " uint_sub,sub
-" uint_mul,mul
+" uint_mul
 " uint_div,div
 " uint_mod,mod
-" uint_rshift/lshift, rshift/lshift
+" uint_rshift/lshift
 
 function! s:_throw(message) abort
   throw 'vital: Vim.Type.Blob: ' . a:message
