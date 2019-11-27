@@ -144,6 +144,16 @@ Describe Vim.Type.Blob
         Assert Equals(data[i],  source[i])
       endfor
     End
+    It cast small data
+      let source = [0x00, 0x00, 0x0D, 0x0C]
+      let source_joined = 0x0D0C
+      let data = b.uint32(source_joined)
+      Assert Equals(type(data), typeval)
+      Assert Equals(len(data),  len(source))
+      for i in range(len(source))
+        Assert Equals(data[i],  source[i])
+      endfor
+    End
   End
 
   " uint64(...)
@@ -555,6 +565,14 @@ Describe Vim.Type.Blob
         Assert Equals(data_x[i],  source_x[i])
       endfor
     End
+    It invalid data type
+      let source_x = [0x4F, 0xFF, 0xDD, 0x88]
+      let source_a_joined = 0x18F03A44
+      let source_b_joined = 0x370FA344
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
+      Throws /^vital: Vim.Type.Blob:/ b.add(data_a, {'data': data_b})
+    End
   End
 
   " mul(x, y)
@@ -652,6 +670,12 @@ Describe Vim.Type.Blob
       for i in range(len(source_x))
         Assert Equals(data_x[i],  source_x[i])
       endfor
+    End
+    It shift oversize check
+      let shift = 16
+      let source_a_joined = 0xABCD
+      let data_a = b.uint16(source_a_joined)
+      Throws /^vital: Vim.Type.Blob:/ b.rshift(data_a, shift)
     End
     It non_block shift check
       let source_x = [0x0A, 0xBC]
