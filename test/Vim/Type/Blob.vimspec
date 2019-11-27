@@ -672,8 +672,7 @@ Describe Vim.Type.Blob
       endfor
     End
     It shift oversize check
-      let source_x = [0xAB]
-      let shift = 9
+      let shift = 16
       let source_a_joined = 0xABCD
       let data_a = b.uint16(source_a_joined)
       Throws /^vital: Vim.Type.Blob:/ b.rshift(data_a, shift)
