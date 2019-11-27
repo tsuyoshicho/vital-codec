@@ -319,11 +319,26 @@ function! poly1305_state._update(in, size) abort
           \)
     "
     "              state->h0 = (uint32_t)t[0] & 0x3ffffff; c =           (t[0] >> 26);
+    let self.h[0] = s:Bitwise.and(s:Bitwise.uint32(t_x[0]), 0x3ffffff)
+    let c = s:Bitwise.uint32(s:Bitwise.rshift(t_x[0], 26))
     "   t[1] += c; state->h1 = (uint32_t)t[1] & 0x3ffffff; b = (uint32_t)(t[1] >> 26);
+    let t_x[1] = s:Bitwise.uint32(t_x[1] + c)
+    let self.h[1] = s:Bitwise.and(s:Bitwise.uint32(t_x[1]), 0x3ffffff)
+    let b = s:Bitwise.uint32(s:Bitwise.rshift(t_x[1], 26))
     "   t[2] += b; state->h2 = (uint32_t)t[2] & 0x3ffffff; b = (uint32_t)(t[2] >> 26);
+    let t_x[2] = s:Bitwise.uint32(t_x[2] + b)
+    let self.h[2] = s:Bitwise.and(s:Bitwise.uint32(t_x[2]), 0x3ffffff)
+    let b = s:Bitwise.uint32(s:Bitwise.rshift(t_x[2], 26))
     "   t[3] += b; state->h3 = (uint32_t)t[3] & 0x3ffffff; b = (uint32_t)(t[3] >> 26);
+    let t_x[3] = s:Bitwise.uint32(t_x[3] + b)
+    let self.h[3] = s:Bitwise.and(s:Bitwise.uint32(t_x[3]), 0x3ffffff)
+    let b = s:Bitwise.uint32(s:Bitwise.rshift(t_x[3], 26))
     "   t[4] += b; state->h4 = (uint32_t)t[4] & 0x3ffffff; b = (uint32_t)(t[4] >> 26);
+    let t_x[4] = s:Bitwise.uint32(t_x[4] + b)
+    let self.h[4] = s:Bitwise.and(s:Bitwise.uint32(t_x[4]), 0x3ffffff)
+    let b = s:Bitwise.uint32(s:Bitwise.rshift(t_x[4], 26))
     "   state->h0 += b * 5;
+    let self.h[0] = s:Bitwise.uint32(b * 5)
     "
     "     if (len >= 16)
     "     goto poly1305_donna_16bytes;
