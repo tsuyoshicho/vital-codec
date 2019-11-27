@@ -101,10 +101,10 @@ function! poly1305_state.init(key) abort
   " state->r4 = t3 & 0x00fffff;
   let self.r[4] = s:Blob.and(t[3], 0z00fffff)
 
-  let self.s[1] = s:Blob.mul(self.r[1], 5) " state->s1 = state->r1 * 5;
-  let self.s[2] = s:Blob.mul(self.r[2], 5) " state->s2 = state->r2 * 5;
-  let self.s[3] = s:Blob.mul(self.r[3], 5) " state->s3 = state->r3 * 5;
-  let self.s[4] = s:Blob.mul(self.r[4], 5) " state->s4 = state->r4 * 5;
+  let self.s[1] = s:Blob.uint32(s:Blob.mul(self.r[1], 5)) " state->s1 = state->r1 * 5;
+  let self.s[2] = s:Blob.uint32(s:Blob.mul(self.r[2], 5)) " state->s2 = state->r2 * 5;
+  let self.s[3] = s:Blob.uint32(s:Blob.mul(self.r[3], 5)) " state->s3 = state->r3 * 5;
+  let self.s[4] = s:Blob.uint32(s:Blob.mul(self.r[4], 5)) " state->s4 = state->r4 * 5;
 
   " init state
   let self.h[0] = s:Blob.uint32(0) " state->h0 = 0;
@@ -173,13 +173,13 @@ function! poly1305_state._update(in, size) abort
   let offset = 0
 
   "     if (len < 16)
-  " 		goto poly1305_donna_atmost15bytes;
+  "     goto poly1305_donna_atmost15bytes;
   while size >= 16
     " poly1305_donna_16bytes:
-    " 	t0 = U8TO32_LE(in);
-    " 	t1 = U8TO32_LE(in+4);
-    " 	t2 = U8TO32_LE(in+8);
-    " 	t3 = U8TO32_LE(in+12);
+    "   t0 = U8TO32_LE(in);
+    "   t1 = U8TO32_LE(in+4);
+    "   t2 = U8TO32_LE(in+8);
+    "   t3 = U8TO32_LE(in+12);
     for i in range(4)
       let t_x[i] = in[offset + (i * 4): offset + (i * 4) + 3]
     endfor
@@ -232,28 +232,93 @@ function! poly1305_state._update(in, size) abort
     "          mul32x32_64(state->h2,state->s3) +
     "          mul32x32_64(state->h3,state->s2) +
     "          mul32x32_64(state->h4,state->s1);
+    let t_x[0] = s:Blob.uint_add(
+          \ s:Blob.uint_add(
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[0], self.r[0]),
+          \   s:Blob.uint_mul(self.h[1], self.s[4])
+          \  ),
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[2], self.s[3]),
+          \   s:Blob.uint_mul(self.h[3], self.s[2])
+          \  )
+          \ ),
+          \ s:Blob.uint_mul(self.h[4], self.s[1])
+          \)
     "   t[1] = mul32x32_64(state->h0,state->r1) +
     "          mul32x32_64(state->h1,state->r0) +
     "          mul32x32_64(state->h2,state->s4) +
     "          mul32x32_64(state->h3,state->s3) +
     "          mul32x32_64(state->h4,state->s2);
+    let t_x[1] = s:Blob.uint_add(
+          \ s:Blob.uint_add(
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[0], self.r[1]),
+          \   s:Blob.uint_mul(self.h[1], self.r[0])
+          \  ),
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[2], self.s[4]),
+          \   s:Blob.uint_mul(self.h[3], self.s[3])
+          \  )
+          \ ),
+          \ s:Blob.uint_mul(self.h[4], self.s[2])
+          \)
     "   t[2] = mul32x32_64(state->h0,state->r2) +
     "          mul32x32_64(state->h1,state->r1) +
     "          mul32x32_64(state->h2,state->r0) +
     "          mul32x32_64(state->h3,state->s4) +
     "          mul32x32_64(state->h4,state->s3);
+    let t_x[2] = s:Blob.uint_add(
+          \ s:Blob.uint_add(
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[0], self.r[2]),
+          \   s:Blob.uint_mul(self.h[1], self.r[1])
+          \  ),
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[2], self.r[0]),
+          \   s:Blob.uint_mul(self.h[3], self.s[4])
+          \  )
+          \ ),
+          \ s:Blob.uint_mul(self.h[4], self.s[3])
+          \)
     "   t[3] = mul32x32_64(state->h0,state->r3) +
     "          mul32x32_64(state->h1,state->r2) +
     "          mul32x32_64(state->h2,state->r1) +
     "          mul32x32_64(state->h3,state->r0) +
     "          mul32x32_64(state->h4,state->s4);
+    let t_x[3] = s:Blob.uint_add(
+          \ s:Blob.uint_add(
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[0], self.r[3]),
+          \   s:Blob.uint_mul(self.h[1], self.r[2])
+          \  ),
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[2], self.r[1]),
+          \   s:Blob.uint_mul(self.h[3], self.r[0])
+          \  )
+          \ ),
+          \ s:Blob.uint_mul(self.h[4], self.s[4])
+          \)
     "   t[4] = mul32x32_64(state->h0,state->r4) +
     "          mul32x32_64(state->h1,state->r3) +
     "          mul32x32_64(state->h2,state->r2) +
     "          mul32x32_64(state->h3,state->r1) +
     "          mul32x32_64(state->h4,state->r0);
+    let t_x[4] = s:Blob.uint_add(
+          \ s:Blob.uint_add(
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[0], self.r[4]),
+          \   s:Blob.uint_mul(self.h[1], self.r[3])
+          \  ),
+          \  s:Blob.uint_add(
+          \   s:Blob.uint_mul(self.h[2], self.r[2]),
+          \   s:Blob.uint_mul(self.h[3], self.r[1])
+          \  )
+          \ ),
+          \ s:Blob.uint_mul(self.h[4], self.r[0])
+          \)
     "
-    "                state->h0 = (uint32_t)t[0] & 0x3ffffff; c =           (t[0] >> 26);
+    "              state->h0 = (uint32_t)t[0] & 0x3ffffff; c =           (t[0] >> 26);
     "   t[1] += c; state->h1 = (uint32_t)t[1] & 0x3ffffff; b = (uint32_t)(t[1] >> 26);
     "   t[2] += b; state->h2 = (uint32_t)t[2] & 0x3ffffff; b = (uint32_t)(t[2] >> 26);
     "   t[3] += b; state->h3 = (uint32_t)t[3] & 0x3ffffff; b = (uint32_t)(t[3] >> 26);
@@ -266,29 +331,29 @@ function! poly1305_state._update(in, size) abort
 
   "     /* final bytes */
   " poly1305_donna_atmost15bytes:
-  " 	if (!len)
-  " 		return;
+  "   if (!len)
+  "     return;
   if !size
     return
   endif
   "
-  "     for (j = 0; j < len; j++)
-  " 		mp[j] = in[j];
-  " 	mp[j++] = 1;
-  " 	for (; j < 16; j++)
-  " 		mp[j] = 0;
-  " 	len = 0;
+  "   for (j = 0; j < len; j++)
+  "     mp[j] = in[j];
+  "   mp[j++] = 1;
+  "   for (; j < 16; j++)
+  "     mp[j] = 0;
+  "   len = 0;
   "
-  "     t0 = U8TO32_LE(mp+0);
-  " 	t1 = U8TO32_LE(mp+4);
-  " 	t2 = U8TO32_LE(mp+8);
-  " 	t3 = U8TO32_LE(mp+12);
+  "   t0 = U8TO32_LE(mp+0);
+  "   t1 = U8TO32_LE(mp+4);
+  "   t2 = U8TO32_LE(mp+8);
+  "   t3 = U8TO32_LE(mp+12);
   "
-  "     state->h0 += t0 & 0x3ffffff;
-  " 	state->h1 += ((((uint64_t)t1 << 32) | t0) >> 26) & 0x3ffffff;
-  " 	state->h2 += ((((uint64_t)t2 << 32) | t1) >> 20) & 0x3ffffff;
-  " 	state->h3 += ((((uint64_t)t3 << 32) | t2) >> 14) & 0x3ffffff;
-  " 	state->h4 += (t3 >> 8);
+  "   state->h0 +=                          t0         & 0x3ffffff;
+  "   state->h1 += ((((uint64_t)t1 << 32) | t0) >> 26) & 0x3ffffff;
+  "   state->h2 += ((((uint64_t)t2 << 32) | t1) >> 20) & 0x3ffffff;
+  "   state->h3 += ((((uint64_t)t3 << 32) | t2) >> 14) & 0x3ffffff;
+  "   state->h4 += (t3 >> 8);
   "
   "     goto poly1305_donna_mul;
   " }
