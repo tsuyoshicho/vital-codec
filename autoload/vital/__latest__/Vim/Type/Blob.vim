@@ -286,7 +286,6 @@ function! s:uint_mul(x, y) abort
   if len(a:x) != len(a:y)
     call s:_throw('argments x and y''s size discrepancy.')
   endif
-  let length = len(a:x) + len(a:y)
   let retval = s:mul(a:x, a:y)
 
   return retval
