@@ -1,6 +1,7 @@
 Describe Vim.Type.Blob
   Before all
     let b = vital#vital#new().import('Vim.Type.Blob')
+    let bytearray = vital#vital#new().import('Data.List.Byte')
     let typeval = type(0z00)
   End
 
@@ -556,6 +557,88 @@ Describe Vim.Type.Blob
     End
   End
 
+  " mul(x, y)
+  Describe .mul()
+    It simple mul test
+      let source_a = 0x10
+      let source_b = 0x02
+      let source_x = [0x00, 0x20]
+      let data_a = bytearray.to_blob(bytearray.from_int(source_a, 8))
+      let data_b = bytearray.to_blob(bytearray.from_int(source_b, 8))
+      let data_x = b.mul(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It simple mul test,y is number
+      let source_a = 0x10
+      let source_b = 0x02
+      let source_x = [0x00, 0x20]
+      let data_a = bytearray.to_blob(bytearray.from_int(source_a, 8))
+      let data_x = b.mul(data_a, source_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It simple carry up mul test
+      let source_a = 0x10
+      let source_b = 0x82
+      let source_x = [0x08, 0x20]
+      let data_a = bytearray.to_blob(bytearray.from_int(source_a, 8))
+      let data_b = bytearray.to_blob(bytearray.from_int(source_b, 8))
+      let data_x = b.mul(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It diff-size, natural result diff-size mul test
+      let source_a = 0x10
+      let source_b = 0x0208
+      let source_x = [0x00, 0x20, 0x80]
+      let data_a = bytearray.to_blob(bytearray.from_int(source_a,  8))
+      let data_b = bytearray.to_blob(bytearray.from_int(source_b, 16))
+      let data_x = b.mul(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It complex carry up mul test
+      let source_a = 0xdd
+      let source_b = 0xcc
+      let source_x = [0xb0, 0x1c]
+      let data_a = bytearray.to_blob(bytearray.from_int(source_a, 8))
+      let data_b = bytearray.to_blob(bytearray.from_int(source_b, 8))
+      let data_x = b.mul(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It huge size mul test
+      let source_a = [0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]
+      let source_b = [0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+      let source_x = [0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+            \         0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+      let data_a = bytearray.to_blob(source_a)
+      let data_b = bytearray.to_blob(source_b)
+      let data_x = b.mul(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+  End
+
   " rshift(x, bits)
   Describe .rshift()
     It shift check
@@ -715,6 +798,58 @@ Describe Vim.Type.Blob
       let data_b = b.uint32(source_b_joined)
       let result = b.uint_add(data_a, data_b)
       Assert NotEmpty(result)
+    End
+  End
+
+  " uint_mul(x, y)
+  Describe .uint_mul()
+    It size 1 byte
+      let source_x = [0x05, 0x28]
+      let source_a_joined = 0x18
+      let source_b_joined = 0x37
+      let data_a = b.uint8(source_a_joined)
+      let data_b = b.uint8(source_b_joined)
+      let data_x = b.uint_mul(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 2 byte
+      let source_x = [0x05, 0x5D, 0x06, 0x10]
+      let source_a_joined = 0x18F0
+      let source_b_joined = 0x370F
+      let data_a = b.uint16(source_a_joined)
+      let data_b = b.uint16(source_b_joined)
+      let data_x = b.uint_mul(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    It size 4 byte
+      let source_x = [0x05, 0x5D, 0x22, 0x7F, 0x9A, 0xE4, 0xC6, 0x10]
+      let source_a_joined = 0x18F03A44
+      let source_b_joined = 0x370FA344
+      let data_a = b.uint32(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
+      let data_x = b.uint_mul(data_a, data_b)
+      Assert Equals(type(data_x), typeval)
+      Assert Equals(len(data_x),  len(source_x))
+      for i in range(len(source_x))
+        Assert Equals(data_x[i],  source_x[i])
+      endfor
+    End
+    " size error
+    It size 4 byte x is samll
+      let source_x = [0x37, 0xFF, 0xDD, 0x88]
+      let source_a_joined =     0x3A44
+      let source_b_joined = 0x370FA344
+      let data_a = b.uint16(source_a_joined)
+      let data_b = b.uint32(source_b_joined)
+      Throws /^vital: Vim.Type.Blob:/ b.uint_mul(data_a, data_b)
     End
   End
 End

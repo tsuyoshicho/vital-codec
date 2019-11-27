@@ -157,7 +157,30 @@ function! s:add(x, y) abort
   if carry
     let retval = [1] + retval
   endif
-  return  s:ByteArray.to_blob(retval)
+  return s:ByteArray.to_blob(retval)
+endfunction
+
+function! s:mul(x, y) abort
+  let [x, y] = s:_arith_arg_to_list(a:x, a:y)
+
+  let lenx = len(x)
+  let leny = len(y)
+
+  let retval = s:new(lenx + leny)
+
+  " 0 (y bit n is 0) | x << n (y bit n is 1)
+  for i in range(leny)
+    for j in range(8)
+      let bitmask = s:Bitwise.lshift(1, j)
+      let shift_bytes = i
+
+      if s:Bitwise.and(y[leny - (shift_bytes + 1)], bitmask)
+        let retval = s:add(retval, s:lshift(a:x, (i * 8) + j))
+      endif
+    endfor
+  endfor
+
+  return retval
 endfunction
 
 function! s:rshift(x, bits) abort
@@ -258,11 +281,21 @@ function! s:uint_add(x, y,...) abort
   return retval
 endfunction
 
+function! s:uint_mul(x, y) abort
+  " same size check
+  if len(a:x) != len(a:y)
+    call s:_throw('argments x and y''s size discrepancy.')
+  endif
+  let retval = s:mul(a:x, a:y)
+
+  return retval
+endfunction
+
 " uint_sub,sub
-" uint_mul,mul
+" uint_mul
 " uint_div,div
 " uint_mod,mod
-" uint_rshift/lshift, rshift/lshift
+" uint_rshift/lshift
 
 function! s:_throw(message) abort
   throw 'vital: Vim.Type.Blob: ' . a:message

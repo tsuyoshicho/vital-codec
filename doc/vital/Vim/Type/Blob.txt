@@ -80,6 +80,10 @@ add({X}, {Y})				  *Vital.Vim.Type.Blob.add()*
 	Return new blob that is {X} + {Y} value.
 	NOTE: {X} is blob, {Y} blob or number.
 
+mul({X}, {Y})				  *Vital.Vim.Type.Blob.mul()*
+	Return new blob that is {X} *  {Y} value.
+	NOTE: {X} is blob, {Y} blob or number.
+
 rshift({X}, {bits})			  *Vital.Vim.Type.Blob.rshift()*
 	Return new blob that is {X} right shift {bits} bit value.
 
@@ -95,6 +99,11 @@ uint_add({X}, {Y}, {flag})		  *Vital.Vim.Type.Blob.uint_add()*
 	NOTE: When {flag} set "overflow", check overflow.
 	If result overflow, then throw exception.
 
+uint_mul({X}, {Y})			  *Vital.Vim.Type.Blob.uint_mul()*
+	Return new blob that is {X} * {Y} value.
+	Value keep as {X}+{Y} uint size(if uint8 * uint8, then result is
+	uint16).
+	NOTE: {X} and {Y} as same size.
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
