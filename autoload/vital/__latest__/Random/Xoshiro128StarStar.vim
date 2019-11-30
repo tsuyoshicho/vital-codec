@@ -1,6 +1,6 @@
 " random number generator using xoshiro128**
 " http://prng.di.unimi.it/
-" base code)(xoshiro128** 32bit)
+" base code (xoshiro128** 32bit)
 "  http://prng.di.unimi.it/xoshiro128starstar.c
 
 let s:save_cpo = &cpo
@@ -10,7 +10,7 @@ function! s:_vital_loaded(V) abort
   let s:P = a:V.import('Prelude')
   let s:B = a:V.import('Bitwise')
 
-  let s:mask32bit = or(
+  let s:mask32bit = s:B.or(
           \ s:B.lshift(0xFFFF, 16),
           \            0xFFFF
           \)
@@ -48,7 +48,7 @@ endfunction
 " static inline uint32_t rotl(const uint32_t x, int k) {
 "   return (x << k) | (x >> (32 - k));
 " }
-" -> B.rotate32l()
+" -> s:B.rotate32l()
 
 " static uint32_t s[4];
 let s:Generator = {
@@ -61,24 +61,24 @@ let s:Generator = {
 
 function! s:Generator._next() abort              " uint32_t next(void) {
                                                  "   const uint32_t result = rotl(s[1] * 5, 7) * 9;
-  let result = B.uint32(
-        \ B.rotate32l(self.s[1] * 5, 7) * 9
+  let result = s:B.uint32(
+        \ s:B.rotate32l(self.s[1] * 5, 7) * 9
         \)
-                                                 "
-  let t = B.uint32(B.lshift(self.s[1], 9))       "   const uint32_t t = s[1] << 9;
-                                                 "
-  let self.s[2] = B.xor(self.s[2], self.s[0])    "   s[2] ^= s[0];
-  let self.s[3] = B.xor(self.s[3], self.s[1])    "   s[3] ^= s[1];
-  let self.s[1] = B.xor(self.s[1], self.s[2])    "   s[1] ^= s[2];
-  let self.s[0] = B.xor(self.s[0], self.s[3])    "   s[0] ^= s[3];
-                                                 "
-  let self.s[2] = B.xor(self.s[2],         t)    "   s[2] ^= t;
-                                                 "
+
+  let t = s:B.uint32(s:B.lshift(self.s[1], 9))   "   const uint32_t t = s[1] << 9;
+
+  let self.s[2] = s:B.xor(self.s[2], self.s[0])  "   s[2] ^= s[0];
+  let self.s[3] = s:B.xor(self.s[3], self.s[1])  "   s[3] ^= s[1];
+  let self.s[1] = s:B.xor(self.s[1], self.s[2])  "   s[1] ^= s[2];
+  let self.s[0] = s:B.xor(self.s[0], self.s[3])  "   s[0] ^= s[3];
+
+  let self.s[2] = s:B.xor(self.s[2],         t)  "   s[2] ^= t;
+
                                                  "   s[3] = rotl(s[3], 11);
-  let self.s[3] = B.uint32(
-        \ B.rotate32l(self.s[3], 11)
+  let self.s[3] = s:B.uint32(
+        \ s:B.rotate32l(self.s[3], 11)
         \)
-                                                 "
+
    return result                                 "   return result;
  endfunction                                     " }
 
@@ -87,35 +87,41 @@ function! s:Generator._next() abort              " uint32_t next(void) {
 "    to 2^64 calls to next(); it can be used to generate 2^64
 "    non-overlapping subsequences for parallel computations. */
 "
-function! s:Generator._jump() abort                 " void jump(void) {
-                                                    "   static const uint32_t JUMP[] = { 0x8764000b, 0xf542d2d3, 0x6fa035c3, 0x77f2db5b };
-  let jump = [0x8764000b, 0xf542d2d3, 0x6fa035c3, 0x77f2db5b]
+function! s:Generator._jump() abort   " void jump(void) {
+                                      "   static const uint32_t JUMP[] = { 0x8764000b, 0xf542d2d3, 0x6fa035c3, 0x77f2db5b };
+  let jump = [
+        \ s:B.or(s:B.lshift(0x8764, 16), 0x000b),
+        \ s:B.or(s:B.lshift(0xf542, 16), 0xd2d3),
+        \ s:B.or(s:B.lshift(0x6fa0, 16), 0x35c3),
+        \ s:B.or(s:B.lshift(0x77f2, 16), 0xdb5b),
+        \]
 
-                                                    "   uint32_t s0 = 0;
-                                                    "   uint32_t s1 = 0;
-                                                    "   uint32_t s2 = 0;
-                                                    "   uint32_t s3 = 0;
+                                      "   uint32_t s0 = 0;
+                                      "   uint32_t s1 = 0;
+                                      "   uint32_t s2 = 0;
+                                      "   uint32_t s3 = 0;
   let s = [0, 0, 0, 0]
-  for i in range(len(jump))                         "   for(int i = 0; i < sizeof JUMP / sizeof *JUMP; i++)
-    for b in range(32)                              "     for(int b = 0; b < 32; b++) {
-      if B.and(jump[i], B.uint32(B.lshift(1, b)))   "       if (JUMP[i] & UINT32_C(1) << b) {
-                                                    "         s0 ^= s[0];
-                                                    "         s1 ^= s[1];
-                                                    "         s2 ^= s[2];
-                                                    "         s3 ^= s[3];
+  for i in range(len(jump))           "   for(int i = 0; i < sizeof JUMP / sizeof *JUMP; i++)
+    for b in range(32)                "     for(int b = 0; b < 32; b++) {
+                                      "       if (JUMP[i] & UINT32_C(1) << b) {
+      if s:B.and(jump[i],
+            \    s:B.uint32(s:B.lshift(1, b)))
+                                      "         s0 ^= s[0];
+                                      "         s1 ^= s[1];
+                                      "         s2 ^= s[2];
+                                      "         s3 ^= s[3];
         for n in range(len(s))
-          let s[n] = B.xor(s[n], self.s[n])
+          let s[n] = s:B.xor(s[n], self.s[n])
         endfor
-      endfor                                        "       }
-      call self._next()                             "       next();
-    endfor                                          "     }
-                                                    "
-                                                    "   s[0] = s0;
-                                                    "   s[1] = s1;
-                                                    "   s[2] = s2;
-                                                    "   s[3] = s3;
+      endfor                          "       }
+      call self._next()               "       next();
+    endfor                            "     }
+                                      "   s[0] = s0;
+                                      "   s[1] = s1;
+                                      "   s[2] = s2;
+                                      "   s[3] = s3;
     let self.s[:] = s[:]
-endfunction                                         " }
+endfunction                           " }
 
 
 " /* This is the long-jump function for the generator. It is equivalent to
@@ -123,33 +129,41 @@ endfunction                                         " }
 "    from each of which jump() will generate 2^32 non-overlapping
 "    subsequences for parallel distributed computations. */
 "
-function! s:Generator._longjump() abort                 " void long_jump(void) {
-                                                        "   static const uint32_t LONG_JUMP[] = { 0xb523952e, 0x0b6f099f, 0xccf5a0ef, 0x1c580662 };
-   let longjump = [0xb523952e, 0x0b6f099f, 0xccf5a0ef, 0x1c580662]
-                                                        "   uint32_t s0 = 0;
-                                                        "   uint32_t s1 = 0;
-                                                        "   uint32_t s2 = 0;
-                                                        "   uint32_t s3 = 0;
+function! s:Generator._longjump() abort      " void long_jump(void) {
+                                             "   static const uint32_t LONG_JUMP[] = { 0xb523952e, 0x0b6f099f, 0xccf5a0ef, 0x1c580662 };
+  let longjump = [
+        \ s:B.or(s:B.lshift(0xb523, 16), 0x952e),
+        \ s:B.or(s:B.lshift(0x0b6f, 16), 0x099f),
+        \ s:B.or(s:B.lshift(0xccf5, 16), 0xa0ef),
+        \ s:B.or(s:B.lshift(0x1c58, 16), 0x0662),
+        \]
+                                             "   uint32_t s0 = 0;
+                                             "   uint32_t s1 = 0;
+                                             "   uint32_t s2 = 0;
+                                             "   uint32_t s3 = 0;
    let s = [0, 0, 0, 0]
-    for i in range(len(longjump))                       "   for(int i = 0; i < sizeof LONG_JUMP / sizeof *LONG_JUMP; i++)
-      for b in range(32)                                "     for(int b = 0; b < 32; b++) {
-        if B.and(longjump[i], B.uint32(B.lshift(1, b))) "       if (LONG_JUMP[i] & UINT32_C(1) << b) {
-                                                        "         s0 ^= s[0];
-                                                        "         s1 ^= s[1];
-                                                        "         s2 ^= s[2];
-                                                        "         s3 ^= s[3];
+    for i in range(len(longjump))            "   for(int i = 0; i < sizeof LONG_JUMP / sizeof *LONG_JUMP; i++)
+      for b in range(32)                     "     for(int b = 0; b < 32; b++) {
+                                             "       if (LONG_JUMP[i] & UINT32_C(1) << b) {
+        if s:B.and(longjump[i],
+              \    s:B.uint32(s:B.lshift(1, b)))
+
+                                             "         s0 ^= s[0];
+                                             "         s1 ^= s[1];
+                                             "         s2 ^= s[2];
+                                             "         s3 ^= s[3];
          for n in range(len(s))
-           let s[n] = B.xor(s[n], self.s[n])
+           let s[n] = s:B.xor(s[n], self.s[n])
          endfor
-       endfor                                           "       }
-       call self._next()                                "       next();
-     endfor                                             "     }
-                                                        "   s[0] = s0;
-                                                        "   s[1] = s1;
-                                                        "   s[2] = s2;
-                                                        "   s[3] = s3;
+       endfor                                "       }
+       call self._next()                     "       next();
+     endfor                                  "     }
+                                             "   s[0] = s0;
+                                             "   s[1] = s1;
+                                             "   s[2] = s2;
+                                             "   s[3] = s3;
      let self.s[:] = s[:]
-endfunction                                             " }
+endfunction                                  " }
 
 function! s:Generator.next() abort
   if self.longjumpcount == s:mask32bit
@@ -205,7 +219,7 @@ function! s:Generator.seed(seeds) abort
     if !P.is_number(a:seeds[i])
       throw 'vital: Random.Xoshiro128StarStar: .seed(): seeds List contains non-number type data'
     endif
-    let self.s[i] = B.uint32(a:seeds[i])
+    let self.s[i] = s:B.uint32(a:seeds[i])
   endfor
 endfunction
 
