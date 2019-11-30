@@ -203,12 +203,14 @@ function! s:Generator.next() abort
   return self._next()
 endfunction
 
+" 0x80000000 in 32bit and 0xFFFFFFFF80000000 in 64bit
 function! s:Generator.min() abort
-  return 0
+  return -2147483648
 endfunction
 
+" 0x7FFFFFFF in 32bit/64bit
 function! s:Generator.max() abort
-  return s:mask32bit
+  return 2147483647
 endfunction
 
 " from vim Xoshiro128StarStar implement seed generation scrambler

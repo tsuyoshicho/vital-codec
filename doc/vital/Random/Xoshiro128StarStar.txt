@@ -1,0 +1,82 @@
+*vital/Random/Xoshiro128StarStar.txt*	random number generator using xoshiro128**
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+
+==============================================================================
+CONTENTS					*Vital.Random.Xoshiro128StarStar-contents*
+
+INTRODUCTION			|Vital.Random.Xoshiro128StarStar-introduction|
+INTERFACE			|Vital.Random.Xoshiro128StarStar-interface|
+  FUNCTIONS			|Vital.Random.Xoshiro128StarStar-functions|
+
+
+
+==============================================================================
+INTRODUCTION				*Vital.Random.Xoshiro128StarStar-introduction*
+
+*Vital.Random.Xoshiro128StarStar* provides a Random Number Generator (RNG)
+The paper about xoshiro128** is http://prng.di.unimi.it/ .
+using an xoshiro128** algorithm.
+xoshiro128** algorithm is "xoshiro128++/xoshiro128** are our 32-bit
+all-purpose, rock-solid generators".
+This implementation always generates 32bit number [-2147483648, 2147483647],
+even when you use Vim with |+num64|.
+
+>
+	let s:V = vital#{plugin-name}#new()
+	let s:X = s:V.import("Random.Xoshiro128StarStar")
+
+	call s:X.srand(123456789)
+	echo s:X.rand()
+	" 4284103975
+	echo s:X.rand()
+	" 1001954530
+	call s:X.srand(123456789)
+	echo s:X.rand()
+	" 4284103975
+<
+
+
+==============================================================================
+INTERFACE				*Vital.Random.Xoshiro128StarStar-interface*
+
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Random.Xoshiro128StarStar-functions*
+
+srand({seed})				*Vital.Random.Xoshiro128StarStar.srand()*
+	Initialize the global generator with the given seed number. When
+	{seed} is omitted, a return value of |reltime()| is used.  When {seed}
+	is omitted and vim doesn't have |reltime()|, a return value of
+	|localtime()| is used.
+
+rand()					*Vital.Random.Xoshiro128StarStar.rand()*
+	Generate a random number from the global generator.
+	Note: A return value is possibly negative.  This is because Vim script
+	doesn't have an unsigned integer type.
+
+new_generator()				*Vital.Random.Xoshiro128StarStar.new_generator()*
+	Create a new Generator object(|Vital.Random.Xoshiro128StarStar-Generator|).
+
+
+
+==============================================================================
+OBJECTS					*Vital.Random.Xoshiro128StarStar-objects*
+
+------------------------------------------------------------------------------
+Generator Object		*Vital.Random.Xoshiro128StarStar-Generator*
+
+Generator.next()		*Vital.Random.Xoshiro128StarStar-Generator.next()*
+	Generate the next random number in the sequence.
+
+Generator.min()			*Vital.Random.Xoshiro128StarStar-Generator.min()*
+	Get the smallest possible value in the output range.
+
+Generator.max()			*Vital.Random.Xoshiro128StarStar-Generator.max()*
+	Get the largest possible value in the output range.
+
+Generator.seed({seeds})		*Vital.Random.Xoshiro128StarStar-Generator.seed()*
+	Initialize the generator with the given seed list.
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
