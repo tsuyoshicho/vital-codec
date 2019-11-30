@@ -8,6 +8,11 @@ set cpo&vim
 
 function! s:_vital_loaded(V) abort
   let s:B = a:V.import('Bitwise')
+
+  let s:mask32bit = or(
+          \ s:B.lshift(0xFFFF, 16),
+          \            0xFFFF
+          \)
 endfunction
 
 function! s:_vital_depends() abort
@@ -46,12 +51,14 @@ endfunction
 
 " static uint32_t s[4];
 let s:Generator = {
-      \ 's'         : [0, 0, 0, 0]
-      \ 'count'     : 0,
-      \ 'longcount' : 0
+      \ 's'             : [0, 0, 0, 0],
+      \ 'longjumpcount' : 0,
+      \ 'jumpcount'     : 0,
+      \ 'highcount'     : 0,
+      \ 'lowcount'      : 0,
       \}
 
-function! s:Generator.next() abort               " uint32_t next(void) {
+function! s:Generator._next() abort              " uint32_t next(void) {
                                                  "   const uint32_t result = rotl(s[1] * 5, 7) * 9;
   let result = B.uint32(
         \ B.rotate32l(self.s[1] * 5, 7) * 9
@@ -99,7 +106,7 @@ function! s:Generator._jump() abort                 " void jump(void) {
           let s[n] = B.xor(s[n], self.s[n])
         endfor
       endfor                                        "       }
-      call self.next()                              "       next();
+      call self._next()                             "       next();
     endfor                                          "     }
                                                     "
                                                     "   s[0] = s0;
@@ -134,24 +141,60 @@ function! s:Generator._longjump() abort                 " void long_jump(void) {
            let s[n] = B.xor(s[n], self.s[n])
          endfor
        endfor                                           "       }
-       call self.next()                                 "       next();
+       call self._next()                                "       next();
      endfor                                             "     }
                                                         "   s[0] = s0;
                                                         "   s[1] = s1;
                                                         "   s[2] = s2;
                                                         "   s[3] = s3;
      let self.s[:] = s[:]
- endfunction                                            " }
+endfunction                                             " }
 
+function! s:Generator.next() abort
+  if self.longjumpcount == s:mask32bit
+        \ && self.jumpcount == s:mask32bit
+        \ && self.highcount == s:mask32bit
+        \ && self.lowcount == s:mask32bit
+    " 2^128 calls overlap
+    let self.longjumpcount = 0
+    let self.jumpcount = 0
+    let self.highcount = 0
+    let self.lowcount = 0
+  elseif self.jumpcount == s:mask32bit
+        \ && self.highcount == s:mask32bit
+        \ && self.lowcount == s:mask32bit
+    " 2^96 calls long jump
+    let self.longjumpcount += 1
+    let self.jumpcount = 0
+    let self.highcount = 0
+    let self.lowcount = 0
+    call self._longjump()
+  elseif self.highcount == s:mask32bit
+        \ && self.lowcount == s:mask32bit
+    " 2^64 calls jump
+    let self.jumpcount += 1
+    let self.highcount = 0
+    let self.lowcount = 0
+    call self._jump()
+  else self.lowcount == s:mask32bit
+    " 2^32 calls
+    let self.highcount += 1
+    let self.lowcount = 0
+  else
+    " normal calls
+    let self.count += 1
+  endif
+
+  return self._next()
+endfunction
 
 function! s:Generator.min() abort
   return 0
 endfunction
 
 function! s:Generator.max() abort
-  return 1
+  return s:mask32bit
 endfunction
-
 
 function! s:Generator.seed(seeds) abort
 endfunction
