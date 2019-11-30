@@ -211,21 +211,34 @@ function! s:Generator.max() abort
   return s:mask32bit
 endfunction
 
+" from vim Xoshiro128StarStar implement seed generation scrambler
+function! s:_splitmix32(x) abort
+  " #define SPLITMIX32 ( \
+
+  "    z = (x += 0x9e3779b9), \
+  let x = s:B.uint32(s:B.or(s:B.lshift(0x9e37, 16), 0x79b9) + a:x)
+  let z = x
+  "    z = (z ^ (z >> 16)) * 0x85ebca6b, \
+  let z = s:B.uint32(s:B.or(s:B.lshift(0x85eb, 16), 0xca6b) * s:B.xor(z, s:B.rshift(z, 16)))
+  "    z = (z ^ (z >> 13)) * 0xc2b2ae35, \
+  let z = s:B.uint32(s:B.or(s:B.lshift(0xc2b2, 16), 0xae35) * s:B.xor(z, s:B.rshift(z, 13)))
+  "    z ^ (z >> 16) \
+  let z = s:B.xor(z,s:B.rshift(z, 16))
+  "    )
+
+  return [z,x]
+endfunction
+
 function! s:Generator.seed(seeds) abort
-  if 4 != len(a:seeds)
-    throw 'vital: Random.Xoshiro128StarStar: .seed(): seeds List size misaligned'
-  endif
-  for i in range(self.s)
-    if !P.is_number(a:seeds[i])
-      throw 'vital: Random.Xoshiro128StarStar: .seed(): seeds List contains non-number type data'
-    endif
-    let self.s[i] = s:B.uint32(a:seeds[i])
+  let seeds = a:seeds
+  for i in range(4)
+    let [self.s[i], seeds] = s:_splitmix32(seeds)
   endfor
 endfunction
 
 function! s:new_generator() abort
   let gen = deepcopy(s:Generator)
-  call gen.seed([0, 1, 2, 3])
+  call gen.seed(0)
   return gen
 endfunction
 
@@ -238,11 +251,9 @@ endfunction
 
 function! s:srand(...) abort
   if a:0 == 0
-    let x = [0, 1, 2, 3]
+    let x = has('reltime') ? reltime()[1] : localtime()
   elseif a:0 == 1
     let x = a:1
-  elseif a:0 == 4
-    let x = a:000
   else
     throw 'vital: Random.Xoshiro128StarStar: srand(): too many arguments'
   endif

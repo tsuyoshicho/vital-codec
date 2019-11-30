@@ -1,0 +1,29 @@
+Describe Random. Xoshiro128StarStar
+  Before all
+    let X = vital#vital#new().import('Random.Xoshiro128StarStar')
+  End
+
+  Describe .rand()
+    It returns target values with the seed 123456789
+      " This test from vim Test_Rand()
+      call X.srand(123456789)
+      Assert Equals(X.rand(), 4284103975)
+      Assert Equals(X.rand(), 1001954530)
+      Assert Equals(X.rand(), 2701803082)
+      Assert Equals(X.rand(), 2658065534)
+      Assert Equals(X.rand(), 3104308804)
+    End
+  End
+
+  Describe Generator.next()
+    It test skip
+      Skip test, work with rand()
+    End
+  End
+
+  Describe .srand()
+    It sets the seed
+      Skip test, work with rand()
+    End
+  End
+End
