@@ -51,7 +51,7 @@ endfunction
 
 " static uint32_t s[4];
 let s:Generator = {
-      \ 's'             : [0, 0, 0, 0],
+      \ 's'             : [0, 1, 2, 3],
       \ 'longjumpcount' : 0,
       \ 'jumpcount'     : 0,
       \ 'highcount'     : 0,
