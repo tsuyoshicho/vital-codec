@@ -179,7 +179,7 @@ function! s:Generator.next() abort
         \ && self.highcount == s:mask32bit
         \ && self.lowcount == s:mask32bit
     " 2^96 calls long jump
-    let self.longjumpcount += 1
+    let self.longjumpcount = self.longjumpcount + 1
     let self.jumpcount = 0
     let self.highcount = 0
     let self.lowcount = 0
@@ -187,17 +187,17 @@ function! s:Generator.next() abort
   elseif self.highcount == s:mask32bit
         \ && self.lowcount == s:mask32bit
     " 2^64 calls jump
-    let self.jumpcount += 1
+    let self.jumpcount = self.jumpcount + 1
     let self.highcount = 0
     let self.lowcount = 0
     call self._jump()
   elseif self.lowcount == s:mask32bit
     " 2^32 calls
-    let self.highcount += 1
+    let self.highcount = self.highcount + 1
     let self.lowcount = 0
   else
     " normal calls
-    let self.count += 1
+    let self.count = self.count + 1
   endif
 
   return self._next()
