@@ -121,6 +121,7 @@ function! s:Generator._jump() abort   " void jump(void) {
                                       "   s[2] = s2;
                                       "   s[3] = s3;
     let self.s[:] = s[:]
+  endfor
 endfunction                           " }
 
 
@@ -163,6 +164,7 @@ function! s:Generator._longjump() abort      " void long_jump(void) {
                                              "   s[2] = s2;
                                              "   s[3] = s3;
      let self.s[:] = s[:]
+  endfor
 endfunction                                  " }
 
 function! s:Generator.next() abort
