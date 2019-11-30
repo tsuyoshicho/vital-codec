@@ -197,7 +197,7 @@ function! s:Generator.next() abort
     let self.lowcount = 0
   else
     " normal calls
-    let self.count = self.count + 1
+    let self.lowcount = self.lowcount + 1
   endif
 
   return self._next()
