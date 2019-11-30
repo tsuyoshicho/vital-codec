@@ -120,6 +120,7 @@ function! s:Generator._jump() abort   " void jump(void) {
                                       "   s[1] = s1;
                                       "   s[2] = s2;
                                       "   s[3] = s3;
+    " @vimlint(EVL102, 1, l:self)
     let self.s[:] = s[:]
   endfor
 endfunction                           " }
@@ -142,7 +143,7 @@ function! s:Generator._longjump() abort      " void long_jump(void) {
                                              "   uint32_t s1 = 0;
                                              "   uint32_t s2 = 0;
                                              "   uint32_t s3 = 0;
-   let s = [0, 0, 0, 0]
+  let s = [0, 0, 0, 0]
     for i in range(len(longjump))            "   for(int i = 0; i < sizeof LONG_JUMP / sizeof *LONG_JUMP; i++)
       for b in range(32)                     "     for(int b = 0; b < 32; b++) {
                                              "       if (LONG_JUMP[i] & UINT32_C(1) << b) {
@@ -163,7 +164,8 @@ function! s:Generator._longjump() abort      " void long_jump(void) {
                                              "   s[1] = s1;
                                              "   s[2] = s2;
                                              "   s[3] = s3;
-     let self.s[:] = s[:]
+    " @vimlint(EVL102, 1, l:self)
+    let self.s[:] = s[:]
   endfor
 endfunction                                  " }
 
