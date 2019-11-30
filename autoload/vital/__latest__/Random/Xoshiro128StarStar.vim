@@ -7,6 +7,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:_vital_loaded(V) abort
+  let s:P = a:V.import('Prelude')
   let s:B = a:V.import('Bitwise')
 
   let s:mask32bit = or(
@@ -16,7 +17,7 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise']
+  return ['Prelude', 'Bitwise']
 endfunction
 
 
@@ -197,11 +198,20 @@ function! s:Generator.max() abort
 endfunction
 
 function! s:Generator.seed(seeds) abort
+  if 4 != len(a:seeds)
+    throw 'vital: Random.Xoshiro128StarStar: .seed(): seeds List size misaligned'
+  endif
+  for i in range(self.s)
+    if !P.is_number(a:seeds[i])
+      throw 'vital: Random.Xoshiro128StarStar: .seed(): seeds List contains non-number type data'
+    endif
+    let self.s[i] = B.uint32(a:seeds[i])
+  endfor
 endfunction
 
 function! s:new_generator() abort
   let gen = deepcopy(s:Generator)
-  call gen.seed([])
+  call gen.seed([0, 1, 2, 3])
   return gen
 endfunction
 
@@ -214,13 +224,15 @@ endfunction
 
 function! s:srand(...) abort
   if a:0 == 0
-    let x = has('reltime') ? reltime()[1] : localtime()
+    let x = [0, 1, 2, 3]
   elseif a:0 == 1
     let x = a:1
+  elseif a:0 == 4
+    let x = a:000
   else
     throw 'vital: Random.Xoshiro128StarStar: srand(): too many arguments'
   endif
-  call s:_common_generator().seed([x])
+  call s:_common_generator().seed(x)
 endfunction
 
 function! s:rand() abort
