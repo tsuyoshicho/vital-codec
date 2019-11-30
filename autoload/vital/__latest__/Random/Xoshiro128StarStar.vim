@@ -113,7 +113,7 @@ function! s:Generator._jump() abort   " void jump(void) {
         for n in range(len(s))
           let s[n] = s:B.xor(s[n], self.s[n])
         endfor
-      endfor                          "       }
+      endif                           "       }
       call self._next()               "       next();
     endfor                            "     }
                                       "   s[0] = s0;
@@ -155,7 +155,7 @@ function! s:Generator._longjump() abort      " void long_jump(void) {
          for n in range(len(s))
            let s[n] = s:B.xor(s[n], self.s[n])
          endfor
-       endfor                                "       }
+       endif                                 "       }
        call self._next()                     "       next();
      endfor                                  "     }
                                              "   s[0] = s0;
