@@ -191,7 +191,7 @@ function! s:Generator.next() abort
     let self.highcount = 0
     let self.lowcount = 0
     call self._jump()
-  else self.lowcount == s:mask32bit
+  elseif self.lowcount == s:mask32bit
     " 2^32 calls
     let self.highcount += 1
     let self.lowcount = 0
