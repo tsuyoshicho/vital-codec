@@ -40,7 +40,7 @@ endfunction
 
 " core
 let s:Generator_core = {
-      \ 'info' : {
+      \ 'core' : {
       \   'max' : 0,
       \   'min' : 0,
       \ }
@@ -49,11 +49,11 @@ let s:Generator_core = {
 " next need implement
 
 function! s:Generator_core.max() abort
-  return self.info.max
+  return self.core.max
 endfunction
 
 function! s:Generator_core.min() abort
-  return self.info.min
+  return self.core.min
 endfunction
 
 function! s:Generator_core.seed(seeds) abort
@@ -62,7 +62,7 @@ endfunction
 
 " Windows cmd
 let s:Generator_windows_cmd = extend({
-      \ 'info' : {
+      \ 'core' : {
       \   'max' : 32767,
       \   'min' : 0,
       \ }
@@ -81,7 +81,7 @@ endfunction
 
 " Unix bash
 let s:Generator_unix_bash = extend({
-      \ 'info' : {
+      \ 'core' : {
       \   'max' : 32767,
       \   'min' : 0,
       \ }
@@ -100,7 +100,7 @@ endfunction
 
 " Unix openssl
 let s:Generator_unix_openssl = extend({
-      \ 'info' : {
+      \ 'core' : {
       \   'max' : 0xffffffff,
       \   'min' : 0,
       \ }
@@ -119,10 +119,12 @@ endfunction
 
 " Unix od
 let s:Generator_unix_od = extend({
-      \ 'info' : {
-      \   'path' : '',
+      \ 'core' : {
       \   'max' : 0xffffffff,
       \   'min' : 0,
+      \ },
+      \ 'info' : {
+      \   'path' : '',
       \ }
       \}, s:Generator_core, 'keep')
 

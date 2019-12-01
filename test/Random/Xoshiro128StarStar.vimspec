@@ -16,8 +16,57 @@ Describe Random. Xoshiro128StarStar
   End
 
   Describe Generator.next()
-    It test skip
-      Skip test, work with rand()
+    It run instance RNG
+      let r = X.new_generator()
+      call r.seed([123456789])
+      Assert Equals(r.next(), 4284103975)
+    End
+    It run instance RNG high count start
+      let r = X.new_generator()
+      call r.seed([123456789])
+      " 2^32 calls
+      for byte in range(4)
+        for bit in range(8)
+          call r.next()
+        endfor
+      endfor
+      Assert NotEquals(r.next(), r.next())
+    End
+    It run instance RNG kick jump
+      let r = X.new_generator()
+      call r.seed([123456789])
+      " 2^64 calls jump
+      for byte in range(8)
+        for bit in range(8)
+          call r.next()
+        endfor
+      endfor
+      Assert NotEquals(r.next(), r.next())
+    End
+    It run instance RNG kick longjump
+      let r = X.new_generator()
+      call r.seed([123456789])
+      " 2^96 calls long jump
+      for byte in range(1)
+        for bit in range(8)
+          call r.next()
+        endfor
+      endfor
+      Assert NotEquals(r.next(), r.next())
+    End
+  End
+
+  Describe Generator.min()
+    It instance RNG's min
+      let r = X.new_generator()
+      Assert Equals(r.min(), -2147483648)
+    End
+  End
+
+  Describe Generator.max()
+    It instance RNG's max
+      let r = X.new_generator()
+      Assert Equals(r.max(), 2147483647)
     End
   End
 

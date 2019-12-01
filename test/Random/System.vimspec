@@ -36,7 +36,7 @@ Describe Random.System
     It run instance RNG
       if has('patch-8.0.1630')
         let r = X.new_generator()
-        call r.seed(0)
+        call r.seed([0])
         Assert NotEquals(r.next(), -1)
       else
         Skip not support

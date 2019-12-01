@@ -33,7 +33,7 @@ endfunction
 
 " core
 let s:Generator_core = {
-      \ 'info' : {
+      \ 'core' : {
       \   'max' :  2147483647,
       \   'min' : -2147483648,
       \ }
@@ -41,12 +41,12 @@ let s:Generator_core = {
 
 " 0x7FFFFFFF in 32bit/64bit
 function! s:Generator_core.max() abort
-  return self.info.max
+  return self.core.max
 endfunction
 
 " 0x80000000 in 32bit and 0xFFFFFFFF80000000 in 64bit
 function! s:Generator_core.min() abort
-  return self.info.min
+  return self.core.min
 endfunction
 
 
