@@ -14,10 +14,48 @@ function! s:_vital_loaded(V) abort
           \ s:B.lshift(0xFFFF, 16),
           \            0xFFFF
           \)
+
+  if exists('*rand')
+    " vim native implement
+    let s:Generator = s:Generator_vim_rand
+  else
+    " vim script pure implement
+    let s:Generator = s:Generator_xoshiro128starstar
+  endif
+  " lock method,
+  lockvar 1 s:Generator
 endfunction
 
 function! s:_vital_depends() abort
   return ['Prelude', 'Bitwise']
+endfunction
+
+
+" Vim native implement
+" max delay setup
+" seed initial setup
+let s:Generator_vim_rand = {
+      \ 'info' : {
+      \   'seed': [0, 0, 0, 0],
+      \ }
+      \}
+
+function! s:Generator_vim_rand.next() abort
+  return rand(self.info.seed)
+endfunction
+
+function! s:Generator_vim_rand.mix() abort
+  return -2147483648
+endfunction
+
+function! s:Generator_vim_rand.max() abort
+  return 2147483647
+endfunction
+
+function! s:Generator_vim_rand.seed(...) abort
+  if a:0 > 0
+    let self.info.seed[:] = srand(a:1)
+  endif
 endfunction
 
 
@@ -51,32 +89,34 @@ endfunction
 " -> s:B.rotate32l()
 
 " static uint32_t s[4];
-let s:Generator = {
-      \ 's'             : [0, 1, 2, 3],
-      \ 'longjumpcount' : 0,
-      \ 'jumpcount'     : 0,
-      \ 'highcount'     : 0,
-      \ 'lowcount'      : 0,
+let s:Generator_xoshiro128starstar = {
+      \ 'info' : {
+      \   's'             : [0, 1, 2, 3],
+      \   'longjumpcount' : 0,
+      \   'jumpcount'     : 0,
+      \   'highcount'     : 0,
+      \   'lowcount'      : 0,
+      \ }
       \}
 
-function! s:Generator._next() abort              " uint32_t next(void) {
+function! s:Generator_xoshiro128starstar._next() abort              " uint32_t next(void) {
                                                  "   const uint32_t result = rotl(s[1] * 5, 7) * 9;
   let result = s:B.uint32(
-        \ s:B.rotate32l(self.s[1] * 5, 7) * 9
+        \ s:B.rotate32l(self.info.s[1] * 5, 7) * 9
         \)
 
-  let t = s:B.uint32(s:B.lshift(self.s[1], 9))   "   const uint32_t t = s[1] << 9;
+  let t = s:B.uint32(s:B.lshift(self.info.s[1], 9))   "   const uint32_t t = s[1] << 9;
 
-  let self.s[2] = s:B.xor(self.s[2], self.s[0])  "   s[2] ^= s[0];
-  let self.s[3] = s:B.xor(self.s[3], self.s[1])  "   s[3] ^= s[1];
-  let self.s[1] = s:B.xor(self.s[1], self.s[2])  "   s[1] ^= s[2];
-  let self.s[0] = s:B.xor(self.s[0], self.s[3])  "   s[0] ^= s[3];
+  let self.info.s[2] = s:B.xor(self.info.s[2], self.info.s[0])  "   s[2] ^= s[0];
+  let self.info.s[3] = s:B.xor(self.info.s[3], self.info.s[1])  "   s[3] ^= s[1];
+  let self.info.s[1] = s:B.xor(self.info.s[1], self.info.s[2])  "   s[1] ^= s[2];
+  let self.info.s[0] = s:B.xor(self.info.s[0], self.info.s[3])  "   s[0] ^= s[3];
 
-  let self.s[2] = s:B.xor(self.s[2],         t)  "   s[2] ^= t;
+  let self.info.s[2] = s:B.xor(self.info.s[2],         t)  "   s[2] ^= t;
 
                                                  "   s[3] = rotl(s[3], 11);
-  let self.s[3] = s:B.uint32(
-        \ s:B.rotate32l(self.s[3], 11)
+  let self.info.s[3] = s:B.uint32(
+        \ s:B.rotate32l(self.info.s[3], 11)
         \)
 
    return result                                 "   return result;
@@ -87,7 +127,7 @@ function! s:Generator._next() abort              " uint32_t next(void) {
 "    to 2^64 calls to next(); it can be used to generate 2^64
 "    non-overlapping subsequences for parallel computations. */
 "
-function! s:Generator._jump() abort   " void jump(void) {
+function! s:Generator_xoshiro128starstar._jump() abort   " void jump(void) {
                                       "   static const uint32_t JUMP[] = { 0x8764000b, 0xf542d2d3, 0x6fa035c3, 0x77f2db5b };
   let jump = [
         \ s:B.or(s:B.lshift(0x8764, 16), 0x000b),
@@ -111,7 +151,7 @@ function! s:Generator._jump() abort   " void jump(void) {
                                       "         s2 ^= s[2];
                                       "         s3 ^= s[3];
         for n in range(len(s))
-          let s[n] = s:B.xor(s[n], self.s[n])
+          let s[n] = s:B.xor(s[n], self.info.s[n])
         endfor
       endif                           "       }
       call self._next()               "       next();
@@ -121,7 +161,7 @@ function! s:Generator._jump() abort   " void jump(void) {
                                       "   s[2] = s2;
                                       "   s[3] = s3;
     " @vimlint(EVL102, 1, l:self)
-    let self.s[:] = s[:]
+    let self.info.s[:] = s[:]
   endfor
 endfunction                           " }
 
@@ -131,7 +171,7 @@ endfunction                           " }
 "    from each of which jump() will generate 2^32 non-overlapping
 "    subsequences for parallel distributed computations. */
 "
-function! s:Generator._longjump() abort      " void long_jump(void) {
+function! s:Generator_xoshiro128starstar._longjump() abort      " void long_jump(void) {
                                              "   static const uint32_t LONG_JUMP[] = { 0xb523952e, 0x0b6f099f, 0xccf5a0ef, 0x1c580662 };
   let longjump = [
         \ s:B.or(s:B.lshift(0xb523, 16), 0x952e),
@@ -155,7 +195,7 @@ function! s:Generator._longjump() abort      " void long_jump(void) {
                                              "         s2 ^= s[2];
                                              "         s3 ^= s[3];
          for n in range(len(s))
-           let s[n] = s:B.xor(s[n], self.s[n])
+           let s[n] = s:B.xor(s[n], self.info.s[n])
          endfor
        endif                                 "       }
        call self._next()                     "       next();
@@ -165,55 +205,55 @@ function! s:Generator._longjump() abort      " void long_jump(void) {
                                              "   s[2] = s2;
                                              "   s[3] = s3;
     " @vimlint(EVL102, 1, l:self)
-    let self.s[:] = s[:]
+    let self.info.s[:] = s[:]
   endfor
 endfunction                                  " }
 
-function! s:Generator.next() abort
-  if self.longjumpcount == s:mask32bit
-        \ && self.jumpcount == s:mask32bit
-        \ && self.highcount == s:mask32bit
-        \ && self.lowcount == s:mask32bit
+function! s:Generator_xoshiro128starstar.next() abort
+  if self.info.longjumpcount == s:mask32bit
+        \ && self.info.jumpcount == s:mask32bit
+        \ && self.info.highcount == s:mask32bit
+        \ && self.info.lowcount == s:mask32bit
     " 2^128 calls overlap
-    let self.longjumpcount = 0
-    let self.jumpcount = 0
-    let self.highcount = 0
-    let self.lowcount = 0
-  elseif self.jumpcount == s:mask32bit
-        \ && self.highcount == s:mask32bit
-        \ && self.lowcount == s:mask32bit
+    let self.info.longjumpcount = 0
+    let self.info.jumpcount = 0
+    let self.info.highcount = 0
+    let self.info.lowcount = 0
+  elseif self.info.jumpcount == s:mask32bit
+        \ && self.info.highcount == s:mask32bit
+        \ && self.info.lowcount == s:mask32bit
     " 2^96 calls long jump
-    let self.longjumpcount = self.longjumpcount + 1
-    let self.jumpcount = 0
-    let self.highcount = 0
-    let self.lowcount = 0
-    call self._longjump()
-  elseif self.highcount == s:mask32bit
-        \ && self.lowcount == s:mask32bit
+    let self.info.longjumpcount = self.info.longjumpcount + 1
+    let self.info.jumpcount = 0
+    let self.info.highcount = 0
+    let self.info.lowcount = 0
+    call self.info._longjump()
+  elseif self.info.highcount == s:mask32bit
+        \ && self.info.lowcount == s:mask32bit
     " 2^64 calls jump
-    let self.jumpcount = self.jumpcount + 1
-    let self.highcount = 0
-    let self.lowcount = 0
+    let self.info.jumpcount = self.jumpcount + 1
+    let self.info.highcount = 0
+    let self.info.lowcount = 0
     call self._jump()
-  elseif self.lowcount == s:mask32bit
+  elseif self.info.lowcount == s:mask32bit
     " 2^32 calls
-    let self.highcount = self.highcount + 1
-    let self.lowcount = 0
+    let self.info.highcount = self.info.highcount + 1
+    let self.info.lowcount = 0
   else
     " normal calls
-    let self.lowcount = self.lowcount + 1
+    let self.info.lowcount = self.info.lowcount + 1
   endif
 
   return self._next()
 endfunction
 
 " 0x80000000 in 32bit and 0xFFFFFFFF80000000 in 64bit
-function! s:Generator.min() abort
+function! s:Generator_xoshiro128starstar.min() abort
   return -2147483648
 endfunction
 
 " 0x7FFFFFFF in 32bit/64bit
-function! s:Generator.max() abort
+function! s:Generator_xoshiro128starstar.max() abort
   return 2147483647
 endfunction
 
@@ -235,10 +275,10 @@ function! s:_splitmix32(x) abort
   return [z,x]
 endfunction
 
-function! s:Generator.seed(seeds) abort
+function! s:Generator_xoshiro128starstar.seed(seeds) abort
   let seeds = a:seeds
   for i in range(4)
-    let [self.s[i], seeds] = s:_splitmix32(seeds)
+    let [self.info.s[i], seeds] = s:_splitmix32(seeds)
   endfor
 endfunction
 

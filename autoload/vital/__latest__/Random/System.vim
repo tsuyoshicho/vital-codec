@@ -6,20 +6,11 @@ set cpo&vim
 function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:Prelude = s:V.import('Prelude')
-  let s:Bitwise = s:V.import('Bitwise')
   let s:Process = s:V.import('System.Process')
   " Fallback
-  let s:Mt      = s:V.import('Random.Mt19937ar')
+  let s:Xoshiro128StarStar = s:V.import('Random.Xoshiro128StarStar')
 
-  let s:allf32bit = s:Bitwise.or(
-        \ s:Bitwise.lshift(0xFFFF, 16),
-        \                  0xFFFF
-        \)
-
-  if exists('*rand')
-      let s:Generator = deepcopy(s:Generator_vim_rand)
-      let s:Generator.info.seed = srand()
-  elseif s:Prelude.is_windows()
+  if s:Prelude.is_windows()
     if executable('cmd')
       let s:Generator = deepcopy(s:Generator_windows_cmd)
     endif
@@ -42,14 +33,14 @@ function! s:_vital_loaded(V) abort
   endif
 
   if empty(s:Generator)
-    let s:Generator = s:Mt.new_generator()
+    let s:Generator = s:Xoshiro128StarStar.new_generator()
   endif
 
   lockvar 3 s:Generator
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Prelude', 'Bitwise', 'System.Process', 'Random.Mt19937ar']
+  return ['Prelude', 'System.Process', 'Random.Xoshiro128StarStar']
 endfunction
 
 let s:Generator = {}
@@ -72,54 +63,8 @@ function! s:Generator_core.min() abort
   return self.info.min
 endfunction
 
-function! s:Generator_core.seed(...) abort
+function! s:Generator_core.seed(seeds) abort
   " not work
-endfunction
-
-" Vim native implement
-" max delay setup
-" seed initial setup
-let s:Generator_vim_rand = extend({
-      \ 'info' : {
-      \   'max' : 0,
-      \   'min' : 0,
-      \   'seed': [0, 0, 0, 0],
-      \ }
-      \}, s:Generator_core, 'keep')
-
-function! s:Generator_vim_rand.next() abort
-  return rand(self.info.seed)
-endfunction
-
-function! s:Generator_vim_rand.max() abort
-  " delay setup
-  if 0 == self.info.max
-    " replace core method
-    " @vimlint(EVL101, 1, l:self)
-    unlockvar 3 self
-    let self.info.max = s:allf32bit
-    let self.max = s:Generator_core.max
-    " @vimlint(EVL101, 1, l:self)
-    lockvar 3 self
-  endif
-  return self.info.max
-endfunction
-
-function! s:Generator_vim_rand.seed(...) abort
-  " @vimlint(EVL101, 1, l:self)
-  unlockvar 3 self
-  if a:0 > 0
-    let seeds = a:1
-    if s:Prelude.is_number(seeds)
-      let self.info.seed = srand(seeds)
-    else " as List
-      let self.info.seed = copy(seeds)
-    endif
-  else
-    let self.info.seed = srand()
-  endif
-  " @vimlint(EVL101, 1, l:self)
-  lockvar 3 self
 endfunction
 
 " Windows cmd
@@ -204,7 +149,7 @@ endfunction
 
 function! s:new_generator() abort
   let gen = deepcopy(s:Generator)
-  call gen.seed()
+  call gen.seed([0])
   return gen
 endfunction
 
@@ -216,9 +161,7 @@ function! s:_common_generator() abort
 endfunction
 
 function! s:srand(...) abort
-  if a:0 > 0
-    call s:_common_generator().seed(a:1)
-  endif
+  " not work
 endfunction
 
 function! s:rand() abort
