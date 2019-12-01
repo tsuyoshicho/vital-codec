@@ -23,14 +23,6 @@ Describe Random.System
         Skip not support
       endif
     End
-    It sets the seed list
-      if has('patch-8.0.1630')
-        call X.srand([1, 2, 3, 4])
-        Assert NotEquals(X.rand(), -1)
-      else
-        Skip not support
-      endif
-    End
   End
 
   Describe .new_generator()
@@ -67,15 +59,6 @@ Describe Random.System
   End
 
   Describe Generator.seed()
-    It instance RNG's seed number
-      if has('patch-8.0.1630')
-        let r = X.new_generator()
-        call r.seed(1)
-        Assert NotEquals(r.next(), -1)
-      else
-        Skip not support
-      endif
-    End
     It instance RNG's seed list
       if has('patch-8.0.1630')
         let r = X.new_generator()

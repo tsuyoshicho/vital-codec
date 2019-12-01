@@ -10,6 +10,8 @@ function! s:_vital_loaded(V) abort
   " Fallback
   let s:Xoshiro128StarStar = s:V.import('Random.Xoshiro128StarStar')
 
+  " fallback
+  let s:Generator = s:Xoshiro128StarStar.new_generator()
   if s:Prelude.is_windows()
     if executable('cmd')
       let s:Generator = deepcopy(s:Generator_windows_cmd)
@@ -25,15 +27,8 @@ function! s:_vital_loaded(V) abort
         let s:Generator.info.path = '/dev/urandom'
       elseif filereadable('/dev/random')
         let s:Generator.info.path = '/dev/random'
-      else
-        " nothing source
-        let s:Generator = {}
       endif
     endif
-  endif
-
-  if empty(s:Generator)
-    let s:Generator = s:Xoshiro128StarStar.new_generator()
   endif
 
   lockvar 3 s:Generator
@@ -42,8 +37,6 @@ endfunction
 function! s:_vital_depends() abort
   return ['Prelude', 'System.Process', 'Random.Xoshiro128StarStar']
 endfunction
-
-let s:Generator = {}
 
 " core
 let s:Generator_core = {
@@ -149,7 +142,7 @@ endfunction
 
 function! s:new_generator() abort
   let gen = deepcopy(s:Generator)
-  call gen.seed([0])
+  call gen.seed([])
   return gen
 endfunction
 
@@ -161,7 +154,14 @@ function! s:_common_generator() abort
 endfunction
 
 function! s:srand(...) abort
-  " not work
+  if a:0 == 0
+    let x = has('reltime') ? reltime()[1] : localtime()
+  elseif a:0 == 1
+    let x = a:1
+  else
+    throw 'vital: Random.System: srand(): too many arguments'
+  endif
+  call s:_common_generator().seed([x])
 endfunction
 
 function! s:rand() abort
