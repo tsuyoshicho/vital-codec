@@ -43,7 +43,7 @@ INTERFACE				*Vital.Random.Xoshiro128StarStar-interface*
 ------------------------------------------------------------------------------
 FUNCTIONS				*Vital.Random.Xoshiro128StarStar-functions*
 
-srand({seed})				*Vital.Random.Xoshiro128StarStar.srand()*
+srand([{seed}])				*Vital.Random.Xoshiro128StarStar.srand()*
 	Initialize the global generator with the given seed number. When
 	{seed} is omitted, a return value of |reltime()| is used.  When {seed}
 	is omitted and vim doesn't have |reltime()|, a return value of

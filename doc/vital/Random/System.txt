@@ -19,7 +19,7 @@ If vim has |rand()|/|srand()|, use this.
 Otherwise methods: Windows use cmd's %RANDOM%, *nix use bash's $RANDOM /
 openssl rand / /dev/urandom or /dev/random dump with od command.
 And if these all methods do not work environment, this module fallback to
-|Vital.Random.Mt19937ar|.
+|Vital.Random.Xoshiro128StarStar|.
 
 This module lower using priority other PRNG algorithm.
 
