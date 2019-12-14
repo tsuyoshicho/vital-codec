@@ -25,10 +25,8 @@ Describe Random. Xoshiro128StarStar
       let r = X.new_generator()
       call r.seed([123456789])
       " 2^32 calls
-      for byte in range(4)
-        for bit in range(8)
-          call r.next()
-        endfor
+      for low in range(4294967295)
+        call r.next()
       endfor
       Assert NotEquals(r.next(), r.next())
     End
@@ -36,8 +34,8 @@ Describe Random. Xoshiro128StarStar
       let r = X.new_generator()
       call r.seed([123456789])
       " 2^64 calls jump
-      for byte in range(8)
-        for bit in range(8)
+      for hight in range(4294967295)
+        for low in range(4294967295)
           call r.next()
         endfor
       endfor
@@ -47,9 +45,26 @@ Describe Random. Xoshiro128StarStar
       let r = X.new_generator()
       call r.seed([123456789])
       " 2^96 calls long jump
-      for byte in range(1)
-        for bit in range(8)
-          call r.next()
+      for jump_c in range(4294967295)
+        for hight in range(4294967295)
+          for low in range(4294967295)
+            call r.next()
+          endfor
+        endfor
+      endfor
+      Assert NotEquals(r.next(), r.next())
+    End
+    It run instance RNG full of longjump
+      let r = X.new_generator()
+      call r.seed([123456789])
+      " 2^96 calls long jump
+      for longjump_c in range(4294967295)
+        for jump_c in range(4294967295)
+          for hight in range(4294967295)
+            for low in range(4294967295)
+              call r.next()
+            endfor
+          endfor
         endfor
       endfor
       Assert NotEquals(r.next(), r.next())
@@ -73,6 +88,13 @@ Describe Random. Xoshiro128StarStar
   Describe .srand()
     It sets the seed
       Skip test, work with rand()
+    End
+    It augments at only one
+      call X.srand()
+      Assert IsNumber(X.rand())
+    End
+    It augments error
+      Throws /^vital: Random.Xoshiro128StarStar:/ X.srand("1st", "2nd")
     End
   End
 End
