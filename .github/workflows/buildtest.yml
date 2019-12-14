@@ -5,7 +5,7 @@ jobs:
     name: vim version/linux matrix test
     strategy:
       matrix:
-        vim: [v8.0.0000, v8.1.0005, master]
+        vim: [v8.1.0005, v8.2.0, master]
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -64,7 +64,7 @@ jobs:
       true
     strategy:
       matrix:
-        vim: [vim80/oldest, latest]
+        vim: [vim81/oldest, latest]
     runs-on: windows-latest
     steps:
       - name: checkout
