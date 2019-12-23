@@ -19,8 +19,8 @@ Some packages come from vital.vim.
 
 * Hash.MD5x : Renamed to MD5 when merged in the future. MD5 enhanced(Merged, deleted).
 * Hash.SHA1x : Renamed to SHA1 when merged in the future. SHA1 enhanced(Merged, deleted).
-* Data.Base32x: Renamed to Base32 when merged in the future. Wrapper implementation.
-* Data.Base64x: Renamed to Base64 when merged in the future. Wrapper implementation.
+* Data.Base32x: Renamed to Base32 when merged in the future. Wrapper implementation(Merged and Deprecated, deleted).
+* Data.Base64x: Renamed to Base64 when merged in the future. Wrapper implementation(Merged and Deprecated, deleted).
 * Crypt.Password.OTP: Package renamed from Hash.OTP(Deprecated, deleted).
 * Crypt.MAC.HMAC: Package renamed from Hash.HMAC(Deprecated, deleted).
 
