@@ -190,6 +190,7 @@ jobs:
             ${{ runner.os }}-pip-
       - name: build
         run: |
+          brew upgrade python@2
           brew install macvim
           ln -fs "$(brew --prefix macvim)/bin/mvim" "/usr/local/bin/vim"
           pip3 install --user -r requirements.txt
