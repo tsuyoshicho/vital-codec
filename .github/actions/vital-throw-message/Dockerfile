@@ -1,6 +1,7 @@
 FROM golang:1.13
 
-RUN curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh    | sh -s -- -b $(go env GOPATH)/bin v0.9.16
+ENV REVIEWDOG_VERSION=v0.9.16
+RUN curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b $(go env GOPATH)/bin ${REVIEWDOG_VERSION}
 
 ADD  scripts/ /scripts/
 
