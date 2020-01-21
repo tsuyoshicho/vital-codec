@@ -12,7 +12,7 @@ jobs:
       - uses: haya14busa/action-depup@v1
         id: depup
         with:
-          file: Dockerfile
+          file: .github/actions/vital-throw-message/Dockerfile
           version_name: REVIEWDOG_VERSION
           repo: reviewdog/reviewdog
 
