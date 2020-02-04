@@ -76,7 +76,7 @@ jobs:
       - name: setup
         id: setup
         run: |
-          pip install -U pip
+          python -m pip install --upgrade pip
           $vimzip = ${Env:GITHUB_WORKSPACE} + '\vimzip'
           New-Item $vimzip -ItemType Directory
           Write-Host "::set-output name=vimzip::$($vimzip)"
