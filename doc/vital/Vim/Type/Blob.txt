@@ -67,12 +67,12 @@ invert({X})				  *Vital.Vim.Type.Blob.invert()*
 rotl({X}, {bits})			  *Vital.Vim.Type.Blob.rotl()*
 rotateleft({X}, {bits})			  *Vital.Vim.Type.Blob.rotateleft()*
 	Return new blob that is {X} rotate {bits} bit left value.
-	NOTE:rotl is shorage function.
+	NOTE:rotl is shortage function.
 
 rotr({X}, {bits})			  *Vital.Vim.Type.Blob.rotr()*
 rotateright({X}, {bits})			  *Vital.Vim.Type.Blob.rotateright()*
 	Return new blob that is {X} rotate {bits} bit right value.
-	NOTE:rotr is shorage function.
+	NOTE:rotr is shortage function.
 
 
 Arithmetic Function
@@ -94,15 +94,15 @@ lshift({X}, {bits})			  *Vital.Vim.Type.Blob.lshift()*
 Arithmetic Unsigned Integer Function
 uint_add({X}, {Y}, {flag})		  *Vital.Vim.Type.Blob.uint_add()*
 	Return new blob that is {X} + {Y} value.
-	Value keep as {X}/{Y} uint size.
+	Value keep as O({X}(or {Y})) uint size.
 	NOTE: {X} and {Y} as same size.
 	NOTE: When {flag} set "overflow", check overflow.
 	If result overflow, then throw exception.
 
 uint_mul({X}, {Y})			  *Vital.Vim.Type.Blob.uint_mul()*
 	Return new blob that is {X} * {Y} value.
-	Value keep as {X}+{Y} uint size(if uint8 * uint8, then result is
-	uint16).
+	Value keep as O({X}(or {Y}) * 2) uint size(if uint8 * uint8, then
+	result are uint16).
 	NOTE: {X} and {Y} as same size.
 
 ==============================================================================
