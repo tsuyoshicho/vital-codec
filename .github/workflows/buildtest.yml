@@ -8,12 +8,11 @@ jobs:
     strategy:
       matrix:
         vim: [v8.2.0000, head]
-        # vim version v8.1.0005 temp off
+        type: [vim]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-        # do not need python setup in linux
       - name: Setup apt/pip
         run: |
           sudo apt-get update
@@ -41,7 +40,7 @@ jobs:
       - name: Run test
         env:
           THEMIS_VIM: ${{ steps.vim.outputs.executable }}
-          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}-${{ matrix.type }}.txt
         run: |
           git clone --depth 1 --branch ${THEMIS_VERSION} --single-branch https://github.com/thinca/vim-themis  ${GITHUB_WORKSPACE}/vim-themis
           git clone --depth 1                            --single-branch https://github.com/vim-jp/vital.vim   ${GITHUB_WORKSPACE}/vital.vim
@@ -51,7 +50,7 @@ jobs:
           ${GITHUB_WORKSPACE}/vim-themis/bin/themis --runtimepath ${GITHUB_WORKSPACE}/vimproc --runtimepath ${GITHUB_WORKSPACE}/vital.vim --exclude ConcurrentProcess --reporter dot
       - name: Collect coverage
         env:
-          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}-${{ matrix.type }}.txt
         run: |
           export PATH=/home/runner/.local/bin:${PATH}
           covimerage write_coverage "${THEMIS_PROFILE}"
@@ -63,12 +62,10 @@ jobs:
           file: ./coverage.xml
   vim-win:
     name: vim version/windows matrix test
-    if:
-      true
     strategy:
       matrix:
         vim: [v8.2.0000, head]
-        # vim version v8.1.0005 temp off
+        type: [vim]
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -108,7 +105,7 @@ jobs:
       - name: Run test
         env:
           THEMIS_VIM: ${{ steps.vim.outputs.executable }}
-          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}-${{ matrix.type }}.txt
         shell: cmd
         run: |
           set TEMP=%GITHUB_WORKSPACE%\tmp
@@ -118,7 +115,7 @@ jobs:
           %GITHUB_WORKSPACE%\vim-themis\bin\themis.bat --runtimepath %GITHUB_WORKSPACE%\vimproc --runtimepath %GITHUB_WORKSPACE%\vital.vim --exclude ConcurrentProcess --reporter dot
       - name: Collect coverage
         env:
-          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}-${{ matrix.type }}.txt
         shell: pwsh
         run: |
           pip install -r requirements.txt
@@ -131,71 +128,64 @@ jobs:
           file: ./coverage.xml
   vim-macos:
     name: vim version/mac matrix test
-    if:
-      true
     strategy:
       matrix:
-        vim: [latest]
+        vim: [v8.2.0000, head]
+        type: [vim, macvim]
+        exclude:
+          - type: macvim
+            vim: v8.2.0000
     runs-on: macos-latest
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v1
-      - name: Get brew cache directory
-        # see https://tamakiii.hatenablog.com/entry/2019/11/21/213847
-        id: brew-cache
-        run: echo "::set-output name=dir::$(brew --cache)/downloads"
-      - name: Brew cache
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.brew-cache.outputs.dir }}
-          key: ${{ runner.os }}-brew
-      - name: Brew config
-        run: brew config
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
           version: 3.7
-      - name: setup
+      - name: Setup pip
         run: |
-          brew update
           sudo pip3 install -U pip
       - name: Get pip cache
         id: pip-cache
         run: |
           python3 -c "from pip._internal.locations import USER_CACHE_DIR; print('::set-output name=dir::' + USER_CACHE_DIR)"
-      - uses: actions/cache@v1
+      - name: Set pip cache
+        uses: actions/cache@v1
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: build
+      - name: Setup cached item
         run: |
-          brew upgrade python@2
-          brew install macvim
-          ln -fs "$(brew --prefix macvim)/bin/mvim" "/usr/local/bin/vim"
           pip3 install --user -r requirements.txt
-      - name: test
+      - name: Setup Vim
+        id: 'vim'
+        uses: 'thinca/action-setup-vim@v1'
+        with:
+          vim_version: '${{ matrix.vim }}'
+          vim_type: '${{ matrix.type }}'
+      - name: Run test
+        env:
+          THEMIS_VIM: ${{ steps.vim.outputs.executable }}
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}-${{ matrix.type }}.txt
         run: |
-          export VIM_VERSION=${{ matrix.vim }}
-          export THEMIS_PROFILE=${GITHUB_WORKSPACE}/vim-profile-macos-${VIM_VERSION}.txt
-          git clone --depth 1 --branch v1.5.4 --single-branch https://github.com/thinca/vim-themis ${GITHUB_WORKSPACE}/vim-themis
-          git clone --depth 1 --single-branch https://github.com/vim-jp/vital.vim ${GITHUB_WORKSPACE}/vital.vim
-          git clone --depth 1 https://github.com/Shougo/vimproc.vim ${GITHUB_WORKSPACE}/vimproc
+          git clone --depth 1 --branch ${THEMIS_VERSION} --single-branch https://github.com/thinca/vim-themis  ${GITHUB_WORKSPACE}/vim-themis
+          git clone --depth 1                            --single-branch https://github.com/vim-jp/vital.vim   ${GITHUB_WORKSPACE}/vital.vim
+          git clone --depth 1                                            https://github.com/Shougo/vimproc.vim ${GITHUB_WORKSPACE}/vimproc
           (cd ${GITHUB_WORKSPACE}/vimproc && make)
-          vim --version
+          ${THEMIS_VIM} --version
           ${GITHUB_WORKSPACE}/vim-themis/bin/themis --runtimepath ${GITHUB_WORKSPACE}/vimproc --runtimepath ${GITHUB_WORKSPACE}/vital.vim --exclude ConcurrentProcess --reporter dot
-      - name: coverage collect
+      - name: Collect coverage
+        env:
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}-${{ matrix.type }}.txt
         run: |
-          export VIM_VERSION=${{ matrix.vim }}
-          export THEMIS_PROFILE=${GITHUB_WORKSPACE}/vim-profile-macos-${VIM_VERSION}.txt
           export PATH=$(python3 -m site --user-base)/bin:${PATH}
           covimerage write_coverage "${THEMIS_PROFILE}"
           coverage xml
-      - name: coverage send
+      - name: Send coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage.xml
-      - name: Cleanup some brew downloads
-        run: cd ${{ steps.brew-cache.outputs.dir }} && ls -lsS | head -n 5 | awk '{ print $10 }' | xargs rm -rf
