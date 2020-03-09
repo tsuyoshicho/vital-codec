@@ -134,7 +134,11 @@ jobs:
         type: [vim, macvim]
         exclude:
           - type: macvim
-            vim: [v8.2.0000, v8.1.0005, head]
+            vim: v8.2.0000
+          - type: macvim
+            vim: v8.1.0005
+          - type: macvim
+            vim: head
     runs-on: macos-latest
     steps:
       - name: Checkout
