@@ -7,7 +7,7 @@ jobs:
     name: vim version/linux matrix test
     strategy:
       matrix:
-        vim: [v8.2.0000, v8.1.0005, stable, head]
+        vim: [v8.1.0005, v8.2.0000, head]
         type: [vim]
     runs-on: ubuntu-latest
     steps:
@@ -64,7 +64,7 @@ jobs:
     name: vim version/windows matrix test
     strategy:
       matrix:
-        vim: [v8.2.0000, v8.1.0005, stable, head]
+        vim: [v8.1.0005, v8.2.0000, head]
         type: [vim]
     runs-on: windows-latest
     steps:
@@ -130,15 +130,13 @@ jobs:
     name: vim version/mac matrix test
     strategy:
       matrix:
-        vim: [v8.2.0000, v8.1.0005, stable, head]
+        vim: [v8.1.0005, v8.2.0000, head]
         type: [vim, macvim]
         exclude:
           - type: macvim
-            vim: v8.2.0000
-          - type: macvim
             vim: v8.1.0005
           - type: macvim
-            vim: head
+            vim: v8.2.0000
     runs-on: macos-latest
     steps:
       - name: Checkout
