@@ -22,7 +22,8 @@ jobs:
         id: pip-cache
         run: |
           python3 -c "from pip._internal.locations import USER_CACHE_DIR; print('::set-output name=dir::' + USER_CACHE_DIR)"
-      - uses: actions/cache@v1
+      - name: Set pip cache
+        uses: actions/cache@v1
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -30,7 +31,6 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Setup cached item
         run: |
-          sudo apt-get install python3-dev python3-distutils
           pip3 install --user -r requirements.txt
       - name: Setup Vim
         id: 'vim'
@@ -67,86 +67,64 @@ jobs:
       true
     strategy:
       matrix:
-        vim: [vim81/oldest, latest]
+        vim: [v8.2.0000, head]
+        # vim version v8.1.0005 temp off
     runs-on: windows-latest
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v1
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
           version: 3.7
-      - name: setup
+      - name: Setup pip
         id: setup
         run: |
           python -m pip install --upgrade pip
-          $vimzip = ${Env:GITHUB_WORKSPACE} + '\vimzip'
-          New-Item $vimzip -ItemType Directory
-          Write-Host "::set-output name=vimzip::$($vimzip)"
       - name: Get pip cache
         id: pip-cache
         run: |
           python -c "from pip._internal.locations import USER_CACHE_DIR; print('::set-output name=dir::' + USER_CACHE_DIR)"
-      - uses: actions/cache@v1
+      - name: Set pip cache
+        uses: actions/cache@v1
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Determining the Vim file
-        id: vim-file
-        shell: pwsh
-        run: |
-          $vim_url = 'http://vim-jp.org/redirects/koron/vim-kaoriya/' + '${{ matrix.vim }}' + '/win64/'
-          $redirect = Invoke-WebRequest -URI $vim_url
-          Write-Host "::set-output name=url::$($redirect.Links[0].href)"
-          Write-Output $redirect.Links[0].href | Out-File url.txt
-      - uses: actions/cache@v1
+      - name: Setup Vim
+        id: 'vim'
+        uses: 'thinca/action-setup-vim@v1'
         with:
-          path: ${{ steps.setup.outputs.vimzip }}
-          key: ${{ runner.os }}-64-vimzip-${{ hashFiles('**/url.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-64-vimzip-
-      - name: build
+          vim_version: '${{ matrix.vim }}'
+          vim_type: 'vim'
+      - name: Build
         shell: pwsh
         run: |
-          $vim = ${Env:GITHUB_WORKSPACE} + '\vim\'
-          $zip = ${Env:GITHUB_WORKSPACE} + '\vimzip\vim.zip'
-          if (Test-Path $zip) {
-            Write-Host cache hit
-          } else {
-            (New-Object Net.WebClient).DownloadFile('${{ steps.vim-file.outputs.url }}', $zip)
-            [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
-          }
-          [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
-          $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
-          $Env:THEMIS_PROFILE = ${Env:GITHUB_WORKSPACE} + '\vim-profile-win-' + '${{ matrix.vim }}'.Substring(0,4) + '.txt'
-          git -c advice.detachedHead=false clone https://github.com/Shougo/vimproc.vim --quiet --branch ver.9.2 --single-branch --depth 1 ${Env:GITHUB_WORKSPACE}\vimproc
+          git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis  --quiet --branch %THEMIS_VERSION% --single-branch --depth 1 ${Env:GITHUB_WORKSPACE}\vim-themis
+          git -c advice.detachedHead=false clone https://github.com/vim-jp/vital.vim   --quiet                            --single-branch --depth 1 ${Env:GITHUB_WORKSPACE}\vital.vim
+          git -c advice.detachedHead=false clone https://github.com/Shougo/vimproc.vim --quiet --branch ver.9.2           --single-branch --depth 1 ${Env:GITHUB_WORKSPACE}\vimproc
           Invoke-WebRequest -Uri "https://github.com/Shougo/vimproc.vim/releases/download/ver.9.2/vimproc_win64.dll" -OutFile "${Env:GITHUB_WORKSPACE}\vimproc\lib\vimproc_win64.dll"
-          git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch v1.5.4 --single-branch --depth 1 ${Env:GITHUB_WORKSPACE}\vim-themis
-          git -c advice.detachedHead=false clone https://github.com/vim-jp/vital.vim --quiet --single-branch --depth 1 ${Env:GITHUB_WORKSPACE}\vital.vim
-      - name: test
+      - name: Run test
         env:
-          OS: Windows
+          THEMIS_VIM: ${{ steps.vim.outputs.executable }}
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
         shell: cmd
         run: |
-          for /f "usebackq" %%A in (`dir /b %GITHUB_WORKSPACE%\vim\`) do set VIM_DIR=%%A
-          set THEMIS_VIM=%GITHUB_WORKSPACE%\vim\%VIM_DIR%\vim.exe
-          set VER=${{ matrix.vim }}
-          set THEMIS_PROFILE=%GITHUB_WORKSPACE%\vim-profile-win-%VER:~0,4%.txt
           set TEMP=%GITHUB_WORKSPACE%\tmp
           set TMP=%TEMP%
           mkdir %TEMP%
-          vim --version
+          %THEMIS_VIM% --version
           %GITHUB_WORKSPACE%\vim-themis\bin\themis.bat --runtimepath %GITHUB_WORKSPACE%\vimproc --runtimepath %GITHUB_WORKSPACE%\vital.vim --exclude ConcurrentProcess --reporter dot
-      - name: coverage collect
+      - name: Collect coverage
+        env:
+          THEMIS_PROFILE: ${{ github.workspace }}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
         shell: pwsh
         run: |
-          $Env:THEMIS_PROFILE = ${Env:GITHUB_WORKSPACE} + '\vim-profile-win-' + '${{ matrix.vim }}'.Substring(0,4) + '.txt'
           pip install -r requirements.txt
           covimerage write_coverage ${Env:THEMIS_PROFILE}
           coverage xml
-      - name: coverage send
+      - name: Send coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{secrets.CODECOV_TOKEN}}
