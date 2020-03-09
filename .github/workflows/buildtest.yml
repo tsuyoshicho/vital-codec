@@ -7,7 +7,8 @@ jobs:
     name: vim version/linux matrix test
     strategy:
       matrix:
-        vim: [v8.1.0005, v8.2.0000, head]
+        vim: [v8.2.0000, head]
+        # vim version v8.1.0005 temp off
     runs-on: ubuntu-latest
     steps:
       - name: checkout
