@@ -9,8 +9,6 @@ jobs:
       matrix:
         vim: [v8.1.0005, v8.2.0000, head]
     runs-on: ubuntu-latest
-    env:
-      THEMIS_PROFILE: ${GITHUB_WORKSPACE}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
     steps:
       - name: checkout
         uses: actions/checkout@v1
@@ -42,6 +40,7 @@ jobs:
       - name: Run test
         env:
           THEMIS_VIM: ${{ steps.vim.outputs.executable }}
+          THEMIS_PROFILE: ${GITHUB_WORKSPACE}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
         run: |
           git clone --depth 1 --branch ${THEMIS_VERSION} --single-branch https://github.com/thinca/vim-themis  ${GITHUB_WORKSPACE}/vim-themis
           git clone --depth 1                            --single-branch https://github.com/vim-jp/vital.vim   ${GITHUB_WORKSPACE}/vital.vim
@@ -50,6 +49,8 @@ jobs:
           ${THEMIS_VIM} --version
           ${GITHUB_WORKSPACE}/vim-themis/bin/themis --runtimepath ${GITHUB_WORKSPACE}/vimproc --runtimepath ${GITHUB_WORKSPACE}/vital.vim --exclude ConcurrentProcess --reporter dot
       - name: Collect coverage
+        env:
+          THEMIS_PROFILE: ${GITHUB_WORKSPACE}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
         run: |
           covimerage write_coverage "${THEMIS_PROFILE}"
           coverage xml
