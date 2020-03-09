@@ -36,7 +36,7 @@ jobs:
         uses: 'thinca/action-setup-vim@v1'
         with:
           vim_version: '${{ matrix.vim }}'
-          vim_type: 'vim'
+          vim_type: '${{ matrix.type }}'
       - name: Run test
         env:
           THEMIS_VIM: ${{ steps.vim.outputs.executable }}
@@ -94,7 +94,7 @@ jobs:
         uses: 'thinca/action-setup-vim@v1'
         with:
           vim_version: '${{ matrix.vim }}'
-          vim_type: 'vim'
+          vim_type: '${{ matrix.type }}'
       - name: Build
         shell: pwsh
         run: |
