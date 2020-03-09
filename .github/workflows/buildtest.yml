@@ -1,17 +1,21 @@
 name: "build and test at vim"
 on: [push, pull_request]
+env:
+  THEMIS_VERSION: v1.5.4
 jobs:
   vim-linux:
     name: vim version/linux matrix test
     strategy:
       matrix:
-        vim: [v8.1.0005, v8.2.0, master]
+        vim: [v8.1.0005, v8.2.0000, head]
     runs-on: ubuntu-latest
+    env:
+      THEMIS_PROFILE: ${GITHUB_WORKSPACE}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
     steps:
       - name: checkout
         uses: actions/checkout@v1
         # do not need python setup in linux
-      - name: setup
+      - name: Setup apt/pip
         run: |
           sudo apt-get update
           sudo pip3 install -U pip
@@ -25,35 +29,31 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: build
+      - name: Setup cached item
         run: |
-          export PATH=/home/runner/.local/bin:${PATH}
-          export VIM_VERSION=${{ matrix.vim }}
           sudo apt-get install python3-dev python3-distutils
           pip3 install --user -r requirements.txt
-          sh scripts/install-vim.sh
-      - name: test
+      - name: Setup Vim
+        id: 'vim'
+        uses: 'thinca/action-setup-vim@v1'
+        with:
+          vim_version: '${{ matrix.vim }}'
+          vim_type: 'vim'
+      - name: Run test
         env:
-          OS: Linux
+          THEMIS_VIM: ${{ steps.vim.outputs.executable }}
         run: |
-          export PATH=/home/runner/.local/bin:${PATH}
-          export VIM_VERSION=${{ matrix.vim }}
-          export THEMIS_PROFILE=${GITHUB_WORKSPACE}/vim-profile-linux-${VIM_VERSION}.txt
-          git clone --depth 1 --branch v1.5.4 --single-branch https://github.com/thinca/vim-themis ${GITHUB_WORKSPACE}/vim-themis
-          git clone --depth 1 --single-branch https://github.com/vim-jp/vital.vim ${GITHUB_WORKSPACE}/vital.vim
-          git clone --depth 1 https://github.com/Shougo/vimproc.vim ${GITHUB_WORKSPACE}/vimproc
+          git clone --depth 1 --branch ${THEMIS_VERSION} --single-branch https://github.com/thinca/vim-themis  ${GITHUB_WORKSPACE}/vim-themis
+          git clone --depth 1                            --single-branch https://github.com/vim-jp/vital.vim   ${GITHUB_WORKSPACE}/vital.vim
+          git clone --depth 1                                            https://github.com/Shougo/vimproc.vim ${GITHUB_WORKSPACE}/vimproc
           (cd ${GITHUB_WORKSPACE}/vimproc && make)
-          export PATH=${GITHUB_WORKSPACE}/vim/bin:${PATH}
-          vim --version
+          ${THEMIS_VIM} --version
           ${GITHUB_WORKSPACE}/vim-themis/bin/themis --runtimepath ${GITHUB_WORKSPACE}/vimproc --runtimepath ${GITHUB_WORKSPACE}/vital.vim --exclude ConcurrentProcess --reporter dot
-      - name: coverage collect
+      - name: Collect coverage
         run: |
-          export PATH=/home/runner/.local/bin:${PATH}
-          export VIM_VERSION=${{ matrix.vim }}
-          export THEMIS_PROFILE=${GITHUB_WORKSPACE}/vim-profile-linux-${VIM_VERSION}.txt
           covimerage write_coverage "${THEMIS_PROFILE}"
           coverage xml
-      - name: coverage send
+      - name: Send coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{secrets.CODECOV_TOKEN}}
