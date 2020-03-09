@@ -11,7 +11,7 @@ jobs:
         # vim version v8.1.0005 temp off
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v1
         # do not need python setup in linux
       - name: Setup apt/pip
@@ -53,6 +53,7 @@ jobs:
         env:
           THEMIS_PROFILE: ${GITHUB_WORKSPACE}/vim-profile-${{ runner.os }}-${{ matrix.vim }}.txt
         run: |
+          export PATH=/home/runner/.local/bin:${PATH}
           covimerage write_coverage "${THEMIS_PROFILE}"
           coverage xml
       - name: Send coverage
