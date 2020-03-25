@@ -11,10 +11,7 @@ jobs:
         vim: [v8.1.0005, v8.2.0000, head]
         type: [vim, macvim]
         download: [available]
-        include:
-          - os: ubuntu-latest
-            vim: v8.1.0005
-            vim_download: never
+        # Linux vim 8.1 build only, action-setup-vim 1.0.1 or after auto switch
         exclude:
           - os: ubuntu-latest
             # linux only vim/ macvim run as mac os
@@ -60,7 +57,7 @@ jobs:
           pip3 install --user -r requirements.txt
       - name: Setup Vim
         id: 'vim'
-        uses: 'thinca/action-setup-vim@v1'
+        uses: thinca/action-setup-vim@v1
         with:
           vim_version: '${{ matrix.vim }}'
           vim_type: '${{ matrix.type }}'
@@ -151,7 +148,7 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Setup Vim
         id: 'vim'
-        uses: 'thinca/action-setup-vim@v1'
+        uses: thinca/action-setup-vim@v1
         with:
           vim_version: '${{ matrix.vim }}'
           vim_type: '${{ matrix.type }}'
