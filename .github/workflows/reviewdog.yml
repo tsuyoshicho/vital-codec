@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code.
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: vint
         uses: reviewdog/action-vint@v1
         with:
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code.
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: vimlint
         uses: tsuyoshicho/action-vimlint@v1
         with:
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code.
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: misspell-pr-review
         uses: reviewdog/action-misspell@v1
         if: github.event_name == 'pull_request'
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code.
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: vital-throw-message
         uses: ./.github/actions/vital-throw-message
         with:
