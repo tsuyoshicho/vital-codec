@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Vim documentation: vital/Crypt/Password/OTP</title>
+<meta name="Generator" content="Vim/8.2">
+<meta name="plugin-version" content="vim8.1_v2">
+<meta name="syntax" content="help">
+<meta name="settings" content="no_progress,ignore_folding,use_css,no_foldcolumn,expand_tabs,ignore_conceal,prevent_copy=,use_input_for_pc=fallback">
+<meta name="colorscheme" content="github">
+<style>
+<!--
+.MissingTag { background-color: black; color: white; }
+.EnglishTag { background-color: gray; color: white; }
+pre { font-family: monospace; color: #24292e; background-color: #ffffff; }
+body { font-family: monospace; color: #24292e; background-color: #ffffff; }
+* { font-size: 1em; }
+.helpExample { font-weight: bold; }
+.Statement { color: #d73a49; }
+.Special { color: #6f42c1; }
+.Ignore { color: #babbbc; background-color: #ffffff; padding-bottom: 1px; }
+.PreProc { color: #d73a49; }
+-->
+</style>
+</head>
+<body>
+
+<a name="top"></a><h1>Vim documentation: vital/Crypt/Password/OTP</h1>
+<a href="./../../../index.html">main help file</a>
+<hr>
+<pre id='vimCodeElement'>
+<a class="String" href="./../../../vital/Crypt/Password/OTP.html" name="vital/Crypt/Password/OTP.txt">vital/Crypt/Password/OTP.txt</a>          OTP:One-time Password Generation library.
+
+Maintainer: Tsuyoshi CHO &lt;Tsuyoshi.CHO+develop@Gmail.com&gt;
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">CONTENTS</span>                                <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-contents" name="Vital.Crypt.Password.OTP-contents">Vital.Crypt.Password.OTP-contents</a>
+
+INTRODUCTION                            <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-introduction">Vital.Crypt.Password.OTP-introduction</a>
+INTERFACE                               <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-interface">Vital.Crypt.Password.OTP-interface</a>
+  Constants                               <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-constants">Vital.Crypt.Password.OTP-constants</a>
+  Functions                               <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-functions">Vital.Crypt.Password.OTP-functions</a>
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">INTRODUCTION</span>                            <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-introduction" name="Vital.Crypt.Password.OTP-introduction">Vital.Crypt.Password.OTP-introduction</a>
+
+<a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP" name="Vital.Crypt.Password.OTP">Vital.Crypt.Password.OTP</a> is an OTP:One-time Password Generation library.
+It provides functions to return the OTP value from key secret.
+Support HOTP/TOTP.
+
+Usage:
+<span class="helpExample">  let default = s:OTP.default()</span>
+<span class="helpExample">  return s:OTP.totp(secret, default.TOTP.period,</span>
+<span class="helpExample">                  \ g:V.import('Hash.' . default.TOTP.algo),</span>
+<span class="helpExample">                  \ default.TOTP.digit)</span>
+
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">INTERFACE</span>                               <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-interface" name="Vital.Crypt.Password.OTP-interface">Vital.Crypt.Password.OTP-interface</a>
+<span class="PreProc">------------------------------------------------------------------------------</span>
+<span class="Statement">CONSTANTS</span>                               <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-constants" name="Vital.Crypt.Password.OTP-constants">Vital.Crypt.Password.OTP-constants</a>
+
+defaults                                <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-defaults" name="Vital.Crypt.Password.OTP-defaults">Vital.Crypt.Password.OTP-defaults</a>
+        A dictionary that has the default parameter.
+        Currently below:
+<span class="helpExample">      {</span>
+<span class="helpExample">      \ 'HOTP' : {</span>
+<span class="helpExample">      \   'digit'   : 6,</span>
+<span class="helpExample">      \   'algo'    : 'SHA1',</span>
+<span class="helpExample">      \   'counter' : 8,</span>
+<span class="helpExample">      \ },</span>
+<span class="helpExample">      \ 'TOTP' : {</span>
+<span class="helpExample">      \   'digit'   : 6,</span>
+<span class="helpExample">      \   'algo'    : 'SHA1',</span>
+<span class="helpExample">      \   'period'  : 30,</span>
+<span class="helpExample">      \ },</span>
+<span class="helpExample">      \}</span>
+
+        digit is otp number of digits.
+        algo is otp digest algorithm.
+        counter is hotp counter value length.
+        period is totp caltratation interval.
+
+
+<span class="PreProc">------------------------------------------------------------------------------</span>
+<span class="Statement">FUNCTIONS</span>                               <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-functions" name="Vital.Crypt.Password.OTP-functions">Vital.Crypt.Password.OTP-functions</a>
+
+htop(<span class="Special">{key}</span>,<span class="Special">{counter}</span>,<span class="Special">{algo}</span>,<span class="Special">{digit}</span>)    <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP.htop()" name="Vital.Crypt.Password.OTP.htop()">Vital.Crypt.Password.OTP.htop()</a>
+        Return HOTP value.
+        It need secret bytes list <span class="Special">{key}</span>, and bytes list <span class="Special">{counter}</span> value,
+        Hash <span class="Special">{algo}</span>, return values' number of <span class="Special">{digit}</span>.
+        Hash <span class="Special">{algo}</span>, need same as <a class="Identifier" href="./../../../vital/Crypt/MAC/HMAC.html#Vital.Crypt.MAC.HMAC-HMAC.hash()">Vital.Crypt.MAC.HMAC-HMAC.hash()</a> API.
+        ex <a href="https://www.google.com/search?q=vim+%22Vital.Hash.MD5%22&lr=lang_en"><span class="MissingTag">Vital.Hash.MD5</span></a> , <a href="https://www.google.com/search?q=vim+%22Vital.Hash.SHA1%22&lr=lang_en"><span class="MissingTag">Vital.Hash.SHA1</span></a>
+
+totp(<span class="Special">{key}</span>,<span class="Special">{period}</span>,<span class="Special">{algo}</span>,<span class="Special">{digit}</span>,...) <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP.totp()" name="Vital.Crypt.Password.OTP.totp()">Vital.Crypt.Password.OTP.totp()</a>
+        Return current time TOTP value.
+        Interface like <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP.htop()">Vital.Crypt.Password.OTP.htop()</a>, <span class="Special">{key}</span> and <span class="Special">{algo}</span>.
+        <span class="Special">{period}</span> are TOTP value renew interval sec.
+        When you need test and/or other reason, use extra arguments that is
+        time source you specified.
+        Extra arguments one of the following support type can be set:
+          <a href="https://www.google.com/search?q=vim+%22Number%22&lr=lang_en"><span class="MissingTag">Number</span></a> value as epoch time seconds.
+          <a href="https://www.google.com/search?q=vim+%22Vital.DateTime%22&lr=lang_en"><span class="MissingTag">Vital.DateTime</span></a> object.
+
+
+<span class="PreProc">==============================================================================</span>
+vim&#0058;tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
+</pre>
+<hr>
+<a href="#top">top</a> - <a href="./../../../index.html">main help file</a> - <a href="./../../../tags.html">tag index</a> <br>
+
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
