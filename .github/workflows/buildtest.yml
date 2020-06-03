@@ -28,7 +28,7 @@ jobs:
     name: ${{ matrix.type }} ${{ matrix.vim }}/${{ matrix.os }} test
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Setup apt
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -100,7 +100,7 @@ jobs:
     name: ${{ matrix.type }} ${{ matrix.vim }}/${{ matrix.os }} test
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Determining the library file
         id: files
         shell: pwsh
