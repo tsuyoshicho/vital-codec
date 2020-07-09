@@ -1,0 +1,29 @@
+Describe Data.Base64.Radix64
+  Before all
+    let B = vital#vital#new().import('Data.Base64.Radix64')
+  End
+
+  Describe .encode()
+    It encode string to base64 encoded string.
+      let result = B.encode("hello, world!")
+      Assert IsList(result)
+      Assert Equals(len(result), 2)
+      Assert Equals(result[0], 'aGVsbG8sIHdvcmxkIQ==')
+      Assert Equals(result[1], '=tSK6')
+    End
+  End
+
+  Describe .validate()
+    It validate base64 encoded data and checksum string.
+      Assert True(B.validate("aGVsbG8sIHdvcmxkIQ==", "=tSK6"))
+      Assert False(B.validate("aGVsbG8sIHdvcmxkIQ==", "tSK6"))
+      Assert False(B.validate("aGVsbG8sIHdvcmxkIQ==", "=tSK7"))
+    End
+  End
+
+  Describe .decode()
+    It decode base64 encoded string to string.
+      Assert Equals(B.decode("aGVsbG8sIHdvcmxkIQ=="), 'hello, world!')
+    End
+  End
+End
