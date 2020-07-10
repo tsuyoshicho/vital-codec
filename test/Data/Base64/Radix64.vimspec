@@ -15,9 +15,9 @@ Describe Data.Base64.Radix64
 
   Describe .validate()
     It validate base64 encoded data and checksum string.
-      Assert True(B.validate("aGVsbG8sIHdvcmxkIQ==", "=tSK6"))
-      Assert False(B.validate("aGVsbG8sIHdvcmxkIQ==", "tSK6"))
-      Assert False(B.validate("aGVsbG8sIHdvcmxkIQ==", "=tSK7"))
+      Assert Equals(B.validate("aGVsbG8sIHdvcmxkIQ==", "=tSK6"), v:true )
+      Assert Equals(B.validate("aGVsbG8sIHdvcmxkIQ==", "tSK6"),  v:false)
+      Assert Equals(B.validate("aGVsbG8sIHdvcmxkIQ==", "=tSK7"), v:false)
     End
   End
 
