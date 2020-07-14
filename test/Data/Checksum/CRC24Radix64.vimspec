@@ -1,0 +1,17 @@
+Describe Data.Checksum.CRC24Radix64
+  Before all
+    let C = vital#vital#new().import('Data.Checksum.CRC24Radix64')
+  End
+
+  Describe .calculatestr()
+    It calculate string checksum.
+      Assert Equals(C.calculate("aaaa") , [0x90, 0x81, 0x22])
+    End
+  End
+
+  Describe .validatestr()
+    It validate string checksum.
+      Assert Equals(C.validatestr("aaaa", [0x90, 0x81, 0x22]), v:true )
+    End
+  End
+End

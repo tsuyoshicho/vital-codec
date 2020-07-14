@@ -27,13 +27,11 @@ function! s:calculate(data) abort
 endfunction
 
 function! s:validatestr(data, sum) abort
-  return s:validate(s:ByteArray.from_string(a:data),
-    \ s:ByteArray.from_string(a:sum))
+  return s:validate(s:ByteArray.from_string(a:data), a:sum)
 endfunction
 
 function! s:validatebin(data, sum) abort
-  return s:validate(s:ByteArray.from_hexstring(a:data),
-    \ s:ByteArray.from_hexstring(a:sum))
+  return s:validate(s:ByteArray.from_hexstring(a:data), a:sum)
 endfunction
 
 function! s:validate(data, sum) abort
