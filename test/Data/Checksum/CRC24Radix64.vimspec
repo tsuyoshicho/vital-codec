@@ -5,7 +5,7 @@ Describe Data.Checksum.CRC24Radix64
 
   Describe .calculatestr()
     It calculate string checksum.
-      Assert Equals(C.calculate("aaaa") , [0x90, 0x81, 0x22])
+      Assert Equals(C.calculatestr("aaaa") , [0x90, 0x81, 0x22])
     End
   End
 
