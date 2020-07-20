@@ -1,0 +1,39 @@
+*vital/Data/Checksum/CRC24Radix64.txt*		crc utilities library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+
+==============================================================================
+CONTENTS			*Vital.Data.Checksum.CRC24Radix64-contents*
+
+INTRODUCTION			|Vital.Data.Checksum.CRC24Radix64-introduction|
+INTERFACE			|Vital.Data.Checksum.CRC24Radix64-interface|
+  Functions			|Vital.Data.Checksum.CRC24Radix64-functions|
+
+==============================================================================
+INTRODUCTION			*Vital.Data.Checksum.CRC24Radix64-introduction*
+
+*Vital.Data.Checksum.CRC24Radix64* is a CRC Calculate Utilities Library.
+It provides functions to return the CRC24 Radix64 variant calculate value or
+check value of a given string/hex/bytes list.
+
+==============================================================================
+INTERFACE			*Vital.Data.Checksum.CRC24Radix64-interface*
+------------------------------------------------------------------------------
+FUNCTIONS			*Vital.Data.Checksum.CRC24Radix64-functions*
+
+calculatestr({str})		*Vital.Data.Checksum.CRC24Radix64.calculatestr()*
+calculatebin({hex-str})		*Vital.Data.Checksum.CRC24Radix64.calculatebin()*
+calculate({bytes})		*Vital.Data.Checksum.CRC24Radix64.calculate()*
+	Return calculated crc data from {str} or {hex-str} or raw {bytes} list.
+
+
+validatestr({str}, {crc})	*Vital.Data.Checksum.CRC24Radix64.validatestr()*
+validatebin({hex-str}, {crc})	*Vital.Data.Checksum.CRC24Radix64.validatebin()*
+validate({bytes}, {crc})	*Vital.Data.Checksum.CRC24Radix64.validate()*
+	Return validation result as v:true that is given data({str}, {hex-str},
+	{bytes})'s calculation and {crc} are equals.
+	{crc} is byte-like list that length is 3(24-bits).
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl

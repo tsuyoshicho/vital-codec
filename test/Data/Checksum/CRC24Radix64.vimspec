@@ -1,0 +1,47 @@
+Describe Data.Checksum.CRC24Radix64
+  Before all
+    let C = vital#vital#new().import('Data.Checksum.CRC24Radix64')
+  End
+
+  Describe .calculatestr()
+    It calculate string checksum.
+      Assert Equals(C.calculatestr("aaaa"), [0x90, 0x81, 0x22])
+      Assert Equals(C.calculatestr("bbbb"), [0x6e, 0xc4, 0x78])
+      Assert Equals(C.calculatestr("cccc"), [0x3b, 0x07, 0x4e])
+      Assert Equals(C.calculatestr("12"),   [0x4d, 0x61, 0x51])
+      Assert Equals(C.calculatestr("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+      \                                     [0x4f, 0xfa, 0x27])
+    End
+  End
+  Describe .calculatebin()
+    It calculate hex string checksum.
+      Assert Equals(C.calculatebin("61616161") , [0x90, 0x81, 0x22])
+    End
+  End
+  Describe .calculate()
+    It calculate data checksum.
+      Assert Equals(C.calculate([0x61, 0x61, 0x61, 0x61]), [0x90, 0x81, 0x22])
+    End
+  End
+
+  Describe .validatestr()
+    It validate string checksum.
+      Assert Equals(C.validatestr("aaaa", [0x90, 0x81, 0x22]), v:true )
+      Assert Equals(C.validatestr("bbbb", [0x6e, 0xc4, 0x78]), v:true )
+      Assert Equals(C.validatestr("cccc", [0x3b, 0x07, 0x4e]), v:true )
+      Assert Equals(C.validatestr("12",   [0x4d, 0x61, 0x51]), v:true )
+      Assert Equals(C.validatestr("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+      \                                   [0x4f, 0xfa, 0x27]), v:true )
+    End
+  End
+  Describe .validatebin()
+    It validate hex string checksum.
+      Assert Equals(C.validatebin("61616161", [0x90, 0x81, 0x22]), v:true )
+    End
+  End
+  Describe .validate()
+    It validate data checksum.
+      Assert Equals(C.validate([0x61, 0x61, 0x61, 0x61], [0x90, 0x81, 0x22]), v:true )
+    End
+  End
+End
