@@ -15,10 +15,25 @@ Describe Random.System
   End
 
   Describe .srand()
+    It non args use default
+      if has('patch-8.0.1630')
+        call X.srand()
+        Assert NotEquals(X.rand(), -1)
+      else
+        Skip not support
+      endif
+    End
     It sets the seed number
       if has('patch-8.0.1630')
         call X.srand(1)
         Assert NotEquals(X.rand(), -1)
+      else
+        Skip not support
+      endif
+    End
+    It arg num error to assertion
+      if has('patch-8.0.1630')
+        Throws /^vital: Random.System:/ X.srand(1,2)
       else
         Skip not support
       endif
