@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Vim documentation: vital/Data/Checksum/CRC24Radix64</title>
+<meta name="Generator" content="Vim/8.2">
+<meta name="plugin-version" content="vim8.1_v2">
+<meta name="syntax" content="help">
+<meta name="settings" content="no_progress,ignore_folding,use_css,no_foldcolumn,expand_tabs,ignore_conceal,prevent_copy=,use_input_for_pc=fallback">
+<meta name="colorscheme" content="github">
+<style>
+<!--
+.MissingTag { background-color: black; color: white; }
+.EnglishTag { background-color: gray; color: white; }
+pre { font-family: monospace; color: #24292e; background-color: #ffffff; }
+body { font-family: monospace; color: #24292e; background-color: #ffffff; }
+* { font-size: 1em; }
+.Statement { color: #d73a49; }
+.Special { color: #6f42c1; }
+.PreProc { color: #d73a49; }
+-->
+</style>
+</head>
+<body>
+
+<a name="top"></a><h1>Vim documentation: vital/Data/Checksum/CRC24Radix64</h1>
+<a href="./../../../index.html">main help file</a>
+<hr>
+<pre id='vimCodeElement'>
+<a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html" name="vital/Data/Checksum/CRC24Radix64.txt">vital/Data/Checksum/CRC24Radix64.txt</a>          crc utilities library.
+
+Maintainer: Tsuyoshi CHO &lt;Tsuyoshi.CHO+develop@Gmail.com&gt;
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">CONTENTS</span>                        <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64-contents" name="Vital.Data.Checksum.CRC24Radix64-contents">Vital.Data.Checksum.CRC24Radix64-contents</a>
+
+INTRODUCTION                    <a class="Identifier" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64-introduction">Vital.Data.Checksum.CRC24Radix64-introduction</a>
+INTERFACE                       <a class="Identifier" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64-interface">Vital.Data.Checksum.CRC24Radix64-interface</a>
+  Functions                     <a class="Identifier" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64-functions">Vital.Data.Checksum.CRC24Radix64-functions</a>
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">INTRODUCTION</span>                    <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64-introduction" name="Vital.Data.Checksum.CRC24Radix64-introduction">Vital.Data.Checksum.CRC24Radix64-introduction</a>
+
+<a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64" name="Vital.Data.Checksum.CRC24Radix64">Vital.Data.Checksum.CRC24Radix64</a> is a CRC Calculate Utilities Library.
+It provides functions to return the CRC24 Radix64 variant calculate value or
+check value of a given string/hex/bytes list.
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">INTERFACE</span>                       <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64-interface" name="Vital.Data.Checksum.CRC24Radix64-interface">Vital.Data.Checksum.CRC24Radix64-interface</a>
+<span class="PreProc">------------------------------------------------------------------------------</span>
+<span class="Statement">FUNCTIONS</span>                       <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64-functions" name="Vital.Data.Checksum.CRC24Radix64-functions">Vital.Data.Checksum.CRC24Radix64-functions</a>
+
+calculatestr(<span class="Special">{str}</span>)             <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64.calculatestr()" name="Vital.Data.Checksum.CRC24Radix64.calculatestr()">Vital.Data.Checksum.CRC24Radix64.calculatestr()</a>
+calculatebin(<span class="Special">{hex-str}</span>)         <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64.calculatebin()" name="Vital.Data.Checksum.CRC24Radix64.calculatebin()">Vital.Data.Checksum.CRC24Radix64.calculatebin()</a>
+calculate(<span class="Special">{bytes}</span>)              <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64.calculate()" name="Vital.Data.Checksum.CRC24Radix64.calculate()">Vital.Data.Checksum.CRC24Radix64.calculate()</a>
+        Return calculated crc data from <span class="Special">{str}</span> or <span class="Special">{hex-str}</span> or raw <span class="Special">{bytes}</span> list.
+
+
+validatestr(<span class="Special">{str}</span>, <span class="Special">{crc}</span>)       <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64.validatestr()" name="Vital.Data.Checksum.CRC24Radix64.validatestr()">Vital.Data.Checksum.CRC24Radix64.validatestr()</a>
+validatebin(<span class="Special">{hex-str}</span>, <span class="Special">{crc}</span>)   <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64.validatebin()" name="Vital.Data.Checksum.CRC24Radix64.validatebin()">Vital.Data.Checksum.CRC24Radix64.validatebin()</a>
+validate(<span class="Special">{bytes}</span>, <span class="Special">{crc}</span>)        <a class="String" href="./../../../vital/Data/Checksum/CRC24Radix64.html#Vital.Data.Checksum.CRC24Radix64.validate()" name="Vital.Data.Checksum.CRC24Radix64.validate()">Vital.Data.Checksum.CRC24Radix64.validate()</a>
+        Return validation result as v:true that is given data(<span class="Special">{str}</span>, <span class="Special">{hex-str}</span>,
+        <span class="Special">{bytes}</span>)'s calculation and <span class="Special">{crc}</span> are equals.
+        <span class="Special">{crc}</span> is byte-like list that length is 3(24-bits).
+
+
+<span class="PreProc">==============================================================================</span>
+vim&#0058;tw=78:fo=tcq2mM:ts=8:ft=help:norl
+</pre>
+<hr>
+<a href="#top">top</a> - <a href="./../../../index.html">main help file</a> - <a href="./../../../tags.html">tag index</a> <br>
+
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
