@@ -6,6 +6,7 @@ env:
 jobs:
   unixlike:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
         vim: [v8.1.0005, v8.2.0000, head]
@@ -91,6 +92,7 @@ jobs:
           file: ./coverage.xml
   windows:
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest]
         vim: [v8.1.0005, v8.2.0000, head]
