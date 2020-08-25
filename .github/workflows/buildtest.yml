@@ -27,6 +27,9 @@ jobs:
             vim: v8.2.0000
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.type }} ${{ matrix.vim }}/${{ matrix.os }} test
+    env:
+      OS: ${{ matrix.os }}
+      VIM: ${{ matrix.vim }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -88,8 +91,8 @@ jobs:
       - name: Send coverage
         uses: codecov/codecov-action@v1
         with:
-          token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage.xml
+          env_vars: OS,VIM
   windows:
     strategy:
       fail-fast: false
@@ -184,5 +187,5 @@ jobs:
       - name: Send coverage
         uses: codecov/codecov-action@v1
         with:
-          token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage.xml
+          env_vars: OS,VIM
