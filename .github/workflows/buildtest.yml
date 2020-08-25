@@ -103,6 +103,9 @@ jobs:
         download: [available]
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.type }} ${{ matrix.vim }}/${{ matrix.os }} test
+    env:
+      OS: ${{ matrix.os }}
+      VIM: ${{ matrix.type }}-${{ matrix.vim }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
