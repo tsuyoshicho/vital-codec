@@ -26,8 +26,8 @@ let s:Fractions = {
 " generate from valid data type data
 function s:_generate(num, deno) abort
   let f = deepcopy(s:Fractions)
-  f.numerator   = s:_bignum(a:num)
-  f.denominator = s:_bignum(a:deno)
+  let f.numerator   = s:_bignum(a:num)
+  let f.denominator = s:_bignum(a:deno)
 
   return s:_balance(f)
 endfunction
@@ -109,8 +109,8 @@ function s:_balance(fraction) abort
   " re-balance
   let gcd = s:_bignum_gcd(n, d)
   if gcd isnot v:none
-    let n =  s:BigNum.div(n)
-    let d =  s:BigNum.div(d)
+    let n =  s:BigNum.div(n, gcd)
+    let d =  s:BigNum.div(d, gcd)
   endif
 
   let f.numerator   = n
