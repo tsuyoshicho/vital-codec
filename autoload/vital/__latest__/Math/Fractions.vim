@@ -140,7 +140,7 @@ function! s:new(...) abort
       let d = 1
     else
       if s:P.is_number(a:2) || s:P.is_string(a:2)
-        let n = a:2
+        let d = a:2
       else
         call s:_throw('Unsupport type error arg:2 type:' . string(type(a:2)))
       endif
