@@ -1,5 +1,4 @@
-" Utilities for UUID
-" RFC 4122 - A Universally Unique IDentifier (UUID) URN Namespace https://tools.ietf.org/html/rfc4122
+" Utilities for Fraction
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -59,7 +58,8 @@ function s:_bignum_gcd(a, b) abort
 
   while (s:BigNum.sign(a) != 0) && (s:BigNum.sign(b) != 0)
     if 1 == s:BigNum.compare(a, b)
-      let [a, b]  = [b, a]
+      " 1 is a < b, swap it
+      let [b, a] = [a, b]
     endif
 
     let [a, b] = s:BigNum.div_mod(a, b)
@@ -77,13 +77,15 @@ endfunction
 " sign : first allocation time as v:none
 " d    : if zero divid, return v:none(not Fraction object)
 function s:_balance(fraction) abort
-  let f = deepcopy(a:fraction)
-  let n = f['numerator']
-  let d = f['denominator']
-  let s = f['sign']
+  let f = deepcopy(s:Fractions)
+  let n = a:fraction.numerator
+  let d = a:fraction.denominator
+  let s = a:fraction.sign
 
   " check zero Fraction object
+  " sign is able to v:none for first allocation time
   if (n is v:none) || (d is v:none)
+    " sanity assign
     let f.numerator   = v:none
     let f.denominator = v:none
     let f.sign        = v:none
