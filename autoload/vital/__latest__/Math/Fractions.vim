@@ -56,13 +56,13 @@ function s:_bignum_gcd(a, b) abort
   let a = s:BigNum.sign(a) ? a : s:BigNum.neg(a)
   let b = s:BigNum.sign(b) ? b : s:BigNum.neg(b)
 
-  while (s:BigNum.sign(a) != 0) && (s:BigNum.sign(b) != 0)
-    if 1 == s:BigNum.compare(a, b)
-      " 1 is a < b, swap it
-      let [b, a] = [a, b]
-    endif
+  if 1 == s:BigNum.compare(a, b)
+    " 1 is a < b, swap it
+    let [b, a] = [a, b]
+  endif
 
-    let [a, b] = s:BigNum.div_mod(a, b)
+  while (s:BigNum.sign(b) != 0)
+    let [a, b] = [b, s:BigNum.mod(a, b)]
   endwhile
 
   " sanity result check
