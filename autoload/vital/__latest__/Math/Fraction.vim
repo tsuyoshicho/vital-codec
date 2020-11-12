@@ -24,7 +24,7 @@ let s:Fraction = {
 
 " inner function
 " generate from valid data type data
-function s:_generate(num, deno) abort
+function! s:_generate(num, deno) abort
   let f = deepcopy(s:Fraction)
   let f.numerator   = s:_bignum(a:num)
   let f.denominator = s:_bignum(a:deno)
@@ -33,7 +33,7 @@ function s:_generate(num, deno) abort
 endfunction
 
 " bignum wrapper
-function s:_bignum(data) abort
+function! s:_bignum(data) abort
     return s:P.is_number(a:data)
       \ ? s:BigNum.from_num(a:data)
       \ : s:BigNum.from_string(a:data)
@@ -44,7 +44,7 @@ endfunction
 " return v:none do not have gcd
 "        bignum gcd
 " bignum immutable object = do not need copy
-function s:_bignum_gcd(a, b) abort
+function! s:_bignum_gcd(a, b) abort
   let gcd = v:none
   let [a, b] = [a:a, a:b]
 
@@ -73,14 +73,14 @@ function s:_bignum_gcd(a, b) abort
   return gcd
 endfunction
 
-function s:_bignum_abs(val) abort
+function! s:_bignum_abs(val) abort
   return s:BigNum.sign(a:val) > 0 ? a:val : s:BigNum.neg(a:val)
 endfunction
 
 " fraction re-balance
 " sign : first allocation time as v:none
 " d    : if zero divid, return v:none(not Fraction object)
-function s:_balance(fraction) abort
+function! s:_balance(fraction) abort
   let f = deepcopy(s:Fraction)
   let n = a:fraction.numerator
   let d = a:fraction.denominator
