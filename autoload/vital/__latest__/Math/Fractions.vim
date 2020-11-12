@@ -53,8 +53,8 @@ function s:_bignum_gcd(a, b) abort
     return gcd
   endif
 
-  let a = s:BigNum.sign(a) ? a : s:BigNum.neg(a)
-  let b = s:BigNum.sign(b) ? b : s:BigNum.neg(b)
+  let a = s:_bignum_abs(a)
+  let b = s:_bignum_abs(b)
 
   if 1 == s:BigNum.compare(a, b)
     " 1 is a < b, swap it
@@ -71,6 +71,10 @@ function s:_bignum_gcd(a, b) abort
   endif
 
   return gcd
+endfunction
+
+function s:_bignum_abs(val) abort
+  return s:BigNum.sign(a:val) > 0 ? a:val : s:BigNum.neg(a:val)
 endfunction
 
 " fraction re-balance
@@ -101,9 +105,9 @@ function s:_balance(fraction) abort
 
   " sign detect
   if s is v:none
-    let s = (s:BigNum.sign(n) * s:BigNum.sign(d)) ? v:true : v:false
-    let n = s:BigNum.sign(n) ? n : s:BigNum.neg(n)
-    let d = s:BigNum.sign(d) ? d : s:BigNum.neg(d)
+    let s = (s:BigNum.sign(n) * s:BigNum.sign(d)) > 0 ? v:true : v:false
+    let n = s:_bignum_abs(n)
+    let d = s:_bignum_abs(d)
   endif
 
   " re-balance
