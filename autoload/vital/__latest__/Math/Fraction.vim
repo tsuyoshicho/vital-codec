@@ -16,7 +16,7 @@ endfunction
 
 " 'sign' v:true + / v:false -  / v:none is 0
 " data = numerator / denominator
-let s:Fractions = {
+let s:Fraction = {
   \  'numerator'   : v:none,
   \  'denominator' : v:none,
   \  'sign'        : v:none,
@@ -25,7 +25,7 @@ let s:Fractions = {
 " inner function
 " generate from valid data type data
 function s:_generate(num, deno) abort
-  let f = deepcopy(s:Fractions)
+  let f = deepcopy(s:Fraction)
   let f.numerator   = s:_bignum(a:num)
   let f.denominator = s:_bignum(a:deno)
 
@@ -81,7 +81,7 @@ endfunction
 " sign : first allocation time as v:none
 " d    : if zero divid, return v:none(not Fraction object)
 function s:_balance(fraction) abort
-  let f = deepcopy(s:Fractions)
+  let f = deepcopy(s:Fraction)
   let n = a:fraction.numerator
   let d = a:fraction.denominator
   let s = a:fraction.sign
@@ -180,7 +180,7 @@ function! s:from_string(strf) abort
 endfunction
 
 function! s:_throw(msg) abort
-  throw 'vital: Math.Fractions: ' . a:msg
+  throw 'vital: Math.Fraction: ' . a:msg
 endfunction
 
 let &cpo = s:save_cpo
