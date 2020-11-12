@@ -168,7 +168,7 @@ function! s:from_string(strf) abort
   let result = matchlist(a:strf, '\([-+0-9]\+\)/\([0-9]\+\)')
 
   " split error check
-  if !empty(result[1]) && !empty(result[2])
+  if empty(result[1]) || empty(result[2])
     call s:_throw('Invalid format string:' . a:strf)
   endif
 
