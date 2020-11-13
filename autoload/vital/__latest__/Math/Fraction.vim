@@ -10,14 +10,15 @@ function! s:_vital_loaded(V) abort
   let s:BigNum = s:V.import('Data.BigNum')
 
   let s:ZERO_NUM = s:BigNum.from_num(0)
+  let s:ONE_NUM  = s:BigNum.from_num(1)
 
   " Rational object prototype and default feild
   " 'sign' v:true + / v:false -  / v:none is 0
   " data = numerator / denominator
   " default 0/1 v:none : zero
   let s:Rational = expand(s:R, {
-    \  'numerator'   : s:BigNum.from_num(0),
-    \  'denominator' : s:BigNum.from_num(1),
+    \  'numerator'   : s:ZERO_NUM,
+    \  'denominator' : s:ONE_NUM,
     \  'sign'        : v:none,
     \}, 'force')
   lockvar 3 s:Rational
@@ -27,7 +28,8 @@ function! s:_vital_loaded(V) abort
   " already locked
 
   let s:ONE = deepcopy(s:Rational)
-  let s:ONE.numerator = s:ONE.denominator
+  let s:ONE.numerator = s:ONE_NUM
+  let s:ONE.sign      = v:true
   lockvar 3 s:ONE
 endfunction
 
@@ -58,7 +60,7 @@ function! s:R.add(data) abort
   endif
 
   let sign = selfsign * datasign
-  let num  = s:BigNum.add(
+  let num = s:BigNum.add(
     \ s:BigNum.mul(self.numerator, data.denominator),
     \ s:BigNum.mul(data.numerator, self.denominator))
   if sign < 0
@@ -137,6 +139,33 @@ function! s:R.neg() abort
   endif
 
   return a
+endfunction
+
+" numerator
+function! s:R.numerator() abort
+  return self.numerator
+endfunction
+
+" denominator
+function! s:R.denominator() abort
+  return self.denominator
+endfunction
+
+" to string
+function! s:R.to_string() abort
+  if 1 == s:BigNum.compare(data.denominator, s:ONE_NUM)
+    " non Rational
+    return printf('%s%s',
+      \  self.sign is v:false ? '-' : '',
+      \  s:BigNum.to_string(data.numerator)
+      \)
+  else
+    return printf('%s%s/%s',
+      \  self.sign is v:false ? '-' : '',
+      \  s:BigNum.to_string(data.numerator),
+      \  s:BigNum.to_string(data.denominator)
+      \)
+  endif
 endfunction
 
 " inner function
@@ -239,15 +268,15 @@ function! s:_balance(r) abort
   endif
 
   let s = s is v:none ? v:true : s
-  let s = ((s:BigNum.sign(n) * s:BigNum.sign(d))  > 0) ? s : !s
+  let s = ((s:BigNum.sign(n) * s:BigNum.sign(d)) > 0) ? s : !s
   let n = s:_abs(n)
   let d = s:_abs(d)
 
   " re-balance
   let gcd = s:_gcd(n, d)
   if gcd isnot v:none
-    let n =  s:BigNum.div(n, gcd)
-    let d =  s:BigNum.div(d, gcd)
+    let n = s:BigNum.div(n, gcd)
+    let d = s:BigNum.div(d, gcd)
   endif
 
   let r = deepcopy(s:Rational)
@@ -360,6 +389,27 @@ function! s:neg(a) abort
   let a = s:_cast(a:a)
 
   return a.neg()
+endfunction
+
+" numerator
+function! s:numerator(a) abort
+  let a = s:_cast(a:a)
+
+  return a.numerator()
+endfunction
+
+" denominator
+function! s:denominator() abort
+  let a = s:_cast(a:a)
+
+  return a.denominator()
+endfunction
+
+" to string
+function! s:to_string(a) abort
+  let a = s:_cast(a:a)
+
+  return a.to_string()
 endfunction
 
 let &cpo = s:save_cpo
