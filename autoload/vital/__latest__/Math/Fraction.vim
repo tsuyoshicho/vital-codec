@@ -9,18 +9,24 @@ function! s:_vital_loaded(V) abort
   let s:Math   = s:V.import('Math')
   let s:BigNum = s:V.import('Data.BigNum')
 
-  let s:ZERO_NUM = s:BigNum.from_num(0)
-  let s:ONE_NUM  = s:BigNum.from_num(1)
-
   " Rational object prototype and default feild
   " 'sign' v:true + / v:false -  / v:none is 0
   " data = numerator / denominator
   " default 0/1 v:none : zero
   let s:Rational = expand(s:R, {
-    \  'numerator'   : deepcopy(s:ZERO_NUM),
-    \  'denominator' : deepcopy(s:ONE_NUM),
+    \  'numerator'   : s:BigNum.from_num(0),
+    \  'denominator' : s:BigNum.from_num(1),
     \  'sign'        : v:none,
     \}, 'force')
+  lockvar 3 s:Rational
+
+  let s:ZERO = s:Rational
+  " lockvar 3 s:ZERO
+  " already locked
+
+  let s:ONE = deepcopy(s:Rational)
+  let s:ONE.numerator = s:ONE.denominator
+  lockvar 3 s:ONE
 endfunction
 
 function! s:_vital_depends() abort
@@ -56,7 +62,7 @@ function! s:R.add(data) abort
   if sign < 0
     let num = s:BigNum.neg(num)
   endif
-  let deno = s:BigNum.mul(self.denominator, data.denominator))
+  let deno = s:BigNum.mul(self.denominator, data.denominator)
 
   return s:_generate(num, deno)
 endfunction
@@ -68,24 +74,54 @@ function! s:R.sub(data) abort
   return self.add(data.neg())
 endfunction
 
+" reciprocal
+function! s:R.rec() abort
+  let data = self
+
+  if self.sign() != 0
+    let data = deepcopy(self)
+    let [data.numerator, data.denominator] = [data.denominator, data.numerator]
+    lockvar 3 data
+  endif
+
+  return data
+endfunction
+
 " mul
-function! s:R.mul(a, b) abort
-  let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
+function! s:R.mul(data) abort
+  let data = s:_cast(a:data)
+
+  let selfsign = self.sign()
+  let datasign = data.sign()
+  " self or other is zero, ret zero
+  if (selfsign * selfsign) == 0
+    return s:ZERO
+  endif
+
+  let sign = selfsign * datasign
+  let num = s:BigNum.mul(self.numerator, data.numerator)
+  if sign < 0
+    let num = s:BigNum.neg(num)
+  endif
+  let deno = s:BigNum.mul(self.denominator, data.denominator)
+
+  return s:_generate(num, deno)
 endfunction
 
 " div
-function! s:R.div(a, b) abort
-  let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
+function! s:R.div(data) abort
+  let data = s:_cast(a:data)
+
+  return self.mul(data.rec())
 endfunction
 
 " sign
-function! s:R.sign(a) abort
+function! s:R.sign() abort
   let sign = 0
   if self.sign isnot v:none
     let sign = self.sign ? 1 : 0
   endif
+
   return sign
 endfunction
 
@@ -95,7 +131,9 @@ function! s:R.neg() abort
   if a.sign isnot v:none
     let a = deepcopy(a)
     let a.sign = !a.sign
+    lockvar 3 a
   endif
+
   return a
 endfunction
 
@@ -192,12 +230,10 @@ function! s:_balance(r) abort
     return v:none
   endif
 
-  let r = deepcopy(s:Rational)
-
   " check zero Rational object
   "  0/n +/- -> 0/1 +
   if s:BigNum.sign(n) == 0
-    return r
+    return s:ZERO
   endif
 
   let s = s is v:none ? v:true : s
@@ -212,10 +248,11 @@ function! s:_balance(r) abort
     let d =  s:BigNum.div(d, gcd)
   endif
 
+  let r = deepcopy(s:Rational)
   let r.numerator   = n
   let r.denominator = d
   let r.sign        = s
-  lockvar 2 r
+  lockvar 3 r
   return r
 endfunction
 
@@ -277,45 +314,50 @@ endfunction
 " add
 function! s:add(a, b) abort
   let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
+
+  return a.add(a:b)
 endfunction
 
 " sub
 function! s:sub(a, b) abort
   let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
+
+  return a.sub(a:b)
+endfunction
+
+" reciprocal
+function! s:rec(a) abort
+  let a = s:_cast(a:a)
+
+  return a.rec()
 endfunction
 
 " mul
 function! s:mul(a, b) abort
   let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
+
+  return a.mul(a:b)
 endfunction
 
 " div
 function! s:div(a, b) abort
   let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
+
+  return a.div(a:b)
 endfunction
 
 " sign
 function! s:sign(a) abort
   let a = s:_cast(a:a)
-  let sign = 0
-  if a.sign isnot v:none
-    let sign = a.sign ? 1 : 0
-  endif
-  return sign
+
+  return a.sign()
 endfunction
 
 " neg
 function! s:neg(a) abort
   let a = s:_cast(a:a)
-  if a.sign isnot v:none
-    let a = deepcopy(a)
-    let a.sign = !a.sign
-  endif
-  return a
+
+  return a.neg()
 endfunction
 
 let &cpo = s:save_cpo
