@@ -453,7 +453,7 @@ function! s:denominator(a) abort
 endfunction
 
 " to_float
-function! s:to_float() abort
+function! s:to_float(a) abort
   let a = s:_cast(a:a)
 
   return a.to_float()
