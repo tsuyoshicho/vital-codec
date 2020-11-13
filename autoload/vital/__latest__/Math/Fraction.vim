@@ -59,17 +59,22 @@ function! s:R.add(data) abort
   if selfsign == 0
     return data
   endif
-  if selfsign == 0
+  if datasign == 0
     return self
   endif
 
-  let sign = selfsign * datasign
-  let num = s:BigNum.add(
-    \ s:BigNum.mul(self._dict['numerator'], data._dict['denominator']),
-    \ s:BigNum.mul(data._dict['numerator'], self._dict['denominator']))
-  if sign < 0
-    let num = s:BigNum.neg(num)
+  let selfnum = s:BigNum.mul(self._dict['numerator'], data._dict['denominator'])
+  if selfsign < 0
+    let selfnum = s:BigNum.neg(selfnum)
   endif
+
+  let datanum = s:BigNum.mul(data._dict['numerator'], self._dict['denominator'])
+  if datasign < 0
+    let datanum = s:BigNum.neg(datanum)
+  endif
+
+  let num = s:BigNum.add(selfnum, datanum)
+
   let deno = s:BigNum.mul(self._dict['denominator'], data._dict['denominator'])
 
   return s:_generate(num, deno)
@@ -98,6 +103,7 @@ function! s:R.mul(data) abort
   if sign < 0
     let num = s:BigNum.neg(num)
   endif
+
   let deno = s:BigNum.mul(self._dict['denominator'], data._dict['denominator'])
 
   return s:_generate(num, deno)
