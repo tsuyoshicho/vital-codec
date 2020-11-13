@@ -146,4 +146,48 @@ Describe Math.Fraction
     " Assertion throw test need
   End
 
+  Describe .sub()
+    It sub number
+      let r = F.sub(F.new(4), 1)
+      Assert Equals(F.to_string(r), '3')
+    End
+    It sub string
+      let r = F.sub(F.new(4), '1')
+      Assert Equals(F.to_string(r), '3')
+    End
+    It sub BigNum
+      let r = F.sub(F.new(4), B.from_num(1))
+      Assert Equals(F.to_string(r), '3')
+    End
+    It sub Rational
+      let r = F.sub(F.new(4), F.new(1))
+      Assert Equals(F.to_string(r), '3')
+    End
+    It sub negative
+      let r = F.sub(F.new(4), -1)
+      Assert Equals(F.to_string(r), '5')
+    End
+    It sub same denominator
+      let r = F.sub(F.new(2, 5), F.new(1, 5))
+      Assert Equals(F.to_string(r), '1/5')
+    End
+    It sub diff denominator
+      let r = F.sub(F.new(1, 3), F.new(1, 4))
+      Assert Equals(F.to_string(r), '1/12')
+    End
+    It sub and rebalance
+      let r = F.sub(F.new(3, 4), F.new(1, 4))
+      Assert Equals(F.to_string(r), '1/2')
+    End
+    It sub zero
+      let r = F.sub(F.new(1, 4), 0)
+      Assert Equals(F.to_string(r), '1/4')
+    End
+    It sub oversize, result negative
+      let r = F.sub(F.new(1, 4), F.new(3, 4))
+      Assert Equals(F.to_string(r), '-1/2')
+    End
+    " Assertion throw test need
+  End
+
 End
