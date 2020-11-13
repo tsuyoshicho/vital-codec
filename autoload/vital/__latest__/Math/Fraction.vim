@@ -12,28 +12,41 @@ function! s:_vital_loaded(V) abort
   let s:ZERO_NUM = s:BigNum.from_num(0)
   let s:ONE_NUM  = s:BigNum.from_num(1)
 
+  " Rational object prototype and default feild
   " 'sign' v:true + / v:false -  / v:none is 0
   " data = numerator / denominator
   " default 0/1 v:none : zero
-  let s:Fraction = {
+  let s:Rational = expand(s:R, {
     \  'numerator'   : deepcopy(s:ZERO_NUM),
     \  'denominator' : deepcopy(s:ONE_NUM),
     \  'sign'        : v:none,
-    \}
+    \}, 'keep')
 endfunction
 
 function! s:_vital_depends() abort
   return ['Prelude', 'Math', 'Data.BigNum']
 endfunction
 
+" Rational object method
+let s:R = {
+  \  '__type__' : 'Rational',
+  \}
+
+" check type
+function! s:_is(r) abort
+  return s:P.is_dict(a:r)
+    \ && s:P.is_string(get(a:r, '__type__', v:none))
+    \ && (s:Rational['__type__'] ==# get(a:r, '__type__', ''))
+endfunction
+
 " inner function
 " generate from valid data type data
 function! s:_generate(num, deno) abort
-  let f = deepcopy(s:Fraction)
-  let f.numerator   = s:_of(a:num)
-  let f.denominator = s:_of(a:deno)
+  let r = deepcopy(s:Rational)
+  let r.numerator   = s:_of(a:num)
+  let r.denominator = s:_of(a:deno)
 
-  return s:_balance(f)
+  return s:_balance(r)
 endfunction
 
 " bignum wrapper
@@ -42,7 +55,7 @@ function! s:_of(data) abort
 endfunction
 
 " bignum abs
-function! s:_bignum_abs(val) abort
+function! s:_abs(val) abort
   return s:BigNum.sign(a:val) > 0 ? a:val : s:BigNum.neg(a:val)
 endfunction
 
@@ -50,7 +63,7 @@ endfunction
 " return v:none do not have gcd
 "        bignum gcd
 " bignum immutable object = do not need copy
-function! s:_bignum_gcd(a, b) abort
+function! s:_gcd(a, b) abort
   let gcd = v:none
   let [a, b] = [a:a, a:b]
 
@@ -59,8 +72,8 @@ function! s:_bignum_gcd(a, b) abort
     return gcd
   endif
 
-  let a = s:_bignum_abs(a)
-  let b = s:_bignum_abs(b)
+  let a = s:_abs(a)
+  let b = s:_abs(b)
 
   if 1 == s:BigNum.compare(a, b)
     " 1 is a < b, swap it
@@ -83,11 +96,14 @@ endfunction
 " fraction re-balance
 " sign : first allocation time as v:none
 " d    : if zero divid, return v:none(not Fraction object)
-function! s:_balance(fraction) abort
-  let f = deepcopy(s:Fraction)
-  let n = a:fraction.numerator
-  let d = a:fraction.denominator
-  let s = a:fraction.sign
+function! s:_balance(r) abort
+  if !s:_is(a:r)
+    call s:_throw('Not Rational input:' . string(a:r))
+  endif
+
+  let n = a:r.numerator
+  let d = a:r.denominator
+  let s = a:r.sign
 
   " check zero divid
   if s:BigNum.sign(d) == 0
@@ -95,11 +111,13 @@ function! s:_balance(fraction) abort
     return v:none
   endif
 
+  let r = deepcopy(s:Rational)
+
   " check zero Fraction object
   "  0/n +/- -> 0/1 +
   " sign is able to v:none for first allocation time
   if s:BigNum.sign(n) == 0
-    return f
+    return r
   endif
 
   " sign detect
@@ -109,20 +127,20 @@ function! s:_balance(fraction) abort
   endif
 
   let s = (s:BigNum.sign(n) * s:BigNum.sign(d)) > 0 ? s : !s
-  let n = s:_bignum_abs(n)
-  let d = s:_bignum_abs(d)
+  let n = s:_abs(n)
+  let d = s:_abs(d)
 
   " re-balance
-  let gcd = s:_bignum_gcd(n, d)
+  let gcd = s:_gcd(n, d)
   if gcd isnot v:none
     let n =  s:BigNum.div(n, gcd)
     let d =  s:BigNum.div(d, gcd)
   endif
 
-  let f.numerator   = n
-  let f.denominator = d
-  let f.sign        = s
-  return f
+  let r.numerator   = n
+  let r.denominator = d
+  let r.sign        = s
+  return r
 endfunction
 
 " Constractor
@@ -156,7 +174,7 @@ function! s:new(...) abort
   let f = s:_generate(n, d)
 
   if f is v:none
-    call s:_throw('Divid Zero Exception')
+    call s:_throw('Divid by Zero Exception')
   endif
 
   return f
