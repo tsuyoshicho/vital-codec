@@ -108,15 +108,15 @@ Describe Math.Fraction
 
   Describe .add()
     It add number
-      let r = F.add(F.new(4), 1)
+      let r = F.add(4, 1)
       Assert Equals(F.to_string(r), '5')
     End
     It add string
-      let r = F.add(F.new(4), '1')
+      let r = F.add('4', '1')
       Assert Equals(F.to_string(r), '5')
     End
     It add BigNum
-      let r = F.add(F.new(4), B.from_num(1))
+      let r = F.add(B.from_num(4), B.from_num(1))
       Assert Equals(F.to_string(r), '5')
     End
     It add Rational
@@ -143,20 +143,24 @@ Describe Math.Fraction
       let r = F.add(F.new(1, 4), 0)
       Assert Equals(F.to_string(r), '1/4')
     End
+    It add normal with base zero
+      let r = F.add(0, F.new(1, 4))
+      Assert Equals(F.to_string(r), '1/4')
+    End
     " Assertion throw test need
   End
 
   Describe .sub()
     It sub number
-      let r = F.sub(F.new(4), 1)
+      let r = F.sub(4, 1)
       Assert Equals(F.to_string(r), '3')
     End
     It sub string
-      let r = F.sub(F.new(4), '1')
+      let r = F.sub('4', '1')
       Assert Equals(F.to_string(r), '3')
     End
     It sub BigNum
-      let r = F.sub(F.new(4), B.from_num(1))
+      let r = F.sub(B.from_num(4), B.from_num(1))
       Assert Equals(F.to_string(r), '3')
     End
     It sub Rational
@@ -182,6 +186,10 @@ Describe Math.Fraction
     It sub zero
       let r = F.sub(F.new(1, 4), 0)
       Assert Equals(F.to_string(r), '1/4')
+    End
+    It sub normal with base zero
+      let r = F.sub(0, F.new(1, 4))
+      Assert Equals(F.to_string(r), '-1/4')
     End
     It sub oversize, result negative
       let r = F.sub(F.new(1, 4), F.new(3, 4))
