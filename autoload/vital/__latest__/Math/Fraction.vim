@@ -17,9 +17,11 @@ function! s:_vital_loaded(V) abort
   " data = numerator / denominator
   " default 0/1 v:none : zero
   let s:Rational = expand(s:R, {
-    \  'numerator'   : s:ZERO_NUM,
-    \  'denominator' : s:ONE_NUM,
-    \  'sign'        : v:none,
+    \  '_dict'       : {
+    \    'numerator'   : s:ZERO_NUM,
+    \    'denominator' : s:ONE_NUM,
+    \    'sign'        : v:none,
+    \  },
     \}, 'force')
   lockvar 3 s:Rational
 
@@ -28,8 +30,8 @@ function! s:_vital_loaded(V) abort
   " already locked
 
   let s:ONE = deepcopy(s:Rational)
-  let s:ONE.numerator = s:ONE_NUM
-  let s:ONE.sign      = v:true
+  let s:ONE['_dict'].numerator = s:ONE_NUM
+  let s:ONE['_dict'].sign      = v:true
   lockvar 3 s:ONE
 endfunction
 
@@ -40,9 +42,11 @@ endfunction
 " Rational object method
 let s:R = {
   \  '__type__'    : 'Rational',
-  \  'numerator'   : v:none,
-  \  'denominator' : v:none,
-  \  'sign'        : v:none,
+  \  '_dict'       : {
+  \    'numerator'   : v:none,
+  \    'denominator' : v:none,
+  \    'sign'        : v:none,
+  \  },
   \}
 
 " add
@@ -61,12 +65,12 @@ function! s:R.add(data) abort
 
   let sign = selfsign * datasign
   let num = s:BigNum.add(
-    \ s:BigNum.mul(self.numerator, data.denominator),
-    \ s:BigNum.mul(data.numerator, self.denominator))
+    \ s:BigNum.mul(self['_dict'].numerator, data['_dict'].denominator),
+    \ s:BigNum.mul(data['_dict'].numerator, self['_dict'].denominator))
   if sign < 0
     let num = s:BigNum.neg(num)
   endif
-  let deno = s:BigNum.mul(self.denominator, data.denominator)
+  let deno = s:BigNum.mul(self['_dict'].denominator, data['_dict'].denominator)
 
   return s:_generate(num, deno)
 endfunction
@@ -90,11 +94,11 @@ function! s:R.mul(data) abort
   endif
 
   let sign = selfsign * datasign
-  let num = s:BigNum.mul(self.numerator, data.numerator)
+  let num = s:BigNum.mul(self['_dict'].numerator, data['_dict'].numerator)
   if sign < 0
     let num = s:BigNum.neg(num)
   endif
-  let deno = s:BigNum.mul(self.denominator, data.denominator)
+  let deno = s:BigNum.mul(self['_dict'].denominator, data['_dict'].denominator)
 
   return s:_generate(num, deno)
 endfunction
@@ -112,7 +116,7 @@ function! s:R.rec() abort
 
   if self.sign() != 0
     let data = deepcopy(self)
-    let [data.numerator, data.denominator] = [data.denominator, data.numerator]
+    let [data['_dict'].numerator, data['_dict'].denominator] = [data['_dict'].denominator, data['_dict'].numerator]
     lockvar 3 data
   endif
 
@@ -122,8 +126,8 @@ endfunction
 " sign
 function! s:R.sign() abort
   let sign = 0
-  if self.sign isnot v:none
-    let sign = self.sign ? 1 : 0
+  if self['_dict'].sign isnot v:none
+    let sign = self['_dict'].sign ? 1 : -1
   endif
 
   return sign
@@ -132,9 +136,9 @@ endfunction
 " neg
 function! s:R.neg() abort
   let a = self
-  if a.sign isnot v:none
+  if a['_dict'].sign isnot v:none
     let a = deepcopy(a)
-    let a.sign = !a.sign
+    let a['_dict'].sign = !a['_dict'].sign
     lockvar 3 a
   endif
 
@@ -143,51 +147,51 @@ endfunction
 
 " numerator
 function! s:R.numerator() abort
-  return self.numerator
+  return self['_dict'].numerator
 endfunction
 
 " denominator
 function! s:R.denominator() abort
-  return self.denominator
+  return self['_dict'].denominator
 endfunction
 
 " to_float
 function! s:R.to_float() abort
   let sign = self.sign()
-  return s:_div_float(sign, self.numerator, self.denominator)
+  return s:_div_float(sign, self['_dict'].numerator, self['_dict'].denominator)
 endfunction
 
 " floor
 function! s:R.floor() abort
   let sign = self.sign()
-  return s:_div_rounding(sign, self.numerator, self.denominator, function('floor'))
+  return s:_div_rounding(sign, self['_dict'].numerator, self['_dict'].denominator, function('floor'))
 endfunction
 
 " ceil
 function! s:R.ceil() abort
   let sign = self.sign()
-  return s:_div_rounding(sign, self.numerator, self.denominator, function('ceil'))
+  return s:_div_rounding(sign, self['_dict'].numerator, self['_dict'].denominator, function('ceil'))
 endfunction
 
 " round
 function! s:R.round() abort
   let sign = self.sign()
-  return s:_div_rounding(sign, self.numerator, self.denominator, function('round'))
+  return s:_div_rounding(sign, self['_dict'].numerator, self['_dict'].denominator, function('round'))
 endfunction
 
 " to string
 function! s:R.to_string() abort
-  if 1 == s:BigNum.compare(self.denominator, s:ONE_NUM)
+  if 1 == s:BigNum.compare(self['_dict'].denominator, s:ONE_NUM)
     " non Rational
     return printf('%s%s',
-      \  self.sign is v:false ? '-' : '',
-      \  s:BigNum.to_string(self.numerator)
+      \  self['_dict'].sign is v:false ? '-' : '',
+      \  s:BigNum.to_string(self['_dict'].numerator)
       \)
   else
     return printf('%s%s/%s',
-      \  self.sign is v:false ? '-' : '',
-      \  s:BigNum.to_string(self.numerator),
-      \  s:BigNum.to_string(self.denominator)
+      \  self['_dict'].sign is v:false ? '-' : '',
+      \  s:BigNum.to_string(self['_dict'].numerator),
+      \  s:BigNum.to_string(self['_dict'].denominator)
       \)
   endif
 endfunction
@@ -217,8 +221,8 @@ endfunction
 " generate from valid data type data(num,string and BigNum)
 function! s:_generate(num, deno) abort
   let r = deepcopy(s:Rational)
-  let r.numerator   = s:_of(a:num)
-  let r.denominator = s:_of(a:deno)
+  let r['_dict'].numerator   = s:_of(a:num)
+  let r['_dict'].denominator = s:_of(a:deno)
 
   return s:_balance(r)
 endfunction
@@ -293,9 +297,9 @@ function! s:_balance(r) abort
     call s:_throw('Not Rational input:' . string(a:r))
   endif
 
-  let n = a:r.numerator
-  let d = a:r.denominator
-  let s = a:r.sign
+  let n = a:r['_dict'].numerator
+  let d = a:r['_dict'].denominator
+  let s = a:r['_dict'].sign
 
   " check zero divid
   if s:BigNum.sign(d) == 0
@@ -322,9 +326,9 @@ function! s:_balance(r) abort
   endif
 
   let r = deepcopy(s:Rational)
-  let r.numerator   = n
-  let r.denominator = d
-  let r.sign        = s
+  let r['_dict'].numerator   = n
+  let r['_dict'].denominator = d
+  let r['_dict'].sign        = s
   lockvar 3 r
   return r
 endfunction
