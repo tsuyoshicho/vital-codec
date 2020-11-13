@@ -1,0 +1,22 @@
+Describe Math.Fraction
+  Before all
+    let F = vital#vital#new().import('Math.Fraction')
+    let assert = themis#helper('assert')
+  End
+
+  Describe .new()
+    " basic simple test
+    It generate arg count 0
+      let r = F.new()
+      Assert NotEquals(r, v:none)
+    End
+    It generate arg count 1
+      let r = F.new(1)
+      Assert NotEquals(r, v:none)
+    End
+    It generate arg count 2
+      let r = F.new(1,2)
+      Assert NotEquals(r, v:none)
+    End
+  End
+End
