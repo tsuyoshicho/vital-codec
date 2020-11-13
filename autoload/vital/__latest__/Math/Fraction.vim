@@ -181,7 +181,7 @@ endfunction
 
 " to string
 function! s:R.to_string() abort
-  if 1 == s:BigNum.compare(self._dict['denominator'], s:ONE_NUM)
+  if 0 == s:BigNum.compare(self._dict['denominator'], s:ONE_NUM)
     " non Rational
     return printf('%s%s',
       \  self._dict['sign'] is v:false ? '-' : '',
