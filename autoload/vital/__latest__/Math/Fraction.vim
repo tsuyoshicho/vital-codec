@@ -378,15 +378,19 @@ function! s:from_string(strf) abort
     call s:_throw('Invalid argument type:' . string(type(a:strf)) . '/value:' . string(a:strf))
   endif
   " split
-  let result = matchlist(a:strf, '\([-+]\?\d\+\)/\([-+]\?\d\+\)')
+  " 0 total
+  " 1 numerator
+  " 2 /denominator
+  " 3 denominator
+  let result = matchlist(a:strf, '\([-+]\?\d\+\)\(/\([-+]\?\d\+\)\)\?')
 
   " split error check
-  if empty(result[1]) || empty(result[2])
+  if empty(result[1])
     call s:_throw('Invalid format string:' . a:strf)
   endif
 
   let n = result[1]
-  let d = result[2]
+  let d = empty(result[3]) ? '1' : result[3]
 
   " create
   return s:new(n, d)
