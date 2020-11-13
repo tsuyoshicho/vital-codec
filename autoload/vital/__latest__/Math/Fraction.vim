@@ -78,19 +78,6 @@ function! s:R.sub(data) abort
   return self.add(data.neg())
 endfunction
 
-" reciprocal
-function! s:R.rec() abort
-  let data = self
-
-  if self.sign() != 0
-    let data = deepcopy(self)
-    let [data.numerator, data.denominator] = [data.denominator, data.numerator]
-    lockvar 3 data
-  endif
-
-  return data
-endfunction
-
 " mul
 function! s:R.mul(data) abort
   let data = s:_cast(a:data)
@@ -117,6 +104,19 @@ function! s:R.div(data) abort
   let data = s:_cast(a:data)
 
   return self.mul(data.rec())
+endfunction
+
+" reciprocal
+function! s:R.rec() abort
+  let data = self
+
+  if self.sign() != 0
+    let data = deepcopy(self)
+    let [data.numerator, data.denominator] = [data.denominator, data.numerator]
+    lockvar 3 data
+  endif
+
+  return data
 endfunction
 
 " sign
@@ -403,13 +403,6 @@ function! s:sub(a, b) abort
   return a.sub(a:b)
 endfunction
 
-" reciprocal
-function! s:rec(a) abort
-  let a = s:_cast(a:a)
-
-  return a.rec()
-endfunction
-
 " mul
 function! s:mul(a, b) abort
   let a = s:_cast(a:a)
@@ -423,6 +416,14 @@ function! s:div(a, b) abort
 
   return a.div(a:b)
 endfunction
+
+" reciprocal
+function! s:rec(a) abort
+  let a = s:_cast(a:a)
+
+  return a.rec()
+endfunction
+
 
 " sign
 function! s:sign(a) abort
