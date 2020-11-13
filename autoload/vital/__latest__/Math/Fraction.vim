@@ -153,17 +153,17 @@ endfunction
 
 " to string
 function! s:R.to_string() abort
-  if 1 == s:BigNum.compare(data.denominator, s:ONE_NUM)
+  if 1 == s:BigNum.compare(self.denominator, s:ONE_NUM)
     " non Rational
     return printf('%s%s',
       \  self.sign is v:false ? '-' : '',
-      \  s:BigNum.to_string(data.numerator)
+      \  s:BigNum.to_string(self.numerator)
       \)
   else
     return printf('%s%s/%s',
       \  self.sign is v:false ? '-' : '',
-      \  s:BigNum.to_string(data.numerator),
-      \  s:BigNum.to_string(data.denominator)
+      \  s:BigNum.to_string(self.numerator),
+      \  s:BigNum.to_string(self.denominator)
       \)
   endif
 endfunction
@@ -404,7 +404,7 @@ function! s:numerator(a) abort
 endfunction
 
 " denominator
-function! s:denominator() abort
+function! s:denominator(a) abort
   let a = s:_cast(a:a)
 
   return a.denominator()
