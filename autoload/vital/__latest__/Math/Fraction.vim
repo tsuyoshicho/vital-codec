@@ -288,16 +288,21 @@ function! s:_balance(r) abort
 endfunction
 
 " Constractor
+" arg count 0: ZERO Rational
+" arg count 1: n/1  Rational
+" arg count 2: n/m  Rational
 function! s:new(...) abort
   " check 3 or more, support 0,1,2
   if 2 < a:0
     call s:_throw('Unsupport arguments count:' . string(a:0))
   endif
 
-  let n = 1
-  let d = 1
+  let r = s:ZERO
 
   if 0 != a:0
+    let n = 0
+    let d = 1
+
     if s:P.is_number(a:1) || s:P.is_string(a:1)
       let n = a:1
     else
@@ -311,12 +316,12 @@ function! s:new(...) abort
         call s:_throw('Unsupport type error arg:2 type:' . string(type(a:2)))
       endif
     endif
-  endif
 
-  let r = s:_generate(n, d)
+    let r = s:_generate(n, d)
 
-  if r is v:none
-    call s:_throw('Divid by Zero Exception')
+    if r is v:none
+      call s:_throw('Divid by Zero Exception')
+    endif
   endif
 
   return r
