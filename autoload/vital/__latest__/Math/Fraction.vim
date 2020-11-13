@@ -313,8 +313,9 @@ function! s:_balance(r) abort
     return s:ZERO
   endif
 
-  let s = s is v:none ? v:true : s
-  let s = ((s:BigNum.sign(n) * s:BigNum.sign(d)) > 0) ? s : !s
+  let oldsign    = s is v:none ? v:true : s
+  let detectsign = ((s:BigNum.sign(n) * s:BigNum.sign(d)) > 0) ? v:true : v:false
+  let s = (oldsign is detectsign) ? v:true : v:false
   let n = s:_abs(n)
   let d = s:_abs(d)
 

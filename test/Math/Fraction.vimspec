@@ -35,9 +35,17 @@ Describe Math.Fraction
   End
 
   Describe .new() and .to_string() complex
+    It generate arg count 1 value as zero
+      let r = F.new(0)
+      Assert Equals(F.to_string(r), '0')
+    End
     It generate arg count 1 value as negative
       let r = F.new(-2)
       Assert Equals(F.to_string(r), '-2')
+    End
+    It value as zero and denominator greater than 1
+      let r = F.new(0, 2)
+      Assert Equals(F.to_string(r), '0')
     End
     It value numerator negative
       let r = F.new(-1, 2)
