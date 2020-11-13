@@ -30,10 +30,10 @@ FUNCTIONS				*Vital.Math.Fraction-functions*
 CONTRACTOR
 new(...)				*Vital.Math.Fraction.new()*
 	Return a new 'Rational' object.
-	If args count as 0, return ZERO object.
-	If args count as 1, return n/1 object, n create from {number}, {str}
+	If args count is 0, return ZERO object.
+	If args count is 1, return n/1 object, n create from {number}, {str}
 	or {bignum}.
-	If args count as 2, return n/m object, n and m create from {number},
+	If args count is 2, return n/m object, n and m create from {number},
 	{str} or {bignum}.
 
 from_string({str})			*Vital.Math.Fraction.from_string()*
