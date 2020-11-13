@@ -8,39 +8,45 @@ function! s:_vital_loaded(V) abort
   let s:P      = s:V.import('Prelude')
   let s:Math   = s:V.import('Math')
   let s:BigNum = s:V.import('Data.BigNum')
+
+  let s:ZERO_NUM = s:BigNum.from_num(0)
+  let s:ONE_NUM  = s:BigNum.from_num(1)
+
+  " 'sign' v:true + / v:false -  / v:none is 0
+  " data = numerator / denominator
+  " default 0/1 v:none : zero
+  let s:Fraction = {
+    \  'numerator'   : deepcopy(s:ZERO_NUM),
+    \  'denominator' : deepcopy(s:ONE_NUM),
+    \  'sign'        : v:none,
+    \}
 endfunction
 
 function! s:_vital_depends() abort
   return ['Prelude', 'Math', 'Data.BigNum']
 endfunction
 
-" 'sign' v:true + / v:false -  / v:none is 0
-" data = numerator / denominator
-let s:Fraction = {
-  \  'numerator'   : v:none,
-  \  'denominator' : v:none,
-  \  'sign'        : v:none,
-  \}
-
 " inner function
 " generate from valid data type data
 function! s:_generate(num, deno) abort
   let f = deepcopy(s:Fraction)
-  let f.numerator   = s:_bignum(a:num)
-  let f.denominator = s:_bignum(a:deno)
+  let f.numerator   = s:_of(a:num)
+  let f.denominator = s:_of(a:deno)
 
   return s:_balance(f)
 endfunction
 
 " bignum wrapper
-function! s:_bignum(data) abort
-    return s:P.is_number(a:data)
-      \ ? s:BigNum.from_num(a:data)
-      \ : s:BigNum.from_string(a:data)
+function! s:_of(data) abort
+    return s:BigNum.add(a:data, s:ZERO_NUM)
+endfunction
+
+" bignum abs
+function! s:_bignum_abs(val) abort
+  return s:BigNum.sign(a:val) > 0 ? a:val : s:BigNum.neg(a:val)
 endfunction
 
 " bignum gcd
-" TODO: need bigdicimal and move to
 " return v:none do not have gcd
 "        bignum gcd
 " bignum immutable object = do not need copy
@@ -61,6 +67,7 @@ function! s:_bignum_gcd(a, b) abort
     let [b, a] = [a, b]
   endif
 
+  " Euclidean Algorithm
   while (s:BigNum.sign(b) != 0)
     let [a, b] = [b, s:BigNum.mod(a, b)]
   endwhile
@@ -73,10 +80,6 @@ function! s:_bignum_gcd(a, b) abort
   return gcd
 endfunction
 
-function! s:_bignum_abs(val) abort
-  return s:BigNum.sign(a:val) > 0 ? a:val : s:BigNum.neg(a:val)
-endfunction
-
 " fraction re-balance
 " sign : first allocation time as v:none
 " d    : if zero divid, return v:none(not Fraction object)
@@ -86,29 +89,28 @@ function! s:_balance(fraction) abort
   let d = a:fraction.denominator
   let s = a:fraction.sign
 
-  " check zero Fraction object
-  " sign is able to v:none for first allocation time
-  if (n is v:none) || (d is v:none)
-    " sanity assign
-    let f.numerator   = v:none
-    let f.denominator = v:none
-    let f.sign        = v:none
-
-    return f
-  endif
-
   " check zero divid
   if s:BigNum.sign(d) == 0
     " divid by zero
     return v:none
   endif
 
+  " check zero Fraction object
+  "  0/n +/- -> 0/1 +
+  " sign is able to v:none for first allocation time
+  if s:BigNum.sign(n) == 0
+    return f
+  endif
+
   " sign detect
   if s is v:none
-    let s = (s:BigNum.sign(n) * s:BigNum.sign(d)) > 0 ? v:true : v:false
-    let n = s:_bignum_abs(n)
-    let d = s:_bignum_abs(d)
+    " base set
+    let s = v:true
   endif
+
+  let s = (s:BigNum.sign(n) * s:BigNum.sign(d)) > 0 ? s : !s
+  let n = s:_bignum_abs(n)
+  let d = s:_bignum_abs(d)
 
   " re-balance
   let gcd = s:_bignum_gcd(n, d)
@@ -165,7 +167,7 @@ function! s:from_string(strf) abort
     call s:_throw('Invalid argument type:' . string(type(a:strf)) . '/value:' . string(a:strf))
   endif
   " split
-  let result = matchlist(a:strf, '\([-+0-9]\+\)/\([0-9]\+\)')
+  let result = matchlist(a:strf, '\([-+]\?\d\+\)/\([-+]\?\d\+\)')
 
   " split error check
   if empty(result[1]) || empty(result[2])
