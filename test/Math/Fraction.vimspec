@@ -15,7 +15,7 @@ Describe Math.Fraction
       Assert NotEquals(r, v:none)
     End
     It generate arg count 2
-      let r = F.new(1,2)
+      let r = F.new(1, 2)
       Assert NotEquals(r, v:none)
     End
   End

@@ -16,12 +16,12 @@ function! s:_vital_loaded(V) abort
   " 'sign' v:true + / v:false -  / v:none is 0
   " data = numerator / denominator
   " default 0/1 v:none : zero
-  let s:Rational = expand(s:R, {
+  let s:Rational = extend(s:R, {
     \  '_dict'       : {
     \    'numerator'   : s:ZERO_NUM,
     \    'denominator' : s:ONE_NUM,
     \    'sign'        : v:none,
-    \  },
+    \  }
     \}, 'force')
   lockvar 3 s:Rational
 
