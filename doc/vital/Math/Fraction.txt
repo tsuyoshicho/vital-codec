@@ -1,0 +1,104 @@
+*vital/Math/Fraction.txt*	Multi precision fraction library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Math.Fraction-contents*
+
+INTRODUCTION			|Vital.Math.Fraction-introduction|
+INTERFACE			|Vital.Math.Fraction-interface|
+  Functions			|Vital.Math.Fraction-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.Math.Fraction-introduction*
+
+*Vital.Math.Fraction* is a multi precision fraction library.
+It provides some functions to manipulate multi precision fraction/rational.
+
+>
+	" Example
+<
+
+==============================================================================
+INTERFACE				*Vital.Math.Fraction-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Math.Fraction-functions*
+
+from_num({number})			*Vital.Math.Fraction.from_num()*
+	Return a new 'BigNum' object from {number}.
+
+from_string({str})			*Vital.Math.Fraction.from_string()*
+	Return a new 'BigNum' object from {str}.
+
+to_string({bignum})			*Vital.Math.Fraction.to_string()*
+	Return a string from {bignum}.
+
+compare({elem1}, {elem2})		*Vital.Math.Fraction.compare()*
+	Compares as signed integer.  Returns -1, 0, or 1.
+
+add({elem1}, {elem2})			*Vital.Math.Fraction.add()*
+	Return {elem1} + {elem2}, for {elem1} and {elem2} Number, String or
+	BigNum.
+
+sub({elem1}, {elem2})			*Vital.Math.Fraction.sub()*
+	Return {elem1} - {elem2}.
+
+mul({elem1}, {elem2})			*Vital.Math.Fraction.mul()*
+	Return {elem1} * {elem2}.
+
+div({elem1}, {elem2})			*Vital.Math.Fraction.div()*
+	Return {elem1} / {elem2}.
+
+mod({elem1}, {elem2})			*Vital.Math.Fraction.mod()*
+	Return {elem1} % {elem2}.
+
+div_mod({elem1}, {elem2})		*Vital.Math.Fraction.divmod()*
+	Return [Div(), Mod()].
+
+sign({elem})				*Vital.Math.Fraction.sign()*
+	Return sign of {elem} as -1, 0, or 1.
+
+neg({elem})				*Vital.Math.Fraction.neg()*
+	Return {elem} negated (-{elem}).
+
+
+Note:
+
+method
+add(data) abort
+sub(data) abort
+rec() abort
+mul(data) abort
+div(data) abort
+sign() abort
+neg() abort
+numerator() abort
+denominator() abort
+to_float() abort
+floor() abort
+ceil() abort
+round() abort
+to_string() abort
+
+s:new(...) abort
+s:from_string(strf) abort
+
+class method
+s:add(a, b) abort
+s:sub(a, b) abort
+s:rec(a) abort
+s:mul(a, b) abort
+s:div(a, b) abort
+s:sign(a) abort
+s:neg(a) abort
+s:numerator(a) abort
+s:denominator(a) abort
+s:to_float() abort
+s:floor(a) abort
+s:ceil(a) abort
+s:round(a) abort
+s:to_string(a) abort
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
