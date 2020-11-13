@@ -20,7 +20,7 @@ function! s:_vital_loaded(V) abort
     \  'numerator'   : deepcopy(s:ZERO_NUM),
     \  'denominator' : deepcopy(s:ONE_NUM),
     \  'sign'        : v:none,
-    \}, 'keep')
+    \}, 'force')
 endfunction
 
 function! s:_vital_depends() abort
@@ -29,19 +29,43 @@ endfunction
 
 " Rational object method
 let s:R = {
-  \  '__type__' : 'Rational',
+  \  '__type__'    : 'Rational',
+  \  'numerator'   : v:none,
+  \  'denominator' : v:none,
+  \  'sign'        : v:none,
   \}
 
 " add
-function! s:R.add(a, b) abort
-  let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
+function! s:R.add(data) abort
+  let data = s:_cast(a:data)
+
+  let selfsign = self.sign()
+  let datasign = data.sign()
+  " self or other is zero, ret other obj
+  if selfsign == 0
+    return data
+  endif
+  if selfsign == 0
+    return self
+  endif
+
+  let sign = selfsign * datasign
+  let num  = s:BigNum.add(
+    \ s:BigNum.mul(self.numerator, data.denominator),
+    \ s:BigNum.mul(data.numerator, self.denominator))
+  if sign < 0
+    let num = s:BigNum.neg(num)
+  endif
+  let deno = s:BigNum.mul(self.denominator, data.denominator))
+
+  return s:_generate(num, deno)
 endfunction
 
 " sub
-function! s:R.sub(a, b) abort
-  let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
+function! s:R.sub(data) abort
+  let data = s:_cast(a:data)
+
+  return self.add(data.neg())
 endfunction
 
 " mul
@@ -191,6 +215,7 @@ function! s:_balance(r) abort
   let r.numerator   = n
   let r.denominator = d
   let r.sign        = s
+  lockvar 2 r
   return r
 endfunction
 
