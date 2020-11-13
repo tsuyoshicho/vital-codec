@@ -213,37 +213,37 @@ function! s:add(a, b) abort
 endfunction
 
 " sub
-function! s:add(a, b) abort
+function! s:sub(a, b) abort
   let a = s:_cast(a:a)
   let b = s:_cast(a:b)
 endfunction
 
 " mul
-function! s:add(a, b) abort
+function! s:mul(a, b) abort
   let a = s:_cast(a:a)
   let b = s:_cast(a:b)
 endfunction
 
 " div
-function! s:add(a, b) abort
+function! s:div(a, b) abort
   let a = s:_cast(a:a)
   let b = s:_cast(a:b)
 endfunction
 
 " mod
-function! s:add(a, b) abort
+function! s:mod(a, b) abort
   let a = s:_cast(a:a)
   let b = s:_cast(a:b)
 endfunction
 
 " div_mod
-function! s:add(a, b) abort
+function! s:div_mod(a, b) abort
   let a = s:_cast(a:a)
   let b = s:_cast(a:b)
 endfunction
 
 " sign
-function! s:add(a) abort
+function! s:sign(a) abort
   let a = s:_cast(a:a)
   let sign = 0
   if a.sign isnot v:none
@@ -253,7 +253,7 @@ function! s:add(a) abort
 endfunction
 
 " neg
-function! s:add(a) abort
+function! s:neg(a) abort
   let a = s:_cast(a:a)
   if a.sign isnot v:none
     let a = deepcopy(a)
