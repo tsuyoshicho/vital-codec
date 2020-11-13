@@ -32,6 +32,49 @@ let s:R = {
   \  '__type__' : 'Rational',
   \}
 
+" add
+function! s:R.add(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" sub
+function! s:R.sub(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" mul
+function! s:R.mul(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" div
+function! s:R.div(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" sign
+function! s:R.sign(a) abort
+  let sign = 0
+  if self.sign isnot v:none
+    let sign = self.sign ? 1 : 0
+  endif
+  return sign
+endfunction
+
+" neg
+function! s:R.neg() abort
+  let a = self
+  if a.sign isnot v:none
+    let a = deepcopy(a)
+    let a.sign = !a.sign
+  endif
+  return a
+endfunction
+
 " inner function
 " check type
 function! s:_is(r) abort
@@ -226,18 +269,6 @@ endfunction
 
 " div
 function! s:div(a, b) abort
-  let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
-endfunction
-
-" mod
-function! s:mod(a, b) abort
-  let a = s:_cast(a:a)
-  let b = s:_cast(a:b)
-endfunction
-
-" div_mod
-function! s:div_mod(a, b) abort
   let a = s:_cast(a:a)
   let b = s:_cast(a:b)
 endfunction
