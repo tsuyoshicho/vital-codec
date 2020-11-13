@@ -151,6 +151,30 @@ function! s:R.denominator() abort
   return self.denominator
 endfunction
 
+" to_float
+function! s:R.to_float() abort
+  let sign = self.sign()
+  return s:_div_float(sign, self.numerator, self.denominator)
+endfunction
+
+" floor
+function! s:R.floor() abort
+  let sign = self.sign()
+  return s:_div_rounding(sign, self.numerator, self.denominator, function('floor'))
+endfunction
+
+" ceil
+function! s:R.ceil() abort
+  let sign = self.sign()
+  return s:_div_rounding(sign, self.numerator, self.denominator, function('ceil'))
+endfunction
+
+" round
+function! s:R.round() abort
+  let sign = self.sign()
+  return s:_div_rounding(sign, self.numerator, self.denominator, function('round'))
+endfunction
+
 " to string
 function! s:R.to_string() abort
   if 1 == s:BigNum.compare(self.denominator, s:ONE_NUM)
@@ -208,6 +232,24 @@ endfunction
 " bignum abs
 function! s:_abs(val) abort
   return s:BigNum.sign(a:val) > 0 ? a:val : s:BigNum.neg(a:val)
+endfunction
+
+" bignum div to float
+function! s:_div_float(s, n, d) abort
+  if a:s == 0
+    return 0.0
+  endif
+  let n = str2float(s:BigNum.to_storing(a:n))
+  let d = str2float(s:BigNum.to_storing(a:d))
+  return (a:s * n / d)
+endfunction
+
+" bignum div to round/floor/ceil
+function! s:_div_rounding(s, n, d, fn) abort
+  if a:s == 0
+    return 0
+  endif
+  return float2nr(a:fn(s:_div_float(a:s, a:n, a:d)))
 endfunction
 
 " bignum gcd
@@ -408,6 +450,34 @@ function! s:denominator(a) abort
   let a = s:_cast(a:a)
 
   return a.denominator()
+endfunction
+
+" to_float
+function! s:to_float() abort
+  let a = s:_cast(a:a)
+
+  return a.to_float()
+endfunction
+
+" floor
+function! s:floor(a) abort
+  let a = s:_cast(a:a)
+
+  return a.floor()
+endfunction
+
+" ceil
+function! s:ceil(a) abort
+  let a = s:_cast(a:a)
+
+  return a.ceil()
+endfunction
+
+" round
+function! s:round(a) abort
+  let a = s:_cast(a:a)
+
+  return a.round()
 endfunction
 
 " to string
