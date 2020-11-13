@@ -1,6 +1,7 @@
 Describe Math.Fraction
   Before all
     let F = vital#vital#new().import('Math.Fraction')
+    let B = vital#vital#new().import('Data.BigNum')
     let assert = themis#helper('assert')
   End
 
@@ -67,7 +68,7 @@ Describe Math.Fraction
       let r = F.new(8, 6)
       Assert Equals(F.to_string(r), '4/3')
     End
-    " Assertion test need
+    " Assertion throw test need
   End
 
   Describe .from_string()
@@ -104,4 +105,41 @@ Describe Math.Fraction
       Assert Equals(F.to_string(r), '5/4')
     End
   End
+
+  Describe .add()
+    It add number
+      let r = F.add(F.new(4), 1)
+      Assert Equals(F.to_string(r), '5')
+    End
+    It add string
+      let r = F.add(F.new(4), '1')
+      Assert Equals(F.to_string(r), '5')
+    End
+    It add BigNum
+      let r = F.add(F.new(4), B.from_num(1))
+      Assert Equals(F.to_string(r), '5')
+    End
+    It add Rational
+      let r = F.add(F.new(4), F.new(1))
+      Assert Equals(F.to_string(r), '5')
+    End
+    It add negative
+      let r = F.add(F.new(4), -1)
+      Assert Equals(F.to_string(r), '3')
+    End
+    It add same denominator
+      let r = F.add(F.new(2, 5), F.new(1, 5))
+      Assert Equals(F.to_string(r), '3/5')
+    End
+    It add diff denominator
+      let r = F.add(F.new(2, 5), F.new(1, 3))
+      Assert Equals(F.to_string(r), '7/15')
+    End
+    It add and rebalance
+      let r = F.add(F.new(1, 4), F.new(1, 4))
+      Assert Equals(F.to_string(r), '1/2')
+    End
+    " Assertion throw test need
+  End
+
 End
