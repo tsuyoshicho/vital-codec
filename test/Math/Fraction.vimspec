@@ -55,7 +55,7 @@ Describe Math.Fraction
       let r = F.new(6, 8)
       Assert Equals(F.to_string(r), '3/4')
     End
-    It numerator greater than denominator
+    It rational non reciprocal, numerator greater than denominator
       let r = F.new(8, 6)
       Assert Equals(F.to_string(r), '4/3')
     End
@@ -63,17 +63,37 @@ Describe Math.Fraction
   End
 
   Describe .from_string()
-    It generate arg count 0
-      let r = F.new()
-      Assert Equals(F.to_string(r), '0')
+    It string as number
+      let r = F.from_string('5')
+      Assert Equals(F.to_string(r), '5')
     End
-    It generate arg count 1
-      let r = F.new(1)
-      Assert Equals(F.to_string(r), '1')
+    It string as negative number
+      let r = F.from_string('-5')
+      Assert Equals(F.to_string(r), '-5')
     End
-    It generate arg count 2
-      let r = F.new(1, 2)
-      Assert Equals(F.to_string(r), '1/2')
+    It string as rational
+      let r = F.from_string('3/5')
+      Assert Equals(F.to_string(r), '3/5')
+    End
+    It string as rational, negative numerator
+      let r = F.from_string('-3/5')
+      Assert Equals(F.to_string(r), '-3/5')
+    End
+    It string as rational, negative denominator
+      let r = F.from_string('3/-5')
+      Assert Equals(F.to_string(r), '-3/5')
+    End
+    It string as rational, numerator,denominator both negative
+      let r = F.from_string('-3/-5')
+      Assert Equals(F.to_string(r), '3/5')
+    End
+    It string as rational non reciprocal
+      let r = F.from_string('12/15')
+      Assert Equals(F.to_string(r), '4/5')
+    End
+    It string as rational non reciprocal, numerator greater than denominator
+      let r = F.from_string('15/12')
+      Assert Equals(F.to_string(r), '5/4')
     End
   End
 End
