@@ -32,6 +32,7 @@ let s:R = {
   \  '__type__' : 'Rational',
   \}
 
+" inner function
 " check type
 function! s:_is(r) abort
   return s:P.is_dict(a:r)
@@ -39,8 +40,21 @@ function! s:_is(r) abort
     \ && (s:Rational['__type__'] ==# get(a:r, '__type__', ''))
 endfunction
 
-" inner function
-" generate from valid data type data
+" cast to Rational
+function! s:_cast(data) abort
+  if s:_is(a:data)
+    return a:data
+  else
+    return s:_generate(a:data, 1)
+  endif
+endfunction
+
+" throw
+function! s:_throw(msg) abort
+  throw 'vital: Math.Fraction: ' . a:msg
+endfunction
+
+" generate from valid data type data(num,string and BigNum)
 function! s:_generate(num, deno) abort
   let r = deepcopy(s:Rational)
   let r.numerator   = s:_of(a:num)
@@ -49,7 +63,8 @@ function! s:_generate(num, deno) abort
   return s:_balance(r)
 endfunction
 
-" bignum wrapper
+" bignum create wrapper
+" use add(a, ZERO) add support num,string and BigNum
 function! s:_of(data) abort
     return s:BigNum.add(a:data, s:ZERO_NUM)
 endfunction
@@ -94,7 +109,6 @@ function! s:_gcd(a, b) abort
 endfunction
 
 " fraction re-balance
-" sign : first allocation time as v:none
 " d    : if zero divid, return v:none(not Fraction object)
 function! s:_balance(r) abort
   if !s:_is(a:r)
@@ -113,20 +127,14 @@ function! s:_balance(r) abort
 
   let r = deepcopy(s:Rational)
 
-  " check zero Fraction object
+  " check zero Rational object
   "  0/n +/- -> 0/1 +
-  " sign is able to v:none for first allocation time
   if s:BigNum.sign(n) == 0
     return r
   endif
 
-  " sign detect
-  if s is v:none
-    " base set
-    let s = v:true
-  endif
-
-  let s = (s:BigNum.sign(n) * s:BigNum.sign(d)) > 0 ? s : !s
+  let s = s is v:none ? v:true : s
+  let s = ((s:BigNum.sign(n) * s:BigNum.sign(d))  > 0) ? s : !s
   let n = s:_abs(n)
   let d = s:_abs(d)
 
@@ -160,9 +168,7 @@ function! s:new(...) abort
       call s:_throw('Unsupport type error arg:1 type:' . string(type(a:1)))
     endif
 
-    if 1 == a:0
-      let d = 1
-    else
+    if 2 == a:0
       if s:P.is_number(a:2) || s:P.is_string(a:2)
         let d = a:2
       else
@@ -171,13 +177,13 @@ function! s:new(...) abort
     endif
   endif
 
-  let f = s:_generate(n, d)
+  let r = s:_generate(n, d)
 
-  if f is v:none
+  if r is v:none
     call s:_throw('Divid by Zero Exception')
   endif
 
-  return f
+  return r
 endfunction
 
 function! s:from_string(strf) abort
@@ -199,8 +205,61 @@ function! s:from_string(strf) abort
   return s:new(n, d)
 endfunction
 
-function! s:_throw(msg) abort
-  throw 'vital: Math.Fraction: ' . a:msg
+" API
+" add
+function! s:add(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" sub
+function! s:add(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" mul
+function! s:add(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" div
+function! s:add(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" mod
+function! s:add(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" div_mod
+function! s:add(a, b) abort
+  let a = s:_cast(a:a)
+  let b = s:_cast(a:b)
+endfunction
+
+" sign
+function! s:add(a) abort
+  let a = s:_cast(a:a)
+  let sign = 0
+  if a.sign isnot v:none
+    let sign = a.sign ? 1 : 0
+  endif
+  return sign
+endfunction
+
+" neg
+function! s:add(a) abort
+  let a = s:_cast(a:a)
+  if a.sign isnot v:none
+    let a = deepcopy(a)
+    let a.sign = !a.sign
+  endif
+  return a
 endfunction
 
 let &cpo = s:save_cpo
