@@ -9,6 +9,8 @@ function! s:_vital_loaded(V) abort
   let s:Math   = s:V.import('Math')
   let s:BigNum = s:V.import('Data.BigNum')
 
+  let s:ZERO_NUM = s:BigNum.from_num(0)
+
   " Rational object prototype and default feild
   " 'sign' v:true + / v:false -  / v:none is 0
   " data = numerator / denominator
