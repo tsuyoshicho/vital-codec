@@ -44,6 +44,10 @@ Describe Math.Fraction
       let r = F.new(-2)
       Assert Equals(F.to_string(r), '-2')
     End
+    It generate arg count 1 value as positive mark
+      let r = F.new('+2')
+      Assert Equals(F.to_string(r), '2')
+    End
     It value as zero and denominator greater than 1
       let r = F.new(0, 2)
       Assert Equals(F.to_string(r), '0')
@@ -56,6 +60,10 @@ Describe Math.Fraction
     It value denominator negative
       let r = F.new(1, -2)
       Assert Equals(F.to_string(r), '-1/2')
+    End
+    It value denominator with positive mark
+      let r = F.new(1, '+2')
+      Assert Equals(F.to_string(r), '1/2')
     End
     It value numerator,denominator both negative
       let r = F.new(-1, -2)
@@ -110,6 +118,10 @@ Describe Math.Fraction
     End
     It string as rational, numerator,denominator both negative
       let r = F.from_string('-3/-5')
+      Assert Equals(F.to_string(r), '3/5')
+    End
+    It string as rational, numerator,denominator both positive mark
+      let r = F.from_string('+3/+5')
       Assert Equals(F.to_string(r), '3/5')
     End
     It string as rational non reciprocal
