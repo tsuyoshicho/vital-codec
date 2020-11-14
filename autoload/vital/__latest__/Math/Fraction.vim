@@ -253,8 +253,8 @@ function! s:_div_float(s, n, d) abort
   if a:s == 0
     return 0.0
   endif
-  let n = str2float(s:BigNum.to_storing(a:n))
-  let d = str2float(s:BigNum.to_storing(a:d))
+  let n = str2float(s:BigNum.to_string(a:n))
+  let d = str2float(s:BigNum.to_string(a:d))
   return (a:s * n / d)
 endfunction
 
