@@ -422,10 +422,10 @@ function! s:from_string(strf) abort
   " 1 numerator
   " 2 /denominator
   " 3 denominator
-  let result = matchlist(a:strf, '\([-+]\?\d\+\)\(/\([-+]\?\d\+\)\)\?')
+  let result = matchlist(a:strf, '^\([-+]\?\d\+\)\(/\([-+]\?\d\+\)\)\?$')
 
   " split error check
-  if empty(result[1])
+  if empty(result) || empty(result[1])
     call s:_throw('Invalid format string:' . a:strf)
   endif
 
