@@ -148,7 +148,7 @@ function! s:R.neg() abort
   let a = self
   if a._dict['sign'] isnot v:none
     let a = deepcopy(a)
-    let a._dict['sign'] = !a._dict['sign']
+    let a._dict['sign'] = a._dict['sign'] ? v:false : v:true
     lockvar 3 a
   endif
 
