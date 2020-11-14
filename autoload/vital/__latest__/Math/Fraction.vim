@@ -165,7 +165,7 @@ function! s:R.denominator() abort
   return self._dict['denominator']
 endfunction
 
-" compare
+" compare (self is large 1, same 0, small -1 return)
 function! s:R.compare(a) abort
   let data = s:_cast(a:a)
 
@@ -176,7 +176,7 @@ function! s:R.compare(a) abort
 
   " one zero, check other sign
   if self._dict['sign'] is v:none
-    return data._dict['sign'] ? 1 : -1
+    return data._dict['sign'] ? -1 : 1
   endif
   if data._dict['sign'] is v:none
     return self._dict['sign'] ? 1 : -1
@@ -192,8 +192,8 @@ function! s:R.compare(a) abort
     let datanum = s:BigNum.mul(datanum, self._dict['denominator'])
   endif
 
-  let selfnum = (self._dict['sign'] is v:true) ? selfnum : s:BigNum.neg(selfnum)
-  let datanum = (data._dict['sign'] is v:true) ? datanum : s:BigNum.neg(datanum)
+  let selfnum = self._dict['sign'] ? selfnum : s:BigNum.neg(selfnum)
+  let datanum = data._dict['sign'] ? datanum : s:BigNum.neg(datanum)
 
   return s:BigNum.compare(selfnum, datanum)
 endfunction
