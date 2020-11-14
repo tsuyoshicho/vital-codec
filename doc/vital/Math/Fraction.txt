@@ -19,8 +19,22 @@ It provides some functions to manipulate multi precision fraction/rational.
 
 Numerator and Denominator keep in 'Rational' object
 (|Vital.Math.Fraction-Rational|) as |Vital.Data.BigNum|.
+
+Use |Vitalizer| to inject the module into your plugin like
+>
+	:Vitalize --name=plugin-name . +Math.Fraction
+<
+Then import the module with |vital#{plugin-name}#import()| like
+>
+	let s:F = vital#{plugin-name}#import('Math.Fraction')
+<
+
+Use like below sample:
 >
 	" Example
+	let value = s:F.new(1, 2) " 1/2
+	let result = s:F.add(value, 2).div(3).rec() " 1/((1/2 + 2) / 3) = 6/5
+	echo result.to_string() " -> '6/5'
 <
 
 ==============================================================================
@@ -29,12 +43,12 @@ INTERFACE				*Vital.Math.Fraction-interface*
 FUNCTIONS				*Vital.Math.Fraction-functions*
 
 CONTRACTOR
-new(...)				*Vital.Math.Fraction.new()*
+new([{args}])				*Vital.Math.Fraction.new()*
 	Return a new 'Rational' object.
-	If args count is 0, return ZERO object.
-	If args count is 1, return n/1 object, n create from |Number|,
+	If {args} count is 0, return ZERO object.
+	If {args} count is 1, return n/1 object, n create from |Number|,
 	|String| or |Vital.Data.BigNum|.
-	If args count is 2, return n/m object, n and m create from Number,
+	If {args} count is 2, return n/m object, n and m create from Number,
 	String or BigNum.
 
 from_string({str})			*Vital.Math.Fraction.from_string()*
