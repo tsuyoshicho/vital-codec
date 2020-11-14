@@ -142,6 +142,9 @@ Describe Math.Fraction
     It float format
       Throw /vital: Math.Fraction:/ F.from_string('1.0')
     End
+    It invalid argument type
+      Throw /vital: Math.Fraction:/ F.from_string([])
+    End
   End
 
   Describe .add()
@@ -164,6 +167,10 @@ Describe Math.Fraction
     It add negative
       let r = F.add(F.new(4), -1)
       Assert Equals(F.to_string(r), '3')
+    End
+    It add both negative
+      let r = F.add(F.new(-4), -1)
+      Assert Equals(F.to_string(r), '-5')
     End
     It add same denominator
       let r = F.add(F.new(2, 5), F.new(1, 5))
