@@ -1,0 +1,176 @@
+*vital/Math/Fraction.txt*	Multi precision fraction library.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Math.Fraction-contents*
+
+INTRODUCTION			|Vital.Math.Fraction-introduction|
+INTERFACE			|Vital.Math.Fraction-interface|
+  Functions			|Vital.Math.Fraction-functions|
+OBJECTS				|Vital.Math.Fraction-objects|
+  Random Object			  |Vital.Math.Fraction-Rational|
+
+==============================================================================
+INTRODUCTION				*Vital.Math.Fraction-introduction*
+
+*Vital.Math.Fraction* is a multi precision fraction library.
+It provides some functions to manipulate multi precision fraction/rational.
+
+Numerator and Denominator keep in 'Rational' object
+(|Vital.Math.Fraction-Rational|) as |Vital.Data.BigNum|.
+
+Use |Vitalizer| to inject the module into your plugin like
+>
+	:Vitalize --name=plugin-name . +Math.Fraction
+<
+Then import the module with |vital#{plugin-name}#import()| like
+>
+	let s:F = vital#{plugin-name}#import('Math.Fraction')
+<
+
+Use like below sample:
+>
+	" Example
+	let value = s:F.new(1, 2) " 1/2
+	let result = s:F.add(value, 2).div(3).rec() " 1/((1/2 + 2) / 3) = 6/5
+	echo result.to_string() " -> '6/5'
+<
+
+==============================================================================
+INTERFACE				*Vital.Math.Fraction-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Math.Fraction-functions*
+
+CONTRACTOR
+new([{args}])				*Vital.Math.Fraction.new()*
+	Return a new 'Rational' object.
+	If {args} count is 0, return ZERO object.
+	If {args} count is 1, return n/1 object, n create from |Number|,
+	|String| or |Vital.Data.BigNum|.
+	If {args} count is 2, return n/m object, n and m create from Number,
+	String or BigNum.
+
+from_string({str})			*Vital.Math.Fraction.from_string()*
+	Return a new 'Rational' object from {str}.
+	{str} format as "n" or "n/m", n and m can adding "+" or "-".
+
+CLASS METHOD
+add({elem1}, {elem2})			*Vital.Math.Fraction.add()*
+	Return {elem1} + {elem2}, for {elem1} and {elem2} as Rational. Also
+	support {elem1} and {elem2} as Number, String or BigNum that was to
+	cast to 'Rational'.
+
+sub({elem1}, {elem2})			*Vital.Math.Fraction.sub()*
+	Return {elem1} - {elem2}.
+
+mul({elem1}, {elem2})			*Vital.Math.Fraction.mul()*
+	Return {elem1} * {elem2}.
+
+div({elem1}, {elem2})			*Vital.Math.Fraction.div()*
+	Return {elem1} / {elem2}.
+
+rec({elem})				*Vital.Math.Fraction.rec()*
+	Return 1 / {elem}.
+
+sign({elem})				*Vital.Math.Fraction.sign()*
+	Return sign of {elem} as -1, 0, or 1.
+
+neg({elem})				*Vital.Math.Fraction.neg()*
+	Return {elem} negated (-{elem}).
+
+numerator({elem})			*Vital.Math.Fraction.numerator()*
+	Return {elem}'s numerator as BigNum.
+
+denominator({elem})			*Vital.Math.Fraction.denominator()*
+	Return {elem}'s denominator as BigNum.
+
+compare({elem1}, {elem2})		*Vital.Math.Fraction.compare()*
+	Compares as signed integer.  Returns -1, 0, or 1.
+
+to_float({rational})			*Vital.Math.Fraction.to_float()*
+	Return a |Float| from {rational}. (other value cast to rational)
+
+floor({rational})			*Vital.Math.Fraction.floor()*
+	Return a Number from {rational} that was converted to float and
+	rounding used |floor()|. (other value cast to rational)
+
+ceil({rational})			*Vital.Math.Fraction.ceil()*
+	Return a Number from {rational} that was converted to float and
+	rounding used |ceil()|. (other value cast to rational)
+
+round({rational})			*Vital.Math.Fraction.round()*
+	Return a Number from {rational} that was converted to float and
+	rounding used |round()|. (other value cast to rational)
+
+to_string({rational})			*Vital.Math.Fraction.to_string()*
+	Return a string from {rational}. (other value cast to rational)
+	If {rational} denominator equals 1, formatted to "[-]?{digit}"
+	Otherwise formatted to "[-]?{digit}/{digit}"
+
+
+==============================================================================
+OBJECTS					*Vital.Math.Fraction-objects*
+
+------------------------------------------------------------------------------
+RATIONAL OBJECT				  *Vital.Math.Fraction-Rational*
+
+
+Rational.add({elem1})		*Vital.Math.Fraction-Rational.seed()*
+	Return self + {elem1}, for {elem1} Number, String or BigNum.
+
+
+Rational.add({elem})		*Vital.Math.Fraction-Rational.add()*
+	Return self + {elem}, for {elem} as Rational. Also support {elem} as
+	Number, String or BigNum that was to cast to 'Rational'.
+
+Rational.sub({elem})		*Vital.Math.Fraction-Rational.sub()*
+	Return self - {elem}.
+
+Rational.mul({elem})		*Vital.Math.Fraction-Rational.mul()*
+	Return self * {elem}.
+
+Rational.div({elem})		*Vital.Math.Fraction-Rational.div()*
+	Return self / {elem}.
+
+Rational.rec()			*Vital.Math.Fraction-Rational.rec()*
+	Return 1 / self.
+
+Rational.sign()			*Vital.Math.Fraction-Rational.sign()*
+	Return sign of self as -1, 0, or 1.
+
+Rational.neg()			*Vital.Math.Fraction-Rational.neg()*
+	Return self negated (-self).
+
+Rational.numerator()		*Vital.Math.Fraction-Rational.numerator()*
+	Return self's numerator as BigNum.
+
+Rational.denominator()		*Vital.Math.Fraction-Rational.denominator()*
+	Return self's denominator as BigNum.
+
+Rational.compare({elem})	*Vital.Math.Fraction-Rational.compare()*
+	Compares self and {elem} as signed integer.  Returns -1, 0, or 1.
+
+Rational.to_float()		*Vital.Math.Fraction-Rational.to_float()*
+	Return a Float from self.
+
+Rational.floor()		*Vital.Math.Fraction-Rational.floor()*
+	Return a Number from self that was converted to float and
+	rounding used |floor()|.
+
+Rational.ceil()			*Vital.Math.Fraction-Rational.ceil()*
+	Return a Number from self that was converted to float and
+	rounding used |ceil()|.
+
+Rational.round()		*Vital.Math.Fraction-Rational.round()*
+	Return a Number from self that was converted to float and
+	rounding used |round()|.
+
+Rational.to_string()		*Vital.Math.Fraction-Rational.to_string()*
+	Return a string from self.
+	If self denominator equals 1, formatted to "[-]?{digit}"
+	Otherwise formatted to "[-]?{digit}/{digit}"
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl

@@ -1,0 +1,429 @@
+Describe Math.Fraction
+  Before all
+    let F = vital#vital#new().import('Math.Fraction')
+    let B = vital#vital#new().import('Data.BigNum')
+    let assert = themis#helper('assert')
+  End
+
+  Describe .new() basic
+    It generate arg count 0
+      let r = F.new()
+      Assert NotEquals(r, v:none)
+    End
+    It generate arg count 1
+      let r = F.new(1)
+      Assert NotEquals(r, v:none)
+    End
+    It generate arg count 2
+      let r = F.new(1, 2)
+      Assert NotEquals(r, v:none)
+    End
+  End
+
+  Describe .to_string() basic
+    It value 0
+      let r = F.new()
+      Assert Equals(F.to_string(r), '0')
+    End
+    It value 1
+      let r = F.new(1)
+      Assert Equals(F.to_string(r), '1')
+    End
+    It value 1/2
+      let r = F.new(1, 2)
+      Assert Equals(F.to_string(r), '1/2')
+    End
+  End
+
+  Describe .new() and .to_string() complex
+    It generate arg count 1 value as zero
+      let r = F.new(0)
+      Assert Equals(F.to_string(r), '0')
+    End
+    It generate arg count 1 value as negative
+      let r = F.new(-2)
+      Assert Equals(F.to_string(r), '-2')
+    End
+    It value as zero and denominator greater than 1
+      let r = F.new(0, 2)
+      Assert Equals(F.to_string(r), '0')
+    End
+    It value numerator negative
+      let r = F.new(-1, 2)
+      Assert Equals(F.to_string(r), '-1/2')
+    End
+    It value denominator negative
+      let r = F.new(1, -2)
+      Assert Equals(F.to_string(r), '-1/2')
+    End
+    It value numerator,denominator both negative
+      let r = F.new(-1, -2)
+      Assert Equals(F.to_string(r), '1/2')
+    End
+    It rational non reciprocal
+      let r = F.new(6, 8)
+      Assert Equals(F.to_string(r), '3/4')
+    End
+    It rational non reciprocal, numerator greater than denominator
+      let r = F.new(8, 6)
+      Assert Equals(F.to_string(r), '4/3')
+    End
+    " Assertion throw test need
+  End
+
+  Describe .from_string()
+    It string as number
+      let r = F.from_string('5')
+      Assert Equals(F.to_string(r), '5')
+    End
+    It string as negative number
+      let r = F.from_string('-5')
+      Assert Equals(F.to_string(r), '-5')
+    End
+    It string as rational
+      let r = F.from_string('3/5')
+      Assert Equals(F.to_string(r), '3/5')
+    End
+    It string as rational, negative numerator
+      let r = F.from_string('-3/5')
+      Assert Equals(F.to_string(r), '-3/5')
+    End
+    It string as rational, negative denominator
+      let r = F.from_string('3/-5')
+      Assert Equals(F.to_string(r), '-3/5')
+    End
+    It string as rational, numerator,denominator both negative
+      let r = F.from_string('-3/-5')
+      Assert Equals(F.to_string(r), '3/5')
+    End
+    It string as rational non reciprocal
+      let r = F.from_string('12/15')
+      Assert Equals(F.to_string(r), '4/5')
+    End
+    It string as rational non reciprocal, numerator greater than denominator
+      let r = F.from_string('15/12')
+      Assert Equals(F.to_string(r), '5/4')
+    End
+  End
+
+  Describe .add()
+    It add number
+      let r = F.add(4, 1)
+      Assert Equals(F.to_string(r), '5')
+    End
+    It add string
+      let r = F.add('4', '1')
+      Assert Equals(F.to_string(r), '5')
+    End
+    It add BigNum
+      let r = F.add(B.from_num(4), B.from_num(1))
+      Assert Equals(F.to_string(r), '5')
+    End
+    It add Rational
+      let r = F.add(F.new(4), F.new(1))
+      Assert Equals(F.to_string(r), '5')
+    End
+    It add negative
+      let r = F.add(F.new(4), -1)
+      Assert Equals(F.to_string(r), '3')
+    End
+    It add same denominator
+      let r = F.add(F.new(2, 5), F.new(1, 5))
+      Assert Equals(F.to_string(r), '3/5')
+    End
+    It add diff denominator
+      let r = F.add(F.new(2, 5), F.new(1, 3))
+      Assert Equals(F.to_string(r), '11/15')
+    End
+    It add and rebalance
+      let r = F.add(F.new(1, 4), F.new(1, 4))
+      Assert Equals(F.to_string(r), '1/2')
+    End
+    It add zero
+      let r = F.add(F.new(1, 4), 0)
+      Assert Equals(F.to_string(r), '1/4')
+    End
+    It add normal with base zero
+      let r = F.add(0, F.new(1, 4))
+      Assert Equals(F.to_string(r), '1/4')
+    End
+    " Assertion throw test need
+  End
+
+  Describe .sub()
+    It sub number
+      let r = F.sub(4, 1)
+      Assert Equals(F.to_string(r), '3')
+    End
+    It sub string
+      let r = F.sub('4', '1')
+      Assert Equals(F.to_string(r), '3')
+    End
+    It sub BigNum
+      let r = F.sub(B.from_num(4), B.from_num(1))
+      Assert Equals(F.to_string(r), '3')
+    End
+    It sub Rational
+      let r = F.sub(F.new(4), F.new(1))
+      Assert Equals(F.to_string(r), '3')
+    End
+    It sub negative
+      let r = F.sub(F.new(4), -1)
+      Assert Equals(F.to_string(r), '5')
+    End
+    It sub same denominator
+      let r = F.sub(F.new(2, 5), F.new(1, 5))
+      Assert Equals(F.to_string(r), '1/5')
+    End
+    It sub diff denominator
+      let r = F.sub(F.new(1, 3), F.new(1, 4))
+      Assert Equals(F.to_string(r), '1/12')
+    End
+    It sub and rebalance
+      let r = F.sub(F.new(3, 4), F.new(1, 4))
+      Assert Equals(F.to_string(r), '1/2')
+    End
+    It sub zero
+      let r = F.sub(F.new(1, 4), 0)
+      Assert Equals(F.to_string(r), '1/4')
+    End
+    It sub normal with base zero
+      let r = F.sub(0, F.new(1, 4))
+      Assert Equals(F.to_string(r), '-1/4')
+    End
+    It sub oversize, result negative
+      let r = F.sub(F.new(1, 4), F.new(3, 4))
+      Assert Equals(F.to_string(r), '-1/2')
+    End
+    " Assertion throw test need
+  End
+
+  Describe .mul()
+    It mul number
+      let r = F.mul(3, 2)
+      Assert Equals(F.to_string(r), '6')
+    End
+    It mul string
+      let r = F.mul('3', '2')
+      Assert Equals(F.to_string(r), '6')
+    End
+    It mul BigNum
+      let r = F.mul(B.from_num(3), B.from_num(2))
+      Assert Equals(F.to_string(r), '6')
+    End
+    It mul Rational
+      let r = F.mul(F.new(3), F.new(2))
+      Assert Equals(F.to_string(r), '6')
+    End
+    It mul negative
+      let r = F.mul(F.new(3), -2)
+      Assert Equals(F.to_string(r), '-6')
+    End
+    It mul both negative
+      let r = F.mul(F.new(-3), -2)
+      Assert Equals(F.to_string(r), '6')
+    End
+    It mul normal Rational values
+      let r = F.mul(F.new(2, 5), F.new(1, 3))
+      Assert Equals(F.to_string(r), '2/15')
+    End
+    It mul and rebalance
+      let r = F.mul(F.new(3, 5), F.new(1, 3))
+      Assert Equals(F.to_string(r), '1/5')
+    End
+    It mul zero
+      let r = F.mul(F.new(1, 4), 0)
+      Assert Equals(F.to_string(r), '0')
+    End
+    " Assertion throw test need
+  End
+
+  Describe .div()
+    It div number
+      let r = F.div(4, 2)
+      Assert Equals(F.to_string(r), '2')
+    End
+    It div string
+      let r = F.div('4', '2')
+      Assert Equals(F.to_string(r), '2')
+    End
+    It div BigNum
+      let r = F.div(B.from_num(4), B.from_num(2))
+      Assert Equals(F.to_string(r), '2')
+    End
+    It div Rational
+      let r = F.div(F.new(4), F.new(2))
+      Assert Equals(F.to_string(r), '2')
+    End
+    It div negative
+      let r = F.div(F.new(4), -2)
+      Assert Equals(F.to_string(r), '-2')
+    End
+    It div both non-Rational values generate Rational value
+      let r = F.div(4, 6)
+      Assert Equals(F.to_string(r), '2/3')
+    End
+    It div normal Rational values
+      let r = F.div(F.new(2, 5), F.new(1, 3))
+      Assert Equals(F.to_string(r), '6/5')
+    End
+    It div and rebalance
+      let r = F.div(F.new(3, 8), F.new(3, 4))
+      Assert Equals(F.to_string(r), '1/2')
+    End
+    " Assertion throw test need
+    " zero div
+  End
+
+  Describe .rec()
+    It reciprocal normal
+      let r = F.rec(F.new(3, 4))
+      Assert Equals(F.to_string(r), '4/3')
+    End
+    It reciprocal result to n/1
+      let r = F.rec(F.new(1, 4))
+      Assert Equals(F.to_string(r), '4')
+    End
+    It reciprocal negative
+      let r = F.rec(F.new(-2, 3))
+      Assert Equals(F.to_string(r), '-3/2')
+    End
+    It reciprocal 0
+      let r = F.rec(F.new(0))
+      Assert Equals(F.to_string(r), '0')
+    End
+  End
+
+  Describe .sign()
+    It sign 0 as 0
+      let r = F.new(0)
+      Assert Equals(F.sign(r), 0)
+    End
+    It sign positive as 1
+      let r = F.new(1,2)
+      Assert Equals(F.sign(r), 1)
+    End
+    It sign negative as -1
+      let r = F.new(-10,8)
+      Assert Equals(F.sign(r), -1)
+    End
+  End
+
+  Describe .neg()
+    It neg 0 keep 0
+      let r = F.new(0)
+      let r = F.neg(r)
+      Assert Equals(F.sign(r), 0)
+    End
+    It neg positive change to negative
+      let r = F.new(1,2)
+      let r = F.neg(r)
+      Assert Equals(F.to_string(r), '-1/2')
+      Assert Equals(F.sign(r), -1)
+    End
+    It neg negative change to positive
+      let r = F.new(-10,8)
+      let r = F.neg(r)
+      Assert Equals(F.to_string(r), '5/4')
+      Assert Equals(F.sign(r), 1)
+    End
+  End
+
+  Describe .numerator()
+    It numerator positive as positive value
+      let r = F.new(3,5)
+      Assert Equals(B.compare(F.numerator(r), B.from_num(3)), 0)
+    End
+    It numerator negative as positive value
+      let r = F.new(-3,5)
+      Assert Equals(B.compare(F.numerator(r), B.from_num(3)), 0)
+    End
+  End
+
+  Describe .denominator()
+    It denominator positive as positive value
+      let r = F.new(3,5)
+      Assert Equals(B.compare(F.denominator(r), B.from_num(5)), 0)
+    End
+    It denominator negative as positive value
+      let r = F.new(3,-5)
+      Assert Equals(B.compare(F.denominator(r), B.from_num(5)), 0)
+    End
+  End
+
+  Describe .compare()
+    It both zero
+      let r1 = F.new(0)
+      let r2 = F.new(0)
+      Assert Equals(F.compare(r1, r2), 0)
+    End
+    It r1 zero
+      let r1 = F.new(0)
+      let r2 = F.new(1, 2)
+      Assert Equals(F.compare(r1, r2), -1)
+    End
+    It r2 zero
+      let r1 = F.new(1, 2)
+      let r2 = F.new(0)
+      Assert Equals(F.compare(r1, r2), 1)
+    End
+    It r1 and r2 same deno
+      let r1 = F.new(1, 2)
+      let r2 = F.new(3, 2)
+      Assert Equals(F.compare(r1, r2), -1)
+    End
+    It r1 and r2 diff deno
+      let r1 = F.new(1, 2)
+      let r2 = F.new(1, 3)
+      Assert Equals(F.compare(r1, r2), 1)
+    End
+  End
+
+  Describe .to_float()
+    It example float valid value for test
+      let r = F.new(1, 4)
+      Assert Equals(string(F.to_float(r)), '0.25')
+    End
+  End
+
+  Describe .floor()
+    It positive value
+      let r = F.new(10, 3)
+      Assert Equals(F.floor(r), 3)
+    End
+    It negative value
+      let r = F.new(-10, 3)
+      Assert Equals(F.floor(r), -4)
+    End
+  End
+
+  Describe .ceil()
+    It positive value
+      let r = F.new(10, 3)
+      Assert Equals(F.ceil(r), 4)
+    End
+    It negative value
+      let r = F.new(-10, 3)
+      Assert Equals(F.ceil(r), -3)
+    End
+  End
+
+  Describe .round()
+    It positive value, round up
+      let r = F.new(11, 3)
+      Assert Equals(F.round(r), 4)
+    End
+    It positive value, round down
+      let r = F.new(10, 3)
+      Assert Equals(F.round(r), 3)
+    End
+    It negative value, round down
+      let r = F.new(-10, 3)
+      Assert Equals(F.round(r), -3)
+    End
+    It negative value, round up
+      let r = F.new(-11, 3)
+      Assert Equals(F.round(r), -4)
+    End
+  End
+End
