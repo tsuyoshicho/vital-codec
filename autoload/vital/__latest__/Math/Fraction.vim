@@ -336,10 +336,6 @@ endfunction
 " fraction re-balance
 " d    : if zero divid, return v:none(not Fraction object)
 function! s:_balance(r) abort
-  if !s:_is(a:r)
-    call s:_throw('Not Rational input:' . string(a:r))
-  endif
-
   let n = a:r._dict['numerator']
   let d = a:r._dict['denominator']
   let s = a:r._dict['sign']

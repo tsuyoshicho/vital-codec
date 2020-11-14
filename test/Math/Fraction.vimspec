@@ -47,6 +47,7 @@ Describe Math.Fraction
     It value as zero and denominator greater than 1
       let r = F.new(0, 2)
       Assert Equals(F.to_string(r), '0')
+      Assert Equals(B.compare(F.denominator(r), B.from_num(1)), 0)
     End
     It value numerator negative
       let r = F.new(-1, 2)
@@ -68,7 +69,22 @@ Describe Math.Fraction
       let r = F.new(8, 6)
       Assert Equals(F.to_string(r), '4/3')
     End
-    " Assertion throw test need
+    " Assertion throw test
+    It new arguments count as 4 or more
+      Throw /vital: Math.Fraction:/ F.new(1, 2, 3, 4)
+    End
+    It argument 1 invaid type(count 1)
+      Throw /vital: Math.Fraction:/ F.new([])
+    End
+    It argument 1 invaid type(count 2)
+      Throw /vital: Math.Fraction:/ F.new([], 1)
+    End
+    It argument 2 invaid type
+      Throw /vital: Math.Fraction:/ F.new(1, [])
+    End
+    It create zero divid rational
+      Throw /vital: Math.Fraction:/ F.new(1, 0)
+    End
   End
 
   Describe .from_string()
@@ -103,6 +119,16 @@ Describe Math.Fraction
     It string as rational non reciprocal, numerator greater than denominator
       let r = F.from_string('15/12')
       Assert Equals(F.to_string(r), '5/4')
+    End
+    " Assertion throw test
+    It create zero divid rational
+      Throw /vital: Math.Fraction:/ F.from_string('1/0')
+    End
+    It invalid format
+      Throw /vital: Math.Fraction:/ F.from_string('abcd')
+    End
+    It float format
+      Throw /vital: Math.Fraction:/ F.from_string('1.0')
     End
   End
 
@@ -271,8 +297,11 @@ Describe Math.Fraction
       let r = F.div(F.new(3, 8), F.new(3, 4))
       Assert Equals(F.to_string(r), '1/2')
     End
-    " Assertion throw test need
-    " zero div
+    " Assertion throw test
+    It div zero
+      let r = F.new(1, 4)
+      Throw /vital: Math.Fraction:/ F.div(r, 0)
+    End
   End
 
   Describe .rec()
@@ -380,9 +409,13 @@ Describe Math.Fraction
   End
 
   Describe .to_float()
-    It example float valid value for test
+    It float valid value
       let r = F.new(1, 4)
       Assert Equals(string(F.to_float(r)), '0.25')
+    End
+    It float zero
+      let r = F.new(0)
+      Assert Equals(string(F.to_float(r)), '0.0')
     End
   End
 
@@ -395,6 +428,10 @@ Describe Math.Fraction
       let r = F.new(-10, 3)
       Assert Equals(F.floor(r), -4)
     End
+    It zero value
+      let r = F.new(0)
+      Assert Equals(string(F.floor(r)), '0')
+    End
   End
 
   Describe .ceil()
@@ -405,6 +442,10 @@ Describe Math.Fraction
     It negative value
       let r = F.new(-10, 3)
       Assert Equals(F.ceil(r), -3)
+    End
+    It zero value
+      let r = F.new(0)
+      Assert Equals(string(F.ceil(r)), '0')
     End
   End
 
@@ -425,5 +466,12 @@ Describe Math.Fraction
       let r = F.new(-11, 3)
       Assert Equals(F.round(r), -4)
     End
+    It zero value
+      let r = F.new(0)
+      Assert Equals(string(F.round(r)), '0')
+    End
   End
+
+  " Rational object test do not need.
+  " Because, class method (a, b) call a.method(b)
 End
