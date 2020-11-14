@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Vim documentation: vital/Math/Fraction</title>
+<meta name="Generator" content="Vim/8.2">
+<meta name="plugin-version" content="vim8.1_v2">
+<meta name="syntax" content="help">
+<meta name="settings" content="no_progress,ignore_folding,use_css,no_foldcolumn,expand_tabs,ignore_conceal,prevent_copy=,use_input_for_pc=fallback">
+<meta name="colorscheme" content="github">
+<style>
+<!--
+.MissingTag { background-color: black; color: white; }
+.EnglishTag { background-color: gray; color: white; }
+pre { font-family: monospace; color: #24292e; background-color: #ffffff; }
+body { font-family: monospace; color: #24292e; background-color: #ffffff; }
+* { font-size: 1em; }
+.PreProc { color: #d73a49; }
+.helpExample { font-weight: bold; }
+.Special { color: #6f42c1; }
+.Ignore { color: #babbbc; background-color: #ffffff; padding-bottom: 1px; }
+.Statement { color: #d73a49; }
+-->
+</style>
+</head>
+<body>
+
+<a name="top"></a><h1>Vim documentation: vital/Math/Fraction</h1>
+<a href="./../../index.html">main help file</a>
+<hr>
+<pre id='vimCodeElement'>
+<a class="String" href="./../../vital/Math/Fraction.html" name="vital/Math/Fraction.txt">vital/Math/Fraction.txt</a>       Multi precision fraction library.
+
+Maintainer: Tsuyoshi CHO &lt;Tsuyoshi.CHO+develop@Gmail.com&gt;
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">CONTENTS</span>                                <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-contents" name="Vital.Math.Fraction-contents">Vital.Math.Fraction-contents</a>
+
+INTRODUCTION                    <a class="Identifier" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-introduction">Vital.Math.Fraction-introduction</a>
+INTERFACE                       <a class="Identifier" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-interface">Vital.Math.Fraction-interface</a>
+  Functions                     <a class="Identifier" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-functions">Vital.Math.Fraction-functions</a>
+OBJECTS                         <a class="Identifier" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-objects">Vital.Math.Fraction-objects</a>
+  Random Object                   <a class="Identifier" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational">Vital.Math.Fraction-Rational</a>
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">INTRODUCTION</span>                            <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-introduction" name="Vital.Math.Fraction-introduction">Vital.Math.Fraction-introduction</a>
+
+<a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction" name="Vital.Math.Fraction">Vital.Math.Fraction</a> is a multi precision fraction library.
+It provides some functions to manipulate multi precision fraction/rational.
+
+Numerator and Denominator keep in 'Rational' object
+(<a class="Identifier" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational">Vital.Math.Fraction-Rational</a>) as <a href="https://www.google.com/search?q=vim+%22Vital.Data.BigNum%22&lr=lang_en"><span class="MissingTag">Vital.Data.BigNum</span></a>.
+
+Use <a href="https://www.google.com/search?q=vim+%22Vitalizer%22&lr=lang_en"><span class="MissingTag">Vitalizer</span></a> to inject the module into your plugin like
+
+<span class="helpExample">        :Vitalize --name=plugin-name . +Math.Fraction</span>
+
+Then import the module with <a href="https://www.google.com/search?q=vim+%22vital#{plugin-name}#import()%22&lr=lang_en"><span class="MissingTag">vital#{plugin-name}#import()</span></a> like
+
+<span class="helpExample">        let s:F = vital#{plugin-name}#import('Math.Fraction')</span>
+
+
+Use like below sample:
+
+<span class="helpExample">        &quot; Example</span>
+<span class="helpExample">        let value = s:F.new(1, 2) &quot; 1/2</span>
+<span class="helpExample">        let result = s:F.add(value, 2).div(3).rec() &quot; 1/((1/2 + 2) / 3) = 6/5</span>
+<span class="helpExample">        echo result.to_string() &quot; -&gt; '6/5'</span>
+
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">INTERFACE</span>                               <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-interface" name="Vital.Math.Fraction-interface">Vital.Math.Fraction-interface</a>
+<span class="PreProc">------------------------------------------------------------------------------</span>
+<span class="Statement">FUNCTIONS</span>                               <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-functions" name="Vital.Math.Fraction-functions">Vital.Math.Fraction-functions</a>
+
+<span class="Statement">CONTRACTOR</span>
+new([<span class="Special">{args}</span>])                           <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.new()" name="Vital.Math.Fraction.new()">Vital.Math.Fraction.new()</a>
+        Return a new 'Rational' object.
+        If <span class="Special">{args}</span> count is 0, return ZERO object.
+        If <span class="Special">{args}</span> count is 1, return n/1 object, n create from <a href="https://www.google.com/search?q=vim+%22Number%22&lr=lang_en"><span class="MissingTag">Number</span></a>,
+        <a href="https://www.google.com/search?q=vim+%22String%22&lr=lang_en"><span class="MissingTag">String</span></a> or <a href="https://www.google.com/search?q=vim+%22Vital.Data.BigNum%22&lr=lang_en"><span class="MissingTag">Vital.Data.BigNum</span></a>.
+        If <span class="Special">{args}</span> count is 2, return n/m object, n and m create from Number,
+        String or BigNum.
+
+from_string(<span class="Special">{str}</span>)                      <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.from_string()" name="Vital.Math.Fraction.from_string()">Vital.Math.Fraction.from_string()</a>
+        Return a new 'Rational' object from <span class="Special">{str}</span>.
+        <span class="Special">{str}</span> format as &quot;n&quot; or &quot;n/m&quot;, n and m can adding &quot;+&quot; or &quot;-&quot;.
+
+<span class="Statement">CLASS METHOD</span>
+add(<span class="Special">{elem1}</span>, <span class="Special">{elem2}</span>)                   <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.add()" name="Vital.Math.Fraction.add()">Vital.Math.Fraction.add()</a>
+        Return <span class="Special">{elem1}</span> + <span class="Special">{elem2}</span>, for <span class="Special">{elem1}</span> and <span class="Special">{elem2}</span> as Rational. Also
+        support <span class="Special">{elem1}</span> and <span class="Special">{elem2}</span> as Number, String or BigNum that was to
+        cast to 'Rational'.
+
+sub(<span class="Special">{elem1}</span>, <span class="Special">{elem2}</span>)                   <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.sub()" name="Vital.Math.Fraction.sub()">Vital.Math.Fraction.sub()</a>
+        Return <span class="Special">{elem1}</span> - <span class="Special">{elem2}</span>.
+
+mul(<span class="Special">{elem1}</span>, <span class="Special">{elem2}</span>)                   <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.mul()" name="Vital.Math.Fraction.mul()">Vital.Math.Fraction.mul()</a>
+        Return <span class="Special">{elem1}</span> * <span class="Special">{elem2}</span>.
+
+div(<span class="Special">{elem1}</span>, <span class="Special">{elem2}</span>)                   <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.div()" name="Vital.Math.Fraction.div()">Vital.Math.Fraction.div()</a>
+        Return <span class="Special">{elem1}</span> / <span class="Special">{elem2}</span>.
+
+rec(<span class="Special">{elem}</span>)                             <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.rec()" name="Vital.Math.Fraction.rec()">Vital.Math.Fraction.rec()</a>
+        Return 1 / <span class="Special">{elem}</span>.
+
+sign(<span class="Special">{elem}</span>)                            <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.sign()" name="Vital.Math.Fraction.sign()">Vital.Math.Fraction.sign()</a>
+        Return sign of <span class="Special">{elem}</span> as -1, 0, or 1.
+
+neg(<span class="Special">{elem}</span>)                             <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.neg()" name="Vital.Math.Fraction.neg()">Vital.Math.Fraction.neg()</a>
+        Return <span class="Special">{elem}</span> negated (-<span class="Special">{elem}</span>).
+
+numerator(<span class="Special">{elem}</span>)                       <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.numerator()" name="Vital.Math.Fraction.numerator()">Vital.Math.Fraction.numerator()</a>
+        Return <span class="Special">{elem}</span>'s numerator as BigNum.
+
+denominator(<span class="Special">{elem}</span>)                     <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.denominator()" name="Vital.Math.Fraction.denominator()">Vital.Math.Fraction.denominator()</a>
+        Return <span class="Special">{elem}</span>'s denominator as BigNum.
+
+compare(<span class="Special">{elem1}</span>, <span class="Special">{elem2}</span>)               <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.compare()" name="Vital.Math.Fraction.compare()">Vital.Math.Fraction.compare()</a>
+        Compares as signed integer.  Returns -1, 0, or 1.
+
+to_float(<span class="Special">{rational}</span>)                    <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.to_float()" name="Vital.Math.Fraction.to_float()">Vital.Math.Fraction.to_float()</a>
+        Return a <a href="https://www.google.com/search?q=vim+%22Float%22&lr=lang_en"><span class="MissingTag">Float</span></a> from <span class="Special">{rational}</span>. (other value cast to rational)
+
+floor(<span class="Special">{rational}</span>)                       <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.floor()" name="Vital.Math.Fraction.floor()">Vital.Math.Fraction.floor()</a>
+        Return a Number from <span class="Special">{rational}</span> that was converted to float and
+        rounding used <a href="https://www.google.com/search?q=vim+%22floor()%22&lr=lang_en"><span class="MissingTag">floor()</span></a>. (other value cast to rational)
+
+ceil(<span class="Special">{rational}</span>)                        <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.ceil()" name="Vital.Math.Fraction.ceil()">Vital.Math.Fraction.ceil()</a>
+        Return a Number from <span class="Special">{rational}</span> that was converted to float and
+        rounding used <a href="https://www.google.com/search?q=vim+%22ceil()%22&lr=lang_en"><span class="MissingTag">ceil()</span></a>. (other value cast to rational)
+
+round(<span class="Special">{rational}</span>)                       <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.round()" name="Vital.Math.Fraction.round()">Vital.Math.Fraction.round()</a>
+        Return a Number from <span class="Special">{rational}</span> that was converted to float and
+        rounding used <a href="https://www.google.com/search?q=vim+%22round()%22&lr=lang_en"><span class="MissingTag">round()</span></a>. (other value cast to rational)
+
+to_string(<span class="Special">{rational}</span>)                   <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction.to_string()" name="Vital.Math.Fraction.to_string()">Vital.Math.Fraction.to_string()</a>
+        Return a string from <span class="Special">{rational}</span>. (other value cast to rational)
+        If <span class="Special">{rational}</span> denominator equals 1, formatted to &quot;[-]?<span class="Special">{digit}</span>&quot;
+        Otherwise formatted to &quot;[-]?<span class="Special">{digit}</span>/<span class="Special">{digit}</span>&quot;
+
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">OBJECTS</span>                                 <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-objects" name="Vital.Math.Fraction-objects">Vital.Math.Fraction-objects</a>
+
+<span class="PreProc">------------------------------------------------------------------------------</span>
+<span class="Statement">RATIONAL OBJECT</span>                           <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational" name="Vital.Math.Fraction-Rational">Vital.Math.Fraction-Rational</a>
+
+
+Rational.add(<span class="Special">{elem1}</span>)           <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.seed()" name="Vital.Math.Fraction-Rational.seed()">Vital.Math.Fraction-Rational.seed()</a>
+        Return self + <span class="Special">{elem1}</span>, for <span class="Special">{elem1}</span> Number, String or BigNum.
+
+
+Rational.add(<span class="Special">{elem}</span>)            <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.add()" name="Vital.Math.Fraction-Rational.add()">Vital.Math.Fraction-Rational.add()</a>
+        Return self + <span class="Special">{elem}</span>, for <span class="Special">{elem}</span> as Rational. Also support <span class="Special">{elem}</span> as
+        Number, String or BigNum that was to cast to 'Rational'.
+
+Rational.sub(<span class="Special">{elem}</span>)            <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.sub()" name="Vital.Math.Fraction-Rational.sub()">Vital.Math.Fraction-Rational.sub()</a>
+        Return self - <span class="Special">{elem}</span>.
+
+Rational.mul(<span class="Special">{elem}</span>)            <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.mul()" name="Vital.Math.Fraction-Rational.mul()">Vital.Math.Fraction-Rational.mul()</a>
+        Return self * <span class="Special">{elem}</span>.
+
+Rational.div(<span class="Special">{elem}</span>)            <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.div()" name="Vital.Math.Fraction-Rational.div()">Vital.Math.Fraction-Rational.div()</a>
+        Return self / <span class="Special">{elem}</span>.
+
+Rational.rec()                  <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.rec()" name="Vital.Math.Fraction-Rational.rec()">Vital.Math.Fraction-Rational.rec()</a>
+        Return 1 / self.
+
+Rational.sign()                 <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.sign()" name="Vital.Math.Fraction-Rational.sign()">Vital.Math.Fraction-Rational.sign()</a>
+        Return sign of self as -1, 0, or 1.
+
+Rational.neg()                  <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.neg()" name="Vital.Math.Fraction-Rational.neg()">Vital.Math.Fraction-Rational.neg()</a>
+        Return self negated (-self).
+
+Rational.numerator()            <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.numerator()" name="Vital.Math.Fraction-Rational.numerator()">Vital.Math.Fraction-Rational.numerator()</a>
+        Return self's numerator as BigNum.
+
+Rational.denominator()          <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.denominator()" name="Vital.Math.Fraction-Rational.denominator()">Vital.Math.Fraction-Rational.denominator()</a>
+        Return self's denominator as BigNum.
+
+Rational.compare(<span class="Special">{elem}</span>)        <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.compare()" name="Vital.Math.Fraction-Rational.compare()">Vital.Math.Fraction-Rational.compare()</a>
+        Compares self and <span class="Special">{elem}</span> as signed integer.  Returns -1, 0, or 1.
+
+Rational.to_float()             <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.to_float()" name="Vital.Math.Fraction-Rational.to_float()">Vital.Math.Fraction-Rational.to_float()</a>
+        Return a Float from self.
+
+Rational.floor()                <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.floor()" name="Vital.Math.Fraction-Rational.floor()">Vital.Math.Fraction-Rational.floor()</a>
+        Return a Number from self that was converted to float and
+        rounding used <a href="https://www.google.com/search?q=vim+%22floor()%22&lr=lang_en"><span class="MissingTag">floor()</span></a>.
+
+Rational.ceil()                 <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.ceil()" name="Vital.Math.Fraction-Rational.ceil()">Vital.Math.Fraction-Rational.ceil()</a>
+        Return a Number from self that was converted to float and
+        rounding used <a href="https://www.google.com/search?q=vim+%22ceil()%22&lr=lang_en"><span class="MissingTag">ceil()</span></a>.
+
+Rational.round()                <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.round()" name="Vital.Math.Fraction-Rational.round()">Vital.Math.Fraction-Rational.round()</a>
+        Return a Number from self that was converted to float and
+        rounding used <a href="https://www.google.com/search?q=vim+%22round()%22&lr=lang_en"><span class="MissingTag">round()</span></a>.
+
+Rational.to_string()            <a class="String" href="./../../vital/Math/Fraction.html#Vital.Math.Fraction-Rational.to_string()" name="Vital.Math.Fraction-Rational.to_string()">Vital.Math.Fraction-Rational.to_string()</a>
+        Return a string from self.
+        If self denominator equals 1, formatted to &quot;[-]?<span class="Special">{digit}</span>&quot;
+        Otherwise formatted to &quot;[-]?<span class="Special">{digit}</span>/<span class="Special">{digit}</span>&quot;
+
+
+<span class="PreProc">==============================================================================</span>
+vim&#0058;tw=78:fo=tcq2mM:ts=8:ft=help:norl
+</pre>
+<hr>
+<a href="#top">top</a> - <a href="./../../index.html">main help file</a> - <a href="./../../tags.html">tag index</a> <br>
+
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
