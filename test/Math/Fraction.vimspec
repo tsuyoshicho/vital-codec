@@ -352,14 +352,50 @@ Describe Math.Fraction
   End
 
   Describe .to_float()
+    It example float valid value for test
+      let r = F.new(1, 4)
+      Assert Equals(string(F.to_float(r)), '0.25')
+    End
   End
 
   Describe .floor()
+    It positive value
+      let r = F.new(10, 3)
+      Assert Equals(F.floor(r), 3)
+    End
+    It negative value
+      let r = F.new(-10, 3)
+      Assert Equals(F.floor(r), -4)
+    End
   End
 
   Describe .ceil()
+    It positive value
+      let r = F.new(10, 3)
+      Assert Equals(F.ceil(r), 4)
+    End
+    It negative value
+      let r = F.new(-10, 3)
+      Assert Equals(F.ceil(r), -3)
+    End
   End
 
   Describe .round()
+    It positive value, round up
+      let r = F.new(11, 3)
+      Assert Equals(F.round(r), 4)
+    End
+    It positive value, round down
+      let r = F.new(10, 3)
+      Assert Equals(F.round(r), 3)
+    End
+    It negative value, round down
+      let r = F.new(-10, 3)
+      Assert Equals(F.round(r), -3)
+    End
+    It negative value, round up
+      let r = F.new(-11, 3)
+      Assert Equals(F.round(r), -4)
+    End
   End
 End
