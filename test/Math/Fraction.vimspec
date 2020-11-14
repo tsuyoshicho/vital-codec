@@ -343,11 +343,11 @@ Describe Math.Fraction
   Describe .denominator()
     It denominator positive as positive value
       let r = F.new(3,5)
-      Assert Equals(B.compare(F.numerator(r), B.from_num(5)), 0)
+      Assert Equals(B.compare(F.denominator(r), B.from_num(5)), 0)
     End
     It denominator negative as positive value
       let r = F.new(3,-5)
-      Assert Equals(B.compare(F.numerator(r), B.from_num(5)), 0)
+      Assert Equals(B.compare(F.denominator(r), B.from_num(5)), 0)
     End
   End
 

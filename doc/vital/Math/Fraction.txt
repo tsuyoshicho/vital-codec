@@ -17,7 +17,8 @@ INTRODUCTION				*Vital.Math.Fraction-introduction*
 *Vital.Math.Fraction* is a multi precision fraction library.
 It provides some functions to manipulate multi precision fraction/rational.
 
-Numerator and Denominator keep in 'Rational' object as |BigNum|.
+Numerator and Denominator keep in 'Rational' object
+(|Vital.Math.Fraction-Rational|) as |Vital.Data.BigNum|.
 >
 	" Example
 <
@@ -31,14 +32,14 @@ CONTRACTOR
 new(...)				*Vital.Math.Fraction.new()*
 	Return a new 'Rational' object.
 	If args count is 0, return ZERO object.
-	If args count is 1, return n/1 object, n create from {number}, {str}
-	or {bignum}.
-	If args count is 2, return n/m object, n and m create from {number},
-	{str} or {bignum}.
+	If args count is 1, return n/1 object, n create from |Number|,
+	|String| or |Vital.Data.BigNum|.
+	If args count is 2, return n/m object, n and m create from Number,
+	String or BigNum.
 
 from_string({str})			*Vital.Math.Fraction.from_string()*
 	Return a new 'Rational' object from {str}.
-	{str} format as "[+-]?{digit}/[+-]?{digit}".
+	{str} format as "n" or "n/m", n and m can adding "+" or "-".
 
 CLASS METHOD
 add({elem1}, {elem2})			*Vital.Math.Fraction.add()*
@@ -65,10 +66,10 @@ neg({elem})				*Vital.Math.Fraction.neg()*
 	Return {elem} negated (-{elem}).
 
 numerator({elem})			*Vital.Math.Fraction.numerator()*
-	Return {elem}'s numerator as 'BigNum'.
+	Return {elem}'s numerator as BigNum.
 
 denominator({elem})			*Vital.Math.Fraction.denominator()*
-	Return {elem}'s denominator as 'BigNum'.
+	Return {elem}'s denominator as BigNum.
 
 to_string({rational})			*Vital.Math.Fraction.to_string()*
 	Return a string from {rational}. (other value cast to rational)
@@ -79,15 +80,15 @@ to_float({rational})			*Vital.Math.Fraction.to_float()*
 	Return a |Float| from {rational}. (other value cast to rational)
 
 floor({rational})			*Vital.Math.Fraction.floor()*
-	Return a |Number| from {rational} that was converted to float and
+	Return a Number from {rational} that was converted to float and
 	rounding used |floor()|. (other value cast to rational)
 
 ceil({rational})			*Vital.Math.Fraction.ceil()*
-	Return a |Number| from {rational} that was converted to float and
+	Return a Number from {rational} that was converted to float and
 	rounding used |ceil()|. (other value cast to rational)
 
 round({rational})			*Vital.Math.Fraction.round()*
-	Return a |Number| from {rational} that was converted to float and
+	Return a Number from {rational} that was converted to float and
 	rounding used |round()|. (other value cast to rational)
 
 
@@ -95,7 +96,7 @@ round({rational})			*Vital.Math.Fraction.round()*
 OBJECTS					*Vital.Math.Fraction-objects*
 
 ------------------------------------------------------------------------------
-Rational Object			*Vital.Math.Fraction-Rational*
+RATIONAL OBJECT				  *Vital.Math.Fraction-Rational*
 
 
 Rational.add({elem1})		*Vital.Math.Fraction-Rational.seed()*
@@ -125,10 +126,10 @@ Rational.neg()			*Vital.Math.Fraction-Rational.neg()*
 	Return self negated (-self).
 
 Rational.numerator()		*Vital.Math.Fraction-Rational.numerator()*
-	Return self's numerator as 'BigNum'.
+	Return self's numerator as BigNum.
 
 Rational.denominator()		*Vital.Math.Fraction-Rational.denominator()*
-	Return self's denominator as 'BigNum'.
+	Return self's denominator as BigNum.
 
 Rational.to_string()		*Vital.Math.Fraction-Rational.to_string()*
 	Return a string from self.
@@ -136,18 +137,18 @@ Rational.to_string()		*Vital.Math.Fraction-Rational.to_string()*
 	Otherwise formatted to "[-]?{digit}/{digit}"
 
 Rational.to_float()		*Vital.Math.Fraction-Rational.to_float()*
-	Return a |Float| from self.
+	Return a Float from self.
 
 Rational.floor()		*Vital.Math.Fraction-Rational.floor()*
-	Return a |Number| from self that was converted to float and
+	Return a Number from self that was converted to float and
 	rounding used |floor()|.
 
 Rational.ceil()			*Vital.Math.Fraction-Rational.ceil()*
-	Return a |Number| from self that was converted to float and
+	Return a Number from self that was converted to float and
 	rounding used |ceil()|.
 
 Rational.round()		*Vital.Math.Fraction-Rational.round()*
-	Return a |Number| from self that was converted to float and
+	Return a Number from self that was converted to float and
 	rounding used |round()|.
 
 
