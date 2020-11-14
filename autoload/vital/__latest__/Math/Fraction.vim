@@ -113,6 +113,10 @@ endfunction
 function! s:R.div(data) abort
   let data = s:_cast(a:data)
 
+  if data.sign() ==0
+    call s:_throw('Divid by Zero Exception')
+  endif
+
   return self.mul(data.rec())
 endfunction
 
