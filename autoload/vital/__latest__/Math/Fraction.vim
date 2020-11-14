@@ -113,7 +113,7 @@ endfunction
 function! s:R.div(data) abort
   let data = s:_cast(a:data)
 
-  if data.sign() ==0
+  if data.sign() == 0
     call s:_throw('Divid by Zero Exception')
   endif
 
@@ -166,8 +166,8 @@ function! s:R.denominator() abort
 endfunction
 
 " compare (self is large 1, same 0, small -1 return)
-function! s:R.compare(a) abort
-  let data = s:_cast(a:a)
+function! s:R.compare(data) abort
+  let data = s:_cast(a:data)
 
   " both zero
   if (self._dict['sign'] is v:none) && (data._dict['sign'] is v:none)
