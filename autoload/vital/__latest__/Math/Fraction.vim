@@ -165,6 +165,39 @@ function! s:R.denominator() abort
   return self._dict['denominator']
 endfunction
 
+" compare
+function! s:R.compare(a) abort
+  let data = s:_cast(a:a)
+
+  " both zero
+  if (self._dict['sign'] is v:none) && (data._dict['sign'] is v:none)
+    return 0
+  endif
+
+  " one zero, check other sign
+  if self._dict['sign'] is v:none
+    return data._dict['sign'] ? 1 : -1
+  endif
+  if data._dict['sign'] is v:none
+    return self._dict['sign'] ? 1 : -1
+  endif
+
+  " both non zero
+  let selfnum = self._dict['numerator']
+  let datanum = data._dict['numerator']
+
+  " diff deno, mul other
+  if s:BigNum.compare(self._dict['denominator'], data._dict['denominator']) != 0
+    let selfnum = s:BigNum.mul(selfnum, data._dict['denominator'])
+    let datanum = s:BigNum.mul(datanum, self._dict['denominator'])
+  endif
+
+  let selfnum = (self._dict['sign'] is v:true) ? selfnum : s:BigNum.neg(selfnum)
+  let datanum = (data._dict['sign'] is v:true) ? datanum : s:BigNum.neg(datanum)
+
+  return s:BigNum.compare(selfnum, datanum)
+endfunction
+
 " to_float
 function! s:R.to_float() abort
   let sign = self.sign()
@@ -477,6 +510,13 @@ function! s:to_float(a) abort
   let a = s:_cast(a:a)
 
   return a.to_float()
+endfunction
+
+" compare
+function! s:compare(a, b) abort
+  let a = s:_cast(a:a)
+
+  return a.compare(a:b)
 endfunction
 
 " floor

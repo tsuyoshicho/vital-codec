@@ -71,10 +71,8 @@ numerator({elem})			*Vital.Math.Fraction.numerator()*
 denominator({elem})			*Vital.Math.Fraction.denominator()*
 	Return {elem}'s denominator as BigNum.
 
-to_string({rational})			*Vital.Math.Fraction.to_string()*
-	Return a string from {rational}. (other value cast to rational)
-	If {rational} denominator equals 1, formatted to "[-]?{digit}"
-	Otherwise formatted to "[-]?{digit}/{digit}"
+compare({elem1}, {elem2})		*Vital.Math.Fraction.compare()*
+	Compares as signed integer.  Returns -1, 0, or 1.
 
 to_float({rational})			*Vital.Math.Fraction.to_float()*
 	Return a |Float| from {rational}. (other value cast to rational)
@@ -90,6 +88,11 @@ ceil({rational})			*Vital.Math.Fraction.ceil()*
 round({rational})			*Vital.Math.Fraction.round()*
 	Return a Number from {rational} that was converted to float and
 	rounding used |round()|. (other value cast to rational)
+
+to_string({rational})			*Vital.Math.Fraction.to_string()*
+	Return a string from {rational}. (other value cast to rational)
+	If {rational} denominator equals 1, formatted to "[-]?{digit}"
+	Otherwise formatted to "[-]?{digit}/{digit}"
 
 
 ==============================================================================
@@ -131,10 +134,8 @@ Rational.numerator()		*Vital.Math.Fraction-Rational.numerator()*
 Rational.denominator()		*Vital.Math.Fraction-Rational.denominator()*
 	Return self's denominator as BigNum.
 
-Rational.to_string()		*Vital.Math.Fraction-Rational.to_string()*
-	Return a string from self.
-	If self denominator equals 1, formatted to "[-]?{digit}"
-	Otherwise formatted to "[-]?{digit}/{digit}"
+Rational.compare({elem})	*Vital.Math.Fraction-Rational.compare()*
+	Compares self and {elem} as signed integer.  Returns -1, 0, or 1.
 
 Rational.to_float()		*Vital.Math.Fraction-Rational.to_float()*
 	Return a Float from self.
@@ -150,6 +151,11 @@ Rational.ceil()			*Vital.Math.Fraction-Rational.ceil()*
 Rational.round()		*Vital.Math.Fraction-Rational.round()*
 	Return a Number from self that was converted to float and
 	rounding used |round()|.
+
+Rational.to_string()		*Vital.Math.Fraction-Rational.to_string()*
+	Return a string from self.
+	If self denominator equals 1, formatted to "[-]?{digit}"
+	Otherwise formatted to "[-]?{digit}/{digit}"
 
 
 ==============================================================================
