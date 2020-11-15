@@ -543,6 +543,10 @@ function! s:to_string(a) abort
   return a.to_string()
 endfunction
 
+function! s:is_Rational(a) abort
+  return s:_is(a:a)
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
