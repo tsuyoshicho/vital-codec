@@ -494,10 +494,10 @@ Describe Math.Fraction
   Describe .is_Rational() basic
     It check Rational value
       let r = F.new()
-      Assert F.is_Rational(r)
+      Assert True(F.is_Rational(r))
     End
     It check non-Rational value
-      Assert F.is_Rational({ 'name': 'test' })
+      Assert False(F.is_Rational({ 'name': 'test' }))
     End
   End
 
