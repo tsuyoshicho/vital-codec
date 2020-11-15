@@ -491,6 +491,16 @@ Describe Math.Fraction
     End
   End
 
+  Describe .is_Rational() basic
+    It check Rational value
+      let r = F.new()
+      Assert True(F.is_Rational(r))
+    End
+    It check non-Rational value
+      Assert False(F.is_Rational({ 'name': 'test' }))
+    End
+  End
+
   " Rational object test do not need.
   " Because, class method (a, b) call a.method(b)
 End

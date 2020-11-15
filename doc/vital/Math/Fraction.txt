@@ -108,6 +108,9 @@ to_string({rational})			*Vital.Math.Fraction.to_string()*
 	If {rational} denominator equals 1, formatted to "[-]?{digit}"
 	Otherwise formatted to "[-]?{digit}/{digit}"
 
+is_Rational({obj})			*Vital.Math.Fraction.is_Rational()*
+	Return v:true if {obj} is Rational. otherwise return v:false.
+
 
 ==============================================================================
 OBJECTS					*Vital.Math.Fraction-objects*
