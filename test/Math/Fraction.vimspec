@@ -145,6 +145,9 @@ Describe Math.Fraction
     It invalid argument type
       Throw /vital: Math.Fraction:/ F.from_string([])
     End
+    It divided zero
+      Throw /vital: Math.Fraction:/ F.from_string('1/0')
+    End
   End
 
   Describe .add()
@@ -191,6 +194,10 @@ Describe Math.Fraction
     It add normal with base zero
       let r = F.add(0, F.new(1, 4))
       Assert Equals(F.to_string(r), '1/4')
+    End
+    It add value and result 0
+      let r = F.add(F.new(1, 4), F.new(-1, 4))
+      Assert Equals(F.to_string(r), '0')
     End
     " Assertion throw test need
   End
@@ -239,6 +246,10 @@ Describe Math.Fraction
     It sub oversize, result negative
       let r = F.sub(F.new(1, 4), F.new(3, 4))
       Assert Equals(F.to_string(r), '-1/2')
+    End
+    It sub value and result 0
+      let r = F.sub(F.new(1, 4), F.new(1, 4))
+      Assert Equals(F.to_string(r), '0')
     End
     " Assertion throw test need
   End
