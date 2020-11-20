@@ -13,9 +13,9 @@ function! s:_vital_loaded(V) abort
   let s:ONE_NUM  = s:BigNum.from_num(1)
 
   " Rational object prototype and default feild
-  " 'sign' v:true + / v:false -  / v:none is 0
+  " 'sign' v:true is + / v:false is -  / v:none is 0
   " data = numerator / denominator
-  " default 0/1 v:none : zero
+  " default v:none 0/1 : zero
   let s:Rational = extend(s:R, {
     \  '_dict'       : {
     \    'numerator'   : s:ZERO_NUM,
@@ -23,16 +23,16 @@ function! s:_vital_loaded(V) abort
     \    'sign'        : v:none,
     \  }
     \}, 'force')
-  lockvar 3 s:Rational
+  lockvar! s:Rational
 
   let s:ZERO = s:Rational
-  " lockvar 3 s:ZERO
+  " lockvar! s:ZERO
   " already locked
 
   let s:ONE = deepcopy(s:Rational)
   let s:ONE._dict['numerator'] = s:ONE_NUM
   let s:ONE._dict['sign']      = v:true
-  lockvar 3 s:ONE
+  lockvar! s:ONE
 endfunction
 
 function! s:_vital_depends() abort
@@ -127,7 +127,7 @@ function! s:R.rec() abort
   if self.sign() != 0
     let data = deepcopy(self)
     let [data._dict['numerator'], data._dict['denominator']] = [data._dict['denominator'], data._dict['numerator']]
-    lockvar 3 data
+    lockvar! data
   endif
 
   return data
@@ -136,7 +136,7 @@ endfunction
 " sign
 function! s:R.sign() abort
   let sign = 0
-  if self._dict['sign'] isnot v:none
+  if self._dict['sign'] isnot# v:none
     let sign = self._dict['sign'] ? 1 : -1
   endif
 
@@ -146,10 +146,10 @@ endfunction
 " neg
 function! s:R.neg() abort
   let a = self
-  if a._dict['sign'] isnot v:none
+  if a._dict['sign'] isnot# v:none
     let a = deepcopy(a)
     let a._dict['sign'] = a._dict['sign'] ? v:false : v:true
-    lockvar 3 a
+    lockvar! a
   endif
 
   return a
@@ -170,15 +170,15 @@ function! s:R.compare(data) abort
   let data = s:_cast(a:data)
 
   " both zero
-  if (self._dict['sign'] is v:none) && (data._dict['sign'] is v:none)
+  if (self._dict['sign'] is# v:none) && (data._dict['sign'] is# v:none)
     return 0
   endif
 
   " one zero, check other sign
-  if self._dict['sign'] is v:none
+  if self._dict['sign'] is# v:none
     return data._dict['sign'] ? -1 : 1
   endif
-  if data._dict['sign'] is v:none
+  if data._dict['sign'] is# v:none
     return self._dict['sign'] ? 1 : -1
   endif
 
@@ -227,12 +227,12 @@ function! s:R.to_string() abort
   if 0 == s:BigNum.compare(self._dict['denominator'], s:ONE_NUM)
     " non Rational
     return printf('%s%s',
-      \  self._dict['sign'] is v:false ? '-' : '',
+      \  (self._dict['sign'] is# v:false) ? '-' : '',
       \  s:BigNum.to_string(self._dict['numerator'])
       \)
   else
     return printf('%s%s/%s',
-      \  self._dict['sign'] is v:false ? '-' : '',
+      \  (self._dict['sign'] is# v:false) ? '-' : '',
       \  s:BigNum.to_string(self._dict['numerator']),
       \  s:BigNum.to_string(self._dict['denominator'])
       \)
@@ -263,9 +263,18 @@ endfunction
 
 " generate from valid data type data(num,string and BigNum)
 function! s:_generate(num, deno) abort
+  let n = s:_of(a:num)
+  let d = s:_of(a:deno)
+
+  " check zero divid
+  if s:BigNum.sign(d) == 0
+    " divid by zero
+    call s:_throw('Divid by Zero Exception')
+  endif
+
   let r = deepcopy(s:Rational)
-  let r._dict['numerator']   = s:_of(a:num)
-  let r._dict['denominator'] = s:_of(a:deno)
+  let r._dict['numerator']   = n
+  let r._dict['denominator'] = d
 
   return s:_balance(r)
 endfunction
@@ -278,7 +287,7 @@ endfunction
 
 " bignum abs
 function! s:_abs(val) abort
-  return s:BigNum.sign(a:val) > 0 ? a:val : s:BigNum.neg(a:val)
+  return (s:BigNum.sign(a:val) > 0) ? a:val : s:BigNum.neg(a:val)
 endfunction
 
 " bignum div to float
@@ -334,33 +343,26 @@ function! s:_gcd(a, b) abort
 endfunction
 
 " fraction re-balance
-" d    : if zero divid, return v:none(not Fraction object)
 function! s:_balance(r) abort
   let n = a:r._dict['numerator']
   let d = a:r._dict['denominator']
   let s = a:r._dict['sign']
 
-  " check zero divid
-  if s:BigNum.sign(d) == 0
-    " divid by zero
-    return v:none
-  endif
-
   " check zero Rational object
-  "  0/n +/- -> 0/1 +
+  "  +/- 0/n -> 0/1
   if s:BigNum.sign(n) == 0
     return s:ZERO
   endif
 
-  let oldsign    = s is v:none ? v:true : s
+  let oldsign    = (s is# v:none) ? v:true : s
   let detectsign = ((s:BigNum.sign(n) * s:BigNum.sign(d)) > 0) ? v:true : v:false
-  let s = (oldsign is detectsign) ? v:true : v:false
+  let s = (oldsign is# detectsign) ? v:true : v:false
   let n = s:_abs(n)
   let d = s:_abs(d)
 
   " re-balance
   let gcd = s:_gcd(n, d)
-  if gcd isnot v:none
+  if gcd isnot# v:none
     let n = s:BigNum.div(n, gcd)
     let d = s:BigNum.div(d, gcd)
   endif
@@ -369,7 +371,8 @@ function! s:_balance(r) abort
   let r._dict['numerator']   = n
   let r._dict['denominator'] = d
   let r._dict['sign']        = s
-  lockvar 3 r
+  lockvar! r
+
   return r
 endfunction
 
@@ -405,9 +408,6 @@ function! s:new(...) abort
 
     let r = s:_generate(n, d)
 
-    if r is v:none
-      call s:_throw('Divid by Zero Exception')
-    endif
   endif
 
   return r
