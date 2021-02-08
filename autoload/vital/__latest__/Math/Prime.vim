@@ -87,7 +87,7 @@ function! s:_is_prime(val) abort
   let offset = a:val % s:BOX_SIZE
 
   let box = get(s:calculated_status, idx, v:none)
-  if v:none == box
+  if box is v:none
     call s:_throw('Do not calculated')
     " call s:_throw(join(['Do not calculated', string(a:val), string(idx), string(offset), string(s:calculated_maximum), string(s:calculated_status)], ' '))
   endif
@@ -100,7 +100,7 @@ function! s:_set_prime(val, is_prime) abort
   let offset = a:val % s:BOX_SIZE
 
   let box = get(s:calculated_status, idx, v:none)
-  if v:none == box
+  if box is v:none
     call s:_throw('Do not calculated')
     " call s:_throw(join(['Do not calculated', string(a:val), string(idx), string(offset), string(s:calculated_maximum), string(s:calculated_status)], ' '))
   endif
