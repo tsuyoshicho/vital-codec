@@ -14,7 +14,9 @@ endfunction
 
 " public API
 function! s:is_prime(val) abort
-  call s:_Sieve_of_Eratosthenes(a:val)
+  if a:val > 0
+    call s:_Sieve_of_Eratosthenes(a:val)
+  endif
   return s:_is_prime(a:val)
 endfunction
 
@@ -45,7 +47,7 @@ function! s:_Sieve_of_Eratosthenes(max) abort
   let min = s:calculated_maximum
 
   " fill s:BOX_MASK to max
-  call extend(s:calculated_status, repeat(s:BOX_MASK, max - min))
+  call extend(s:calculated_status, repeat([s:BOX_MASK], (max - min) / s:BOX_SIZE))
 
   " 1. 0 to min already calculated, check multiple for min - max values.
   for idx in range(0, max, s:BOX_SIZE)
