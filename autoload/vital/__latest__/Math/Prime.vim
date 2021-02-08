@@ -22,7 +22,7 @@ endfunction
 
 function! s:prime_list(max)
   call s:_Sieve_of_Eratosthenes(a:max)
-  return s:_prime_list()
+  return s:_prime_list(a:max)
 endfunction
 
 " Sieve of Eratosthenes
@@ -112,9 +112,10 @@ function! s:_set_prime(val, is_prime) abort
   endif
 endfunction
 
-function! s:_prime_list() abort
+function! s:_prime_list(max) abort
   let prime_list = []
-  call map(range(len(s:calculated_status)), {k,v -> extend(prime_list, s:_box_list(k))})
+  call map(range(len(s:calculated_status)), { k,v -> extend(prime_list, s:_box_list(k))})
+  call filter(prime_list, { k,v -> v <= a:max })
   return prime_list
 endfunction
 
