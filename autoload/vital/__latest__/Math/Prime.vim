@@ -53,7 +53,7 @@ function! s:_Sieve_of_Eratosthenes(max) abort
   for idx in range(0, max, s:BOX_SIZE)
     for i in range(s:BOX_SIZE)
       let now = idx + i
-      if _is_prime(now)
+      if s:_is_prime(now)
         for v in range(now * now, max, now)
           if v < min
             " skip
