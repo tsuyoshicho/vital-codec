@@ -47,21 +47,27 @@ function! s:_Sieve_of_Eratosthenes(max) abort
   let min = s:calculated_maximum
 
   " fill s:BOX_MASK to max
-  call extend(s:calculated_status, repeat([s:BOX_MASK], (max - min) / s:BOX_SIZE))
+  if (max - min) > 0
+    call extend(s:calculated_status, repeat([s:BOX_MASK], (max - min + 1) / s:BOX_SIZE))
+  else
+    return
+  endif
 
   " 1. 0 to min already calculated, check multiple for min - max values.
-  for idx in range(0, max, s:BOX_SIZE)
+  for idx in range(0, max - 1, s:BOX_SIZE)
     for i in range(s:BOX_SIZE)
       let now = idx + i
       if s:_is_prime(now)
-        for v in range(now * now, max, now)
-          if v < min
-            " skip
-          else
-            " set non prime
-            call s:_set_prime(v, v:false)
-          endif
-        endfor
+        if (now * now) < (max - 1)
+          for v in range(now * now, max - 1, now)
+            if v < min
+              " skip
+            else
+              " set non prime
+              call s:_set_prime(v, v:false)
+            endif
+          endfor
+        endif
       endif
     endfor
   endfor
@@ -80,7 +86,8 @@ function! s:_is_prime(val) abort
 
   let box = get(s:calculated_status, idx, v:none)
   if v:none == box
-    call s:_throw(join(['Do not calculated', string(a:val), string(idx), string(offset), string(s:calculated_maximum), string(s:calculated_status)], ' '))
+    call s:_throw('Do not calculated')
+    " call s:_throw(join(['Do not calculated', string(a:val), string(idx), string(offset), string(s:calculated_maximum), string(s:calculated_status)], ' '))
   endif
 
   return s:B.and(box, s:B.lshift(1, offset)) ? v:true : v:false
@@ -92,7 +99,8 @@ function! s:_set_prime(val, is_prime) abort
 
   let box = get(s:calculated_status, idx, v:none)
   if v:none == box
-    call s:_throw(join(['Do not calculated', string(a:val), string(idx), string(offset), string(s:calculated_maximum), string(s:calculated_status)], ' '))
+    call s:_throw('Do not calculated')
+    " call s:_throw(join(['Do not calculated', string(a:val), string(idx), string(offset), string(s:calculated_maximum), string(s:calculated_status)], ' '))
   endif
 
   if a:is_prime
@@ -128,7 +136,7 @@ function! s:_int_ceil(val, step) abort
   if a:val == 0
     return 0
   endif
-  return s:BOX_SIZE * (a:val / a:step) + (a:val % a:step ? a:step : 0) - 1
+  return a:step * ((a:val / a:step) + 1)
 endfunction
 
 " throw
@@ -140,3 +148,4 @@ let &cpo = s:save_cpo
 unlet s:save_cpo
 
 " vim:set et ts=2 sts=2 sw=2 tw=0:
+
