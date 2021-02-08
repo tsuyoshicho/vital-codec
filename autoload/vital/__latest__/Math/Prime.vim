@@ -14,9 +14,7 @@ endfunction
 
 " public API
 function! s:is_prime(val) abort
-  if a:val > 0
-    call s:_Sieve_of_Eratosthenes(a:val)
-  endif
+  call s:_Sieve_of_Eratosthenes(a:val)
   return s:_is_prime(a:val)
 endfunction
 
@@ -40,7 +38,7 @@ lockvar 1 s:BOX_SIZE
 lockvar 1 s:BOX_MASK
 
 function! s:_Sieve_of_Eratosthenes(max) abort
-  if a:max < 1
+  if a:max < 0
     call s:_throw('work only positive value')
   endif
   let max = s:_int_ceil(a:max, s:BOX_SIZE)
