@@ -1,0 +1,53 @@
+Describe Math.Prime
+  Before all
+    let P = vital#vital#new().import('Math.Prime')
+    let assert = themis#helper('assert')
+  End
+
+  Describe .is_prime()
+    It value 0
+      let p = P.is_prime(0)
+      Assert False(p)
+    End
+    It value 1
+      let p = P.is_prime(1)
+      Assert False(p)
+    End
+    It value 2
+      let p = P.is_prime(2)
+      Assert True(p)
+    End
+    It value 3
+      let p = P.is_prime(3)
+      Assert True(p)
+    End
+    It value 4
+      let p = P.is_prime(4)
+      Assert False(p)
+    End
+  End
+
+  Describe .prime_list()
+    It value 0
+      let p = P.prime_list(0)
+      Assert Equals(p, [])
+    End
+    It value 1
+      let p = P.prime_list(1)
+      Assert Equals(p, [])
+    End
+    It value 2
+      let p = P.prime_list(2)
+      Assert Equals(p, [2])
+    End
+    It value 3
+      let p = P.prime_list(3)
+      Assert Equals(p, [2, 3])
+    End
+    It value 4
+      let p = P.prime_list(4)
+      Assert Equals(p, [2, 3])
+    End
+  End
+
+End
