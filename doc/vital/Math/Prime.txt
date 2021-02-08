@@ -1,0 +1,33 @@
+*vital/Math/Prime.txt*				prime util.
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+
+==============================================================================
+CONTENTS				*Vital.Math.Prime-contents*
+
+INTRODUCTION			|Vital.Math.Prime-introduction|
+INTERFACE			|Vital.Math.Prime-interface|
+  Functions			|Vital.Math.Prime-functions|
+
+==============================================================================
+INTRODUCTION				*Vital.Math.Prime-introduction*
+
+*Vital.Math.Prime* is a prime value utility.
+It provides Sieve of Eratosthenes Prime checking algorithm and interfaces.
+
+
+==============================================================================
+INTERFACE				*Vital.Math.Prime-interface*
+------------------------------------------------------------------------------
+FUNCTIONS				*Vital.Math.Prime-functions*
+
+
+is_prime({value})			*Vital.Math.Prime.is_prime()*
+	Return v:true or v:false, that is {value}'s prime check result.
+
+prime_list({max})			*Vital.Math.Prime.prime_list()*
+	Return prime |List|. contains up to {max} value.
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
