@@ -49,6 +49,10 @@ function! s:_Sieve_of_Eratosthenes(max) abort
   " fill s:BOX_MASK to max
   if (max - min) > 0
     call extend(s:calculated_status, repeat([s:BOX_MASK], (max - min + 1) / s:BOX_SIZE))
+    if min == 0
+      call s:_set_prime(0, v:false)
+      call s:_set_prime(1, v:false)
+    endif
   else
     return
   endif
