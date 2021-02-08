@@ -43,7 +43,7 @@ function! s:_Sieve_of_Eratosthenes(max) abort
   if a:max < 1
     call s:_throw('work only positive value')
   endif
-  let max = s:_int_ceil(a:max)
+  let max = s:_int_ceil(a:max, s:BOX_SIZE)
   let min = s:calculated_maximum
 
   " fill s:BOX_MASK to max
@@ -121,7 +121,7 @@ function! s:_box_list(k) abort
   return sub_prime_list
 endfunction
 
-function! s:_int_ceil(val, step = s:BOX_SIZE) abort
+function! s:_int_ceil(val, step) abort
   if a:val < 0
     throw 'under zero'
   endif
