@@ -4,8 +4,8 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:_vital_loaded(V) abort
-  let s:V      = a:V
-  let s:B      = s:V.import('Bitwise')
+  let s:V = a:V
+  let s:B = s:V.import('Bitwise')
 endfunction
 
 function! s:_vital_depends() abort
@@ -18,7 +18,7 @@ function! s:is_prime(val) abort
   return s:_is_prime(a:val)
 endfunction
 
-function! s:prime_list(max)
+function! s:prime_list(max) abort
   call s:_Sieve_of_Eratosthenes(a:max)
   return s:_prime_list(a:max)
 endfunction
@@ -32,8 +32,8 @@ let s:calculated_status  = []
 "  [1]
 "  ...
 "  [n]
-let s:BOX_SIZE = 8          " bit length
-let s:BOX_MASK = 0b11111111 " mask and fill value
+let s:BOX_SIZE = 8    " bit length
+let s:BOX_MASK = 0xff " 0b11111111  mask and fill value
 lockvar 1 s:BOX_SIZE
 lockvar 1 s:BOX_MASK
 
