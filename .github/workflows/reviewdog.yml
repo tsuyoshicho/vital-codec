@@ -7,44 +7,51 @@ jobs:
     steps:
       - name: Check out code.
         uses: actions/checkout@v2
+      - uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
       - name: vint
         uses: reviewdog/action-vint@v1
         with:
           github_token: ${{ secrets.github_token }}
-      - name: vint-pr-review
-        uses: reviewdog/action-vint@v1
-        if: github.event_name == 'pull_request'
-        with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
+          reporter: ${{ steps.reporter.outputs.value }}
   vimlint:
     name: runner / vimlint
     runs-on: ubuntu-latest
     steps:
       - name: Check out code.
         uses: actions/checkout@v2
+      - uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
       - name: vimlint
         uses: tsuyoshicho/action-vimlint@v1
         with:
           github_token: ${{ secrets.github_token }}
-      - name: vimlint-pr-review
-        uses: tsuyoshicho/action-vimlint@v1
-        if: github.event_name == 'pull_request'
-        with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
+          reporter: ${{ steps.reporter.outputs.value }}
   misspell:
     name: runner / misspell
     runs-on: ubuntu-latest
     steps:
       - name: Check out code.
         uses: actions/checkout@v2
-      - name: misspell-pr-review
+      - uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
+      - name: misspell
         uses: reviewdog/action-misspell@v1
-        if: github.event_name == 'pull_request'
         with:
           github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
+          reporter: ${{ steps.reporter.outputs.value }}
           locale: "US"
   vital-throw-message:
     name: runner / vital-throw-message
@@ -52,13 +59,14 @@ jobs:
     steps:
       - name: Check out code.
         uses: actions/checkout@v2
+      - uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
       - name: vital-throw-message
         uses: ./.github/actions/vital-throw-message
         with:
           github_token: ${{ secrets.github_token }}
-      - name: vital-throw-message-pr-review
-        uses: ./.github/actions/vital-throw-message
-        if: github.event_name == 'pull_request'
-        with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
+          reporter: ${{ steps.reporter.outputs.value }}
