@@ -1,7 +1,7 @@
 name: depup
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '35 9 2,13,25 * *'
 
 jobs:
   reviewdog:
