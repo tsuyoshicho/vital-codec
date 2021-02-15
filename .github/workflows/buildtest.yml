@@ -1,7 +1,7 @@
 name: "build and test at vim"
 on: [push, pull_request]
 env:
-  THEMIS_VERSION: v1.5.4
+  THEMIS_VERSION: v1.5.5
   LUA_VERSION: 5.3.5
 jobs:
   unixlike:
