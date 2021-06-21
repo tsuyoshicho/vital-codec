@@ -13,6 +13,8 @@ function! s:_vital_loaded(V) abort
   let s:SHA1      = s:V.import('Hash.SHA1')
   let s:Random    = s:V.import('Random')
   let s:Type      = s:V.import('Vim.Type')
+  let s:DateTime  = s:V.import('DateTime')
+  let s:BigNum    = s:V.import('Data.BigNum')
 
   let s:UUID = extend(s:UUID, {
         \ 'uuid_hex': '',
@@ -39,7 +41,17 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Data.List', 'Data.List.Byte', 'Hash.MD5', 'Hash.SHA1', 'Random', 'Vim.Type']
+  return [
+    \ 'Bitwise',
+    \ 'Data.List',
+    \ 'Data.List.Byte',
+    \ 'Hash.MD5',
+    \ 'Hash.SHA1',
+    \ 'Random',
+    \ 'Vim.Type',
+    \ 'DateTime',
+    \ 'Data.BigNum',
+    \]
 endfunction
 
 "  UUID
@@ -115,7 +127,7 @@ endfunction
 
 " ===== UUID v1..v5 generate
 function! s:UUID.generatev1(mac) dict abort
-  " TODO
+  let timestamp = s:_generate_timestamp_now()
 endfunction
 
 function! s:UUID.generatev3(ns, data) dict abort
@@ -357,6 +369,32 @@ function! s:_variant_detect(uuid) abort
           \ uuid.value.time_hi_and_version[0], 4), 0xf)
     " 0xf 0b1111
   endif
+endfunction
+
+" time code  1582/10/15 00:00:00 UTC start : 100ns unit
+" unix epoch 1970/01/01 00:00:00 UTC start : 1sec  unit
+" diff 141427 days = 141427 * 24 * 60 * 60 sec = 12219292800 sec
+let s:_epoch_offset_sec = '12219292800'
+lockvar s:_epoch_offset_sec
+function! s:_generate_timestamp_now()  abort
+  let timestamp_sec = s:BigNum.add(
+    \ s:_epoch_offset_sec,
+    \ s:DateTime.now().unix_time())
+  " unit convert sec to 100ns(1sec = 1000(ms to s) * 1000(us to ms) * 10(us to 100ns)
+  let timestamp_ms   = s:BigNum.mul(timestamp_sec, s:BigNum.from_num(1000))
+  let timestamp_us   = s:BigNum.mul(timestamp_ms,  s:BigNum.from_num(1000))
+  let timestamp_unit = s:BigNum.mul(timestamp_us,  s:BigNum.from_num(10)  )
+
+  let timestamp_str  = s:BigNum.to_string(timestamp_unit)
+  let timestamp_list = s:ByteArray.from_string(timestamp_str)
+
+  " debug
+  let timestamp_sec_str = s:BigNum.to_string(timestamp_sec)
+  PP timestamp_sec_str
+  PP timestamp_str
+  PP timestamp_list
+
+  return timestamp_list
 endfunction
 
 function! s:_throw(msg) abort
