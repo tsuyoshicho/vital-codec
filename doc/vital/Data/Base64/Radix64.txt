@@ -7,7 +7,7 @@ CONTENTS				*Vital.Data.Base64.Radix64-contents*
 
 INTRODUCTION			|Vital.Data.Base64.Radix64-introduction|
 INTERFACE			|Vital.Data.Base64.Radix64-interface|
-  Functions			  |Vital.Data.Base64.Radix64-functions|
+  Functions			|Vital.Data.Base64.Radix64-functions|
 
 ==============================================================================
 INTRODUCTION				*Vital.Data.Base64.Radix64-introduction*
@@ -24,20 +24,20 @@ INTERFACE				*Vital.Data.Base64.Radix64-interface*
 FUNCTIONS				*Vital.Data.Base64.Radix64-functions*
 
 
-encode({str})				*Vital.Data.Base64.Radix64.encode()*
+encode({str})				  *Vital.Data.Base64.Radix64.encode()*
 	Return base64 Radix64 encoded string from {str}.
 
-encodebin({str})			*Vital.Data.Base64.Radix64.encodebin()*
+encodebin({str})			  *Vital.Data.Base64.Radix64.encodebin()*
 	Return base64 Radix64 encoded string from {str}. {str} is hex encoded
 	string figured as bytes.
 
-encodebytes({bytes})			*Vital.Data.Base64.Radix64.encodebytes()*
+encodebytes({bytes})			  *Vital.Data.Base64.Radix64.encodebytes()*
 	Return base64 Radix64 encoded string from {bytes}.
 
-decode({str})				*Vital.Data.Base64.Radix64.decode()*
+decode({str})				  *Vital.Data.Base64.Radix64.decode()*
 	Return decoded string from {str} that's base64 Radix64 encoded.
 
-decoderaw({str})			*Vital.Data.Base64.Radix64.decoderaw()*
+decoderaw({str})			  *Vital.Data.Base64.Radix64.decoderaw()*
 	Return decoded bytes-list from {str} that's base64 Radix64 encoded.
 
 

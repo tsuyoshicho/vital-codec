@@ -9,7 +9,7 @@ INTRODUCTION			|Vital.Math.Fraction-introduction|
 INTERFACE			|Vital.Math.Fraction-interface|
   Functions			|Vital.Math.Fraction-functions|
 OBJECTS				|Vital.Math.Fraction-objects|
-  Random Object			  |Vital.Math.Fraction-Rational|
+  Random Object			|Vital.Math.Fraction-Rational|
 
 ==============================================================================
 INTRODUCTION				*Vital.Math.Fraction-introduction*
@@ -116,7 +116,7 @@ is_Rational({obj})			*Vital.Math.Fraction.is_Rational()*
 OBJECTS					*Vital.Math.Fraction-objects*
 
 ------------------------------------------------------------------------------
-RATIONAL OBJECT				  *Vital.Math.Fraction-Rational*
+RATIONAL OBJECT				*Vital.Math.Fraction-Rational*
 
 
 Rational.add({elem1})		*Vital.Math.Fraction-Rational.seed()*

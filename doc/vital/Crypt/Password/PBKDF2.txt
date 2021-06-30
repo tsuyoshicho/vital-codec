@@ -5,9 +5,9 @@ Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 ==============================================================================
 CONTENTS				*Vital.Crypt.Password.PBKDF2-contents*
 
-INTRODUCTION		                |Vital.Crypt.Password.PBKDF2-introduction|
-INTERFACE		                |Vital.Crypt.Password.PBKDF2-interface|
-  Functions                               |Vital.Crypt.Password.PBKDF2-functions|
+INTRODUCTION				|Vital.Crypt.Password.PBKDF2-introduction|
+INTERFACE				|Vital.Crypt.Password.PBKDF2-interface|
+  Functions				|Vital.Crypt.Password.PBKDF2-functions|
 
 ==============================================================================
 INTRODUCTION				*Vital.Crypt.Password.PBKDF2-introduction*

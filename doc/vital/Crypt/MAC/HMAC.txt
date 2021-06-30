@@ -5,9 +5,9 @@ Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 ==============================================================================
 CONTENTS				*Vital.Crypt.MAC.HMAC-contents*
 
-INTRODUCTION		                |Vital.Crypt.MAC.HMAC-introduction|
-INTERFACE		                |Vital.Crypt.MAC.HMAC-interface|
-  Functions                             |Vital.Crypt.MAC.HMAC-functions|
+INTRODUCTION				|Vital.Crypt.MAC.HMAC-introduction|
+INTERFACE				|Vital.Crypt.MAC.HMAC-interface|
+  Functions				|Vital.Crypt.MAC.HMAC-functions|
 OBJECTS					|Vital.Crypt.MAC.HMAC-objects|
   HMAC Object				|Vital.Crypt.MAC.HMAC-HMAC|
 

@@ -7,7 +7,7 @@ CONTENTS				*Vital.Vim.Type.Blob-contents*
 
 INTRODUCTION			|Vital.Vim.Type.Blob-introduction|
 INTERFACE			|Vital.Vim.Type.Blob-interface|
-  Functions			  |Vital.Vim.Type.Blob-functions|
+  Functions			|Vital.Vim.Type.Blob-functions|
 
 ==============================================================================
 INTRODUCTION				*Vital.Vim.Type.Blob-introduction*
