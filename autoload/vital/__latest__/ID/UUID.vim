@@ -127,7 +127,31 @@ endfunction
 
 " ===== UUID v1..v5 generate
 function! s:UUID.generatev1(mac) dict abort
+  " MAC
+  if type(a:mac) == type("")
+    let node = s:ByteArray.from_hexstring(a:mac)
+  elseif (type(a:mac) == type([]))
+      \ && (6 == len(a:mac))
+      \ && s:ByteArray.validate(a:mac)
+    let node = a:mac
+  else
+    " throw
+  endif
+
+  " timestamp
   let timestamp = s:_generate_timestamp_now()
+  let timestamp_list = s:ByteArray.from_string()
+
+  let self.value.time_hi_and_version = [] " 1byte low only
+  let self.value.time_mid = []
+  let self.value.time_low = []
+  let self.value.cloc     = []
+  let self.value.node = node
+  let self.endian  = 1
+  let self.variant = 0b100
+  let self.version = 1
+  call self.value_encode()
+
 endfunction
 
 function! s:UUID.generatev3(ns, data) dict abort
@@ -385,16 +409,7 @@ function! s:_generate_timestamp_now()  abort
   let timestamp_us   = s:BigNum.mul(timestamp_ms,  s:BigNum.from_num(1000))
   let timestamp_unit = s:BigNum.mul(timestamp_us,  s:BigNum.from_num(10)  )
 
-  let timestamp_str  = s:BigNum.to_string(timestamp_unit)
-  let timestamp_list = s:ByteArray.from_string(timestamp_str)
-
-  " debug
-  let timestamp_sec_str = s:BigNum.to_string(timestamp_sec)
-  PP timestamp_sec_str
-  PP timestamp_str
-  PP timestamp_list
-
-  return timestamp_list
+  return  timestamp_unit
 endfunction
 
 function! s:_throw(msg) abort
