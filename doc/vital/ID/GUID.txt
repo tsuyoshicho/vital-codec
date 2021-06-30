@@ -5,9 +5,9 @@ Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 ==============================================================================
 CONTENTS				*Vital.ID.GUID-contents*
 
-INTRODUCTION		                |Vital.ID.GUID-introduction|
-INTERFACE		                |Vital.ID.GUID-interface|
-  Functions                               |Vital.ID.GUID-functions|
+INTRODUCTION				|Vital.ID.GUID-introduction|
+INTERFACE				|Vital.ID.GUID-interface|
+  Functions				|Vital.ID.GUID-functions|
 
 ==============================================================================
 INTRODUCTION				*Vital.ID.GUID-introduction*
@@ -23,10 +23,10 @@ INTERFACE				*Vital.ID.GUID-interface*
 ------------------------------------------------------------------------------
 FUNCTIONS				*Vital.ID.GUID-functions*
 
-generate()                                *Vital.ID.GUID.generate()*
+generate()				  *Vital.ID.GUID.generate()*
 	Return GUID that is random generate value.
 
-decode({guid str})                        *Vital.ID.GUID.generateUUID()*
+decode({guid str})			  *Vital.ID.GUID.generateUUID()*
 	Return GUID decoded UUID object.
 
 

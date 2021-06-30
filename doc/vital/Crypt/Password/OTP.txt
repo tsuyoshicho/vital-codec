@@ -5,10 +5,10 @@ Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 ==============================================================================
 CONTENTS				*Vital.Crypt.Password.OTP-contents*
 
-INTRODUCTION		                |Vital.Crypt.Password.OTP-introduction|
-INTERFACE		                |Vital.Crypt.Password.OTP-interface|
-  Constants                               |Vital.Crypt.Password.OTP-constants|
-  Functions                               |Vital.Crypt.Password.OTP-functions|
+INTRODUCTION				|Vital.Crypt.Password.OTP-introduction|
+INTERFACE				|Vital.Crypt.Password.OTP-interface|
+  Constants				|Vital.Crypt.Password.OTP-constants|
+  Functions				|Vital.Crypt.Password.OTP-functions|
 
 ==============================================================================
 INTRODUCTION				*Vital.Crypt.Password.OTP-introduction*
@@ -54,14 +54,14 @@ defaults				*Vital.Crypt.Password.OTP-defaults*
 ------------------------------------------------------------------------------
 FUNCTIONS				*Vital.Crypt.Password.OTP-functions*
 
-htop({key},{counter},{algo},{digit})	*Vital.Crypt.Password.OTP.htop()*
+htop({key},{counter},{algo},{digit})	  *Vital.Crypt.Password.OTP.htop()*
 	Return HOTP value.
 	It need secret bytes list {key}, and bytes list {counter} value,
 	Hash {algo}, return values' number of {digit}.
 	Hash {algo}, need same as |Vital.Crypt.MAC.HMAC-HMAC.hash()| API.
 	ex |Vital.Hash.MD5| , |Vital.Hash.SHA1|
 
-totp({key},{period},{algo},{digit},...)	*Vital.Crypt.Password.OTP.totp()*
+totp({key},{period},{algo},{digit},...)	  *Vital.Crypt.Password.OTP.totp()*
 	Return current time TOTP value.
 	Interface like |Vital.Crypt.Password.OTP.htop()|, {key} and {algo}.
         {period} are TOTP value renew interval sec.

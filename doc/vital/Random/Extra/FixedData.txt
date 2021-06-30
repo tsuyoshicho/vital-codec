@@ -33,7 +33,7 @@ Usage:
 >
 	let s:V = vital#{plugin-name}#new()
 	let s:X = s:V.import("Random.Extra.FixedData")
- 
+
 	call s:X.srand([0x00, 0xFF])
 	echo s:X.rand()
 	" 0x00

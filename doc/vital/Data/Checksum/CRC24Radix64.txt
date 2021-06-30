@@ -21,15 +21,15 @@ INTERFACE			*Vital.Data.Checksum.CRC24Radix64-interface*
 ------------------------------------------------------------------------------
 FUNCTIONS			*Vital.Data.Checksum.CRC24Radix64-functions*
 
-calculatestr({str})		*Vital.Data.Checksum.CRC24Radix64.calculatestr()*
-calculatebin({hex-str})		*Vital.Data.Checksum.CRC24Radix64.calculatebin()*
-calculate({bytes})		*Vital.Data.Checksum.CRC24Radix64.calculate()*
+calculatestr({str})		  *Vital.Data.Checksum.CRC24Radix64.calculatestr()*
+calculatebin({hex-str})		  *Vital.Data.Checksum.CRC24Radix64.calculatebin()*
+calculate({bytes})		  *Vital.Data.Checksum.CRC24Radix64.calculate()*
 	Return calculated crc data from {str} or {hex-str} or raw {bytes} list.
 
 
-validatestr({str}, {crc})	*Vital.Data.Checksum.CRC24Radix64.validatestr()*
-validatebin({hex-str}, {crc})	*Vital.Data.Checksum.CRC24Radix64.validatebin()*
-validate({bytes}, {crc})	*Vital.Data.Checksum.CRC24Radix64.validate()*
+validatestr({str}, {crc})	  *Vital.Data.Checksum.CRC24Radix64.validatestr()*
+validatebin({hex-str}, {crc})	  *Vital.Data.Checksum.CRC24Radix64.validatebin()*
+validate({bytes}, {crc})	  *Vital.Data.Checksum.CRC24Radix64.validate()*
 	Return validation result as v:true that is given data({str}, {hex-str},
 	{bytes})'s calculation and {crc} are equals.
 	{crc} is byte-like list that length is 3(24-bits).
