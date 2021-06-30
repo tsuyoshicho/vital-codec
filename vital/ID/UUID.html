@@ -39,7 +39,7 @@ Maintainer: Tsuyoshi CHO &lt;Tsuyoshi.CHO+develop@Gmail.com&gt;
 
 INTRODUCTION                            <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-introduction">Vital.ID.UUID-introduction</a>
 INTERFACE                               <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-interface">Vital.ID.UUID-interface</a>
-  Functions                               <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-functions">Vital.ID.UUID-functions</a>
+  Functions                             <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-functions">Vital.ID.UUID-functions</a>
 OBJECTS                                 <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-objects">Vital.ID.UUID-objects</a>
   UUID Object                           <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID">Vital.ID.UUID-UUID</a>
 
@@ -65,7 +65,7 @@ new()                                     <a class="String" href="./../../vital/
 decode({uuid str})                        <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.decode()" name="Vital.ID.UUID.decode()">Vital.ID.UUID.decode()</a>
         Return UUID {uuid str} decoded object.
 
-v1(<span class="Special">{mac}</span>)                                    <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v1()" name="Vital.ID.UUID.v1()">Vital.ID.UUID.v1()</a>
+v1(<span class="Special">{mac}</span>)                                 <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v1()" name="Vital.ID.UUID.v1()">Vital.ID.UUID.v1()</a>
         {NOT IMPLEMENTED YET}.
         Return UUID version 1 value.
         This function wrapped <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev1()">Vital.ID.UUID-UUID.generatev1()</a> .
@@ -75,7 +75,7 @@ v1(<span class="Special">{mac}</span>)                                    <a cla
 <span class="helpExample">        let result = uuid.uuid_hex</span>
 
 
-v3(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)                            <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v3()" name="Vital.ID.UUID.v3()">Vital.ID.UUID.v3()</a>
+v3(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)                         <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v3()" name="Vital.ID.UUID.v3()">Vital.ID.UUID.v3()</a>
         Return UUID version 3 value.
         This function wrapped <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev3()">Vital.ID.UUID-UUID.generatev3()</a> .
         Also known as:
@@ -84,7 +84,7 @@ v3(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)     
 <span class="helpExample">        let result = uuid.uuid_hex</span>
 
 
-v4()                                         <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v4()" name="Vital.ID.UUID.v4()">Vital.ID.UUID.v4()</a>
+v4()                                      <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v4()" name="Vital.ID.UUID.v4()">Vital.ID.UUID.v4()</a>
         Return UUID version 4 value.
         This function wrapped <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev4()">Vital.ID.UUID-UUID.generatev4()</a> .
         Also known as:
@@ -93,7 +93,7 @@ v4()                                         <a class="String" href="./../../vit
 <span class="helpExample">        let result = uuid.uuid_hex</span>
 
 
-v5(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)                            <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v5()" name="Vital.ID.UUID.v5()">Vital.ID.UUID.v5()</a>
+v5(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)                         <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v5()" name="Vital.ID.UUID.v5()">Vital.ID.UUID.v5()</a>
         Return UUID version 5 value.
         This function wrapped <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev5()">Vital.ID.UUID-UUID.generatev5()</a> .
         Also known as:
@@ -106,7 +106,7 @@ v5(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)     
 <span class="PreProc">==============================================================================</span>
 <span class="Statement">OBJECTS</span>                                 <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-objects" name="Vital.ID.UUID-objects">Vital.ID.UUID-objects</a>
 <span class="PreProc">------------------------------------------------------------------------------</span>
-UUID Object                                <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID" name="Vital.ID.UUID-UUID">Vital.ID.UUID-UUID</a>
+UUID Object                             <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID" name="Vital.ID.UUID-UUID">Vital.ID.UUID-UUID</a>
 
         UUID object is a dictionary that has parameters in below.
 
@@ -142,24 +142,24 @@ UUID Object                                <a class="String" href="./../../vital
         version is inner params that mean RFC variant's version.
 
 
-UUID.generatev1(<span class="Special">{mac}</span>)                  <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev1()" name="Vital.ID.UUID-UUID.generatev1()">Vital.ID.UUID-UUID.generatev1()</a>
+UUID.generatev1(<span class="Special">{mac}</span>)                    <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev1()" name="Vital.ID.UUID-UUID.generatev1()">Vital.ID.UUID-UUID.generatev1()</a>
         {NOT IMPLEMENTED YET}.
         Generate and fill version 1 UUID data.
         Version 1 is time-based, generated from mac identified value.
 
-UUID.generatev3(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)          <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev3()" name="Vital.ID.UUID-UUID.generatev3()">Vital.ID.UUID-UUID.generatev3()</a>
+UUID.generatev3(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)            <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev3()" name="Vital.ID.UUID-UUID.generatev3()">Vital.ID.UUID-UUID.generatev3()</a>
         Generate and fill version 3 UUID data.
         Version 3 use <a href="https://www.google.com/search?q=vim+%22Vital.Hash.MD5%22&lr=lang_en"><span class="MissingTag">Vital.Hash.MD5</span></a> module.
         <span class="Special">{ns}</span> as <a class="Identifier" href="./../../vital/ID/UUID/Namespace.html#Vital.ID.UUID.Namespace">Vital.ID.UUID.Namespace</a> defined value or other namespace UUID object or
         hex string.
         <span class="Special">{value}</span> as unique value.
 
-UUID.generatev4()                       <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev4()" name="Vital.ID.UUID-UUID.generatev4()">Vital.ID.UUID-UUID.generatev4()</a>
+UUID.generatev4()                         <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev4()" name="Vital.ID.UUID-UUID.generatev4()">Vital.ID.UUID-UUID.generatev4()</a>
         Generate and fill version 4 UUID data.
         Version 4 use <a href="https://www.google.com/search?q=vim+%22Vital.Random%22&lr=lang_en"><span class="MissingTag">Vital.Random</span></a> module.
         Version 4 generated from all random value.
 
-UUID.generatev5(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)          <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev5()" name="Vital.ID.UUID-UUID.generatev5()">Vital.ID.UUID-UUID.generatev5()</a>
+UUID.generatev5(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)            <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev5()" name="Vital.ID.UUID-UUID.generatev5()">Vital.ID.UUID-UUID.generatev5()</a>
         Generate and fill version 5 UUID data.
         Version 5 use <a href="https://www.google.com/search?q=vim+%22Vital.Hash.SHA1%22&lr=lang_en"><span class="MissingTag">Vital.Hash.SHA1</span></a> module.
         <span class="Special">{ns}</span> as <a class="Identifier" href="./../../vital/ID/UUID/Namespace.html#Vital.ID.UUID.Namespace">Vital.ID.UUID.Namespace</a> defined value or other namespace UUID object or
@@ -167,19 +167,19 @@ UUID.generatev5(<span class="Special">{ns}</span>, <span class="Special">{value}
         <span class="Special">{value}</span> as unique value.
 
 
-UUID.hex_decode()               <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.hex_decode()" name="Vital.ID.UUID-UUID.hex_decode()">Vital.ID.UUID-UUID.hex_decode()</a>
+UUID.hex_decode()                         <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.hex_decode()" name="Vital.ID.UUID-UUID.hex_decode()">Vital.ID.UUID-UUID.hex_decode()</a>
         Decode UUID.uuid_hex, then fill UUID data.
         Need UUID.uuid_hex fill legal string data.
 
-UUID.byte_encode()              <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.byte_encode()" name="Vital.ID.UUID-UUID.byte_encode()">Vital.ID.UUID-UUID.byte_encode()</a>
+UUID.byte_encode()                        <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.byte_encode()" name="Vital.ID.UUID-UUID.byte_encode()">Vital.ID.UUID-UUID.byte_encode()</a>
         Encode UUID.bytes, then fill UUID data.
         Need UUID.bytes fill legal bytes-list data.
 
-UUID.value_encode()             <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.value_encode()" name="Vital.ID.UUID-UUID.value_encode()">Vital.ID.UUID-UUID.value_encode()</a>
+UUID.value_encode()                       <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.value_encode()" name="Vital.ID.UUID-UUID.value_encode()">Vital.ID.UUID-UUID.value_encode()</a>
         Encode UUID.value.*, then fill UUID data.
         Need UUID.value.* fill legal bytes-list data.
 
-UUID.build()                    <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.build()" name="Vital.ID.UUID-UUID.build()">Vital.ID.UUID-UUID.build()</a>
+UUID.build()                              <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.build()" name="Vital.ID.UUID-UUID.build()">Vital.ID.UUID-UUID.build()</a>
         Encode UUID internal methods.
         Use only Vital module creators.
         See direct code.

@@ -38,8 +38,8 @@ Maintainer: Tsuyoshi CHO &lt;Tsuyoshi.CHO+develop@Gmail.com&gt;
 
 INTRODUCTION                            <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-introduction">Vital.Crypt.Password.OTP-introduction</a>
 INTERFACE                               <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-interface">Vital.Crypt.Password.OTP-interface</a>
-  Constants                               <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-constants">Vital.Crypt.Password.OTP-constants</a>
-  Functions                               <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-functions">Vital.Crypt.Password.OTP-functions</a>
+  Constants                             <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-constants">Vital.Crypt.Password.OTP-constants</a>
+  Functions                             <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-functions">Vital.Crypt.Password.OTP-functions</a>
 
 <span class="PreProc">==============================================================================</span>
 <span class="Statement">INTRODUCTION</span>                            <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-introduction" name="Vital.Crypt.Password.OTP-introduction">Vital.Crypt.Password.OTP-introduction</a>
@@ -85,14 +85,14 @@ defaults                                <a class="String" href="./../../../vital
 <span class="PreProc">------------------------------------------------------------------------------</span>
 <span class="Statement">FUNCTIONS</span>                               <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP-functions" name="Vital.Crypt.Password.OTP-functions">Vital.Crypt.Password.OTP-functions</a>
 
-htop(<span class="Special">{key}</span>,<span class="Special">{counter}</span>,<span class="Special">{algo}</span>,<span class="Special">{digit}</span>)    <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP.htop()" name="Vital.Crypt.Password.OTP.htop()">Vital.Crypt.Password.OTP.htop()</a>
+htop(<span class="Special">{key}</span>,<span class="Special">{counter}</span>,<span class="Special">{algo}</span>,<span class="Special">{digit}</span>)      <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP.htop()" name="Vital.Crypt.Password.OTP.htop()">Vital.Crypt.Password.OTP.htop()</a>
         Return HOTP value.
         It need secret bytes list <span class="Special">{key}</span>, and bytes list <span class="Special">{counter}</span> value,
         Hash <span class="Special">{algo}</span>, return values' number of <span class="Special">{digit}</span>.
         Hash <span class="Special">{algo}</span>, need same as <a class="Identifier" href="./../../../vital/Crypt/MAC/HMAC.html#Vital.Crypt.MAC.HMAC-HMAC.hash()">Vital.Crypt.MAC.HMAC-HMAC.hash()</a> API.
         ex <a href="https://www.google.com/search?q=vim+%22Vital.Hash.MD5%22&lr=lang_en"><span class="MissingTag">Vital.Hash.MD5</span></a> , <a href="https://www.google.com/search?q=vim+%22Vital.Hash.SHA1%22&lr=lang_en"><span class="MissingTag">Vital.Hash.SHA1</span></a>
 
-totp(<span class="Special">{key}</span>,<span class="Special">{period}</span>,<span class="Special">{algo}</span>,<span class="Special">{digit}</span>,...) <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP.totp()" name="Vital.Crypt.Password.OTP.totp()">Vital.Crypt.Password.OTP.totp()</a>
+totp(<span class="Special">{key}</span>,<span class="Special">{period}</span>,<span class="Special">{algo}</span>,<span class="Special">{digit}</span>,...)   <a class="String" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP.totp()" name="Vital.Crypt.Password.OTP.totp()">Vital.Crypt.Password.OTP.totp()</a>
         Return current time TOTP value.
         Interface like <a class="Identifier" href="./../../../vital/Crypt/Password/OTP.html#Vital.Crypt.Password.OTP.htop()">Vital.Crypt.Password.OTP.htop()</a>, <span class="Special">{key}</span> and <span class="Special">{algo}</span>.
         <span class="Special">{period}</span> are TOTP value renew interval sec.
