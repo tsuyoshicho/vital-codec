@@ -30,8 +30,8 @@ FUNCTIONS				*Vital.ID.UUID-functions*
 new()					  *Vital.ID.UUID.new()*
 	Return UUID non-data object.
 
-decode({uuid str})			  *Vital.ID.UUID.decode()*
-	Return UUID {uuid str} decoded object.
+decode({uuid-str})			  *Vital.ID.UUID.decode()*
+	Return UUID {uuid-str} decoded object.
 
 v1({mac})				  *Vital.ID.UUID.v1()*
 	{NOT IMPLEMENTED YET}.
