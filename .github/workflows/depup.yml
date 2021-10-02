@@ -50,7 +50,7 @@ jobs:
         uses: haya14busa/action-depup@v1
         id: depup
         with:
-          file: .github/workflows/buildtest.yml
+          file: ENVFILE
           version_name: THEMIS_VERSION
           repo: thinca/vim-themis
           tag: true
