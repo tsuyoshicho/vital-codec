@@ -6,7 +6,6 @@ on:
     types: [depup]
   workflow_dispatch:
 permissions:
-  workflows: write
   contents: write
   pull-requests: write
 
