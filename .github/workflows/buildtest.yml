@@ -3,6 +3,7 @@ on: [push, pull_request]
 env:
   THEMIS_VERSION: v1.5.5
   LUA_VERSION: 5.3.5
+
 jobs:
   unixlike:
     strategy:
