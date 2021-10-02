@@ -3,20 +3,23 @@ on:
   push:
     branches:
       - master
+permissions:
+  contents: write
+
 jobs:
   ghpages:
     name: Convert and deploy vim help
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
         with:
-          persist-credentials: false
-      - name: generate html
+          submodules: true
+      - name: Generate html
         uses: tsuyoshicho/action-vimhelp-html-generate@v1
         env:
           FOLDER: build
-      - name: deploy gh-pages
+      - name: Deploy gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
