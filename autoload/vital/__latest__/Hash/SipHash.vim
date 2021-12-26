@@ -164,6 +164,7 @@ function! s:siphash_state.round() abort
 endfunction
 
 " trace disable
+" @vimlint(EVL102, 1, a:len)
 function! s:siphash_state.trace(len) abort
 endfunction
 
@@ -181,10 +182,11 @@ function! s:siphash_state.hash(data) abort
   let data = copy(a:data)
   let outputByteLen = self.hash_length / 8
 
-  let self.v[0] = 0z736f6d6570736575
-  let self.v[1] = 0z646f72616e646f6d
-  let self.v[2] = 0z6c7967656e657261
-  let self.v[3] = 0z7465646279746573
+  " TODO vint workaround
+  execute 'let self.v[0] = 0z736f6d6570736575'
+  execute 'let self.v[1] = 0z646f72616e646f6d'
+  execute 'let self.v[2] = 0z6c7967656e657261'
+  execute 'let self.v[3] = 0z7465646279746573'
 
   let self.k[0] = s:ByteArray.to_blob(s:ByteArray.endian_convert(self.key[0 :  7]))
   let self.k[1] = s:ByteArray.to_blob(s:ByteArray.endian_convert(self.key[8 : 15]))
