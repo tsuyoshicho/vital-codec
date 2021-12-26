@@ -140,7 +140,8 @@ function! s:UUID.generatev3(ns, data) dict abort
 
   let self.bytes   = hash[0:15]
   let self.endian  = 1
-  let self.variant = 0b100
+  " TODO vint workaround
+  execute 'let self.variant = 0b100'
   let self.version = 3
   call self.byte_encode()
 endfunction
