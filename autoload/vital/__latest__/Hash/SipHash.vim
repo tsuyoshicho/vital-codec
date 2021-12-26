@@ -123,6 +123,7 @@ endfunction
 
 
 " TODO vint workaround
+let s:zeroblob = 0
 execute 'let s:zeroblob = 0z00'
 
 let s:siphash_state = {
