@@ -121,6 +121,10 @@ endfunction
 " https://github.com/veorq/SipHash/blob/master/siphash.c
 " https://github.com/vcatechnology/siphashsum/blob/master/siphash.h
 
+
+" TODO vint workaround
+execute 'let s:zeroblob = 0z00'
+
 let s:siphash_state = {
       \ 'key' : range(16),
       \ 'hash_length' : 0,
@@ -128,8 +132,8 @@ let s:siphash_state = {
       \   'c' : 0,
       \   'd' : 0,
       \  },
-      \ 'v'   : repeat([0z00], 4),
-      \ 'k'   : repeat([0z00], 2),
+      \ 'v'   : repeat([s:zeroblob], 4),
+      \ 'k'   : repeat([s:zeroblob], 2),
       \}
 
 function! s:siphash_state.setkey(key) abort
