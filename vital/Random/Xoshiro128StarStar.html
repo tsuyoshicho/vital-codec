@@ -41,8 +41,9 @@ Maintainer: Tsuyoshi CHO &lt;Tsuyoshi.CHO+develop@Gmail.com&gt;
 INTRODUCTION                    <a class="Identifier" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-introduction">Vital.Random.Xoshiro128StarStar-introduction</a>
 INTERFACE                       <a class="Identifier" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-interface">Vital.Random.Xoshiro128StarStar-interface</a>
   FUNCTIONS                     <a class="Identifier" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-functions">Vital.Random.Xoshiro128StarStar-functions</a>
-
-
+SETTING                         <a class="Identifier" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-setting">Vital.Random.Xoshiro128StarStar-setting</a>
+VARIABLES                       <a class="Identifier" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-variables">Vital.Random.Xoshiro128StarStar-variables</a>
+OBJECTS                         <a class="Identifier" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-objects">Vital.Random.Xoshiro128StarStar-objects</a>
 
 <span class="PreProc">==============================================================================</span>
 <span class="Statement">INTRODUCTION</span>                            <a class="String" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-introduction" name="Vital.Random.Xoshiro128StarStar-introduction">Vital.Random.Xoshiro128StarStar-introduction</a>
@@ -90,6 +91,24 @@ rand()                                  <a class="String" href="./../../vital/Ra
 new_generator()                         <a class="String" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar.new_generator()" name="Vital.Random.Xoshiro128StarStar.new_generator()">Vital.Random.Xoshiro128StarStar.new_generator()</a>
         Create a new Generator object(<a class="Identifier" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-Generator">Vital.Random.Xoshiro128StarStar-Generator</a>).
 
+
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">SETTING</span>                                 <a class="String" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-setting" name="Vital.Random.Xoshiro128StarStar-setting">Vital.Random.Xoshiro128StarStar-setting</a>
+
+<span class="PreProc">------------------------------------------------------------------------------</span>
+<span class="Statement">VARIABLES</span>                                 <a class="String" href="./../../vital/Random/Xoshiro128StarStar.html#Vital.Random.Xoshiro128StarStar-variables" name="Vital.Random.Xoshiro128StarStar-variables">Vital.Random.Xoshiro128StarStar-variables</a>
+
+
+                                        <a class="String" href="./../../vital/Random/Xoshiro128StarStar.html#g:vital#random#xoshiro128starstar#use_pure" name="g:vital#random#xoshiro128starstar#use_pure">g:vital#random#xoshiro128starstar#use_pure</a>
+g:vital#random#xoshiro128starstar#use_pure
+    Type: <a href="https://www.google.com/search?q=vim+%22Boolean%22&lr=lang_en"><span class="MissingTag">Boolean</span></a>
+    Default: v:false
+
+    When set v:true to enable using pure Vim script implement using.
+    <span class="Todo">NOTE</span>:When built-in rand not exists, this value are ignored it(force use
+    pure implements).
+    This value is affect to &quot;vital library: Random.Xoshiro128StarStar&quot; global
+    settings.
 
 
 <span class="PreProc">==============================================================================</span>
