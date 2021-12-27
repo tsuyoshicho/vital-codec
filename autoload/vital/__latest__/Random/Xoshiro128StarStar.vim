@@ -15,7 +15,8 @@ function! s:_vital_loaded(V) abort
           \            0xFFFF
           \)
 
-  if exists('*rand')
+  " built-in rand(xoshiro128** implement) and global tune flag: pure implement use are false
+  if exists('*rand') && !get(g:, 'vital#random#xoshiro128starstar#use_pure', v:false)
     " vim native implement
     let s:Generator = s:Generator_vim_rand
   else
