@@ -5,13 +5,14 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:_vital_loaded(V) abort
-  let s:V       = a:V
-  let s:MD5     = s:V.import('Hash.MD5')
-  let s:SHA1    = s:V.import('Hash.SHA1')
-  let s:Bitwise = s:V.import('Bitwise')
-  let s:Random  = s:V.import('Random')
-  let s:List    = s:V.import('Data.List')
+  let s:V         = a:V
+  let s:Bitwise   = s:V.import('Bitwise')
+  let s:List      = s:V.import('Data.List')
   let s:ByteArray = s:V.import('Data.List.Byte')
+  let s:MD5       = s:V.import('Hash.MD5')
+  let s:SHA1      = s:V.import('Hash.SHA1')
+  let s:Random    = s:V.import('Random')
+  let s:Type      = s:V.import('Vim.Type')
 
   let s:UUID = extend(s:UUID, {
         \ 'uuid_hex': '',
@@ -38,7 +39,7 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Hash.MD5', 'Hash.SHA1', 'Bitwise', 'Random', 'Data.List', 'Data.List.Byte']
+  return ['Bitwise', 'Data.List', 'Data.List.Byte', 'Hash.MD5', 'Hash.SHA1', 'Random', 'Vim.Type']
 endfunction
 
 "  UUID
@@ -119,7 +120,7 @@ endfunction
 
 function! s:UUID.generatev3(ns, data) dict abort
   " NS
-  if type(a:ns) == type("")
+  if type(a:ns) == s:Type.types.string
     let ns_uuid = deepcopy(s:UUID)
     let ns_uuid.uuid_hex = a:ns
     let ns_uuid.endian   = 1
@@ -131,7 +132,7 @@ function! s:UUID.generatev3(ns, data) dict abort
 
   " MD5 hash
   let data = a:data
-  if type(a:data) == type("")
+  if type(a:data) == s:Type.types.string
     let data = s:ByteArray.from_string(a:data)
   else
     let data = a:data
@@ -140,7 +141,7 @@ function! s:UUID.generatev3(ns, data) dict abort
 
   let self.bytes   = hash[0:15]
   let self.endian  = 1
-  let self.variant = 0b100
+  let self.variant = 0x4 " 0b100
   let self.version = 3
   call self.byte_encode()
 endfunction
@@ -152,14 +153,14 @@ function! s:UUID.generatev4(...) dict abort
 
   let self.bytes   = randomlist
   let self.endian  = 1
-  let self.variant = 0b100
+  let self.variant = 0x4 " 0b100
   let self.version = 4
   call self.byte_encode()
 endfunction
 
 function! s:UUID.generatev5(ns, data) dict abort
   " NS
-  if type(a:ns) == type("")
+  if type(a:ns) == s:Type.types.string
     let ns_uuid = deepcopy(s:UUID)
     let ns_uuid.uuid_hex = a:ns
     let ns_uuid.endian   = 1
@@ -171,7 +172,7 @@ function! s:UUID.generatev5(ns, data) dict abort
 
   " SHA1 hash
   let data = a:data
-  if type(a:data) == type("")
+  if type(a:data) == s:Type.types.string
     let data = s:ByteArray.from_string(a:data)
   else
     let data = a:data
@@ -180,7 +181,7 @@ function! s:UUID.generatev5(ns, data) dict abort
 
   let self.bytes   = hash[0:15]
   let self.endian  = 1
-  let self.variant = 0b100
+  let self.variant = 0x4 " 0b100
   let self.version = 5
   call self.byte_encode()
 endfunction
@@ -299,31 +300,33 @@ function! s:_variant_embedded(uuid) abort
   endif
 
   " clock high byte msb 0..2 (5bit >>, remain 3bit)
-  let variant_mask = 0b00000000
-  let value_mask   = 0b11111111
-  if 0b000 == s:Bitwise.and(uuid.variant, 0b100)
+  let variant_mask = 0x00 " 0b00000000
+  let value_mask   = 0xff " 0b11111111
+  if 0x0 == s:Bitwise.and(uuid.variant, 0x4) " test 0b000, mask 0b100
     "  bit 0xx Network Computing System Compatible
-    let variant_mask = 0b10000000
-    let value_mask   = 0b01111111
-  elseif 0b100 == s:Bitwise.and(uuid.variant, 0b110)
+    let variant_mask = 0x80 " 0b10000000
+    let value_mask   = 0x7f " 0b01111111
+  elseif 0x4 == s:Bitwise.and(uuid.variant, 0x6) " test 0b100, mask 0b110
     "  bit 10x RFC4122
-    let variant_mask = 0b11000000
-    let value_mask   = 0b00111111
+    let variant_mask = 0xc0 " 0b11000000
+    let value_mask   = 0x3f " 0b00111111
   else
     "  bit 110 Microsoft COM GUID Compatible
     "  bit 111 Reserved
-    let variant_mask = 0b11100000
-    let value_mask   = 0b00011111
+    let variant_mask = 0xe0 " 0b11100000
+    let value_mask   = 0x1f " 0b00011111
   endif
   let uuid.value.clk_seq_hi_res[0] = s:Bitwise.or(
         \ s:Bitwise.and(s:Bitwise.lshift(uuid.variant, 5), variant_mask),
         \ s:Bitwise.and(uuid.value.clk_seq_hi_res[0],      value_mask))
 
-  if 0b100 == s:Bitwise.and(uuid.variant, 0b110)
+  if 0x4 == s:Bitwise.and(uuid.variant, 0x6) " test 0b100, mask 0b110
     " time_hi_and_version high byte 0..4 (4bit >>, remain 4bit)
     let uuid.value.time_hi_and_version[0] = s:Bitwise.or(
-          \ s:Bitwise.and(s:Bitwise.lshift(uuid.version, 4), 0b11110000),
-          \ s:Bitwise.and(uuid.value.time_hi_and_version[0], 0b00001111))
+          \ s:Bitwise.and(s:Bitwise.lshift(uuid.version, 4), 0xf0),
+          \ s:Bitwise.and(uuid.value.time_hi_and_version[0], 0x0f))
+    " 0xf0 0b11110000
+    " 0x0f 0b00001111
   endif
 endfunction
 
@@ -332,15 +335,16 @@ function! s:_variant_detect(uuid) abort
 
   " clock high byte msb 0..2 (5bit >>, remain 3bit)
   let variant = s:Bitwise.and(s:Bitwise.rshift(
-        \ uuid.value.clk_seq_hi_res[0], 5), 0b111)
+        \ uuid.value.clk_seq_hi_res[0], 5), 0x7)
+  " 0x7 0b111
 
-  if 0b000 == s:Bitwise.and(variant, 0b100)
+  if 0x0 == s:Bitwise.and(variant, 0x4) " test 0b000, mask 0b100
     "  bit 0xx Network Computing System Compatible
     let uuid.variant = 0
-  elseif 0b100 == s:Bitwise.and(variant, 0b110)
+  elseif 0x4 == s:Bitwise.and(variant, 0x6) " test 0b100, mask 0b110
     "  bit 10x RFC4122
     let uuid.variant = 4
-  elseif 0b110 == variant
+  elseif 0x6 == variant " test 0b110
     "  bit 110 Microsoft COM GUID Compatible
     let uuid.variant = 6
   else
@@ -350,7 +354,8 @@ function! s:_variant_detect(uuid) abort
   if 4 == uuid.variant
     " time_hi_and_version high byte 0..4 (4bit >>, remain 4bit)
     let uuid.version = s:Bitwise.and(s:Bitwise.rshift(
-          \ uuid.value.time_hi_and_version[0], 4), 0b1111)
+          \ uuid.value.time_hi_and_version[0], 4), 0xf)
+    " 0xf 0b1111
   endif
 endfunction
 
