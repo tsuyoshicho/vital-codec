@@ -157,7 +157,7 @@ Describe Random. Xoshiro128StarStar
 
     Describe .srand() pure implements
       It sets the seed
-        Skip test, currently not implements
+        Skip test, work with rand()
       End
     End
   End
