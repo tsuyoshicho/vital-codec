@@ -5,13 +5,14 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:_vital_loaded(V) abort
-  let s:V       = a:V
-  let s:MD5     = s:V.import('Hash.MD5')
-  let s:SHA1    = s:V.import('Hash.SHA1')
-  let s:Bitwise = s:V.import('Bitwise')
-  let s:Random  = s:V.import('Random')
-  let s:List    = s:V.import('Data.List')
+  let s:V         = a:V
+  let s:Bitwise   = s:V.import('Bitwise')
+  let s:List      = s:V.import('Data.List')
   let s:ByteArray = s:V.import('Data.List.Byte')
+  let s:MD5       = s:V.import('Hash.MD5')
+  let s:SHA1      = s:V.import('Hash.SHA1')
+  let s:Random    = s:V.import('Random')
+  let s:Type      = s:V.import('Vim.Type')
 
   let s:UUID = extend(s:UUID, {
         \ 'uuid_hex': '',
@@ -38,7 +39,7 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Hash.MD5', 'Hash.SHA1', 'Bitwise', 'Random', 'Data.List', 'Data.List.Byte']
+  return ['Bitwise', 'Data.List', 'Data.List.Byte', 'Hash.MD5', 'Hash.SHA1', 'Random', 'Vim.Type']
 endfunction
 
 "  UUID
@@ -119,7 +120,7 @@ endfunction
 
 function! s:UUID.generatev3(ns, data) dict abort
   " NS
-  if type(a:ns) == type("")
+  if type(a:ns) == s:Type.types.string
     let ns_uuid = deepcopy(s:UUID)
     let ns_uuid.uuid_hex = a:ns
     let ns_uuid.endian   = 1
@@ -131,7 +132,7 @@ function! s:UUID.generatev3(ns, data) dict abort
 
   " MD5 hash
   let data = a:data
-  if type(a:data) == type("")
+  if type(a:data) == s:Type.types.string
     let data = s:ByteArray.from_string(a:data)
   else
     let data = a:data
@@ -159,7 +160,7 @@ endfunction
 
 function! s:UUID.generatev5(ns, data) dict abort
   " NS
-  if type(a:ns) == type("")
+  if type(a:ns) == s:Type.types.string
     let ns_uuid = deepcopy(s:UUID)
     let ns_uuid.uuid_hex = a:ns
     let ns_uuid.endian   = 1
@@ -171,7 +172,7 @@ function! s:UUID.generatev5(ns, data) dict abort
 
   " SHA1 hash
   let data = a:data
-  if type(a:data) == type("")
+  if type(a:data) == s:Type.types.string
     let data = s:ByteArray.from_string(a:data)
   else
     let data = a:data
