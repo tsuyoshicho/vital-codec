@@ -121,6 +121,11 @@ endfunction
 " https://github.com/veorq/SipHash/blob/master/siphash.c
 " https://github.com/vcatechnology/siphashsum/blob/master/siphash.h
 
+
+" TODO vint workaround
+let s:zeroblob = 0
+execute 'let s:zeroblob = 0z00'
+
 let s:siphash_state = {
       \ 'key' : range(16),
       \ 'hash_length' : 0,
@@ -128,8 +133,8 @@ let s:siphash_state = {
       \   'c' : 0,
       \   'd' : 0,
       \  },
-      \ 'v'   : repeat([0z00], 4),
-      \ 'k'   : repeat([0z00], 2),
+      \ 'v'   : repeat([s:zeroblob], 4),
+      \ 'k'   : repeat([s:zeroblob], 2),
       \}
 
 function! s:siphash_state.setkey(key) abort
@@ -160,8 +165,11 @@ function! s:siphash_state.round() abort
 endfunction
 
 " trace disable
+" @vimlint(EVL103, 1, a:len)
 function! s:siphash_state.trace(len) abort
+  " not work
 endfunction
+" @vimlint(EVL103, 0, a:len)
 
 " " trace enable
 " function! s:siphash_state.trace(len) abort
@@ -177,10 +185,11 @@ function! s:siphash_state.hash(data) abort
   let data = copy(a:data)
   let outputByteLen = self.hash_length / 8
 
-  let self.v[0] = 0z736f6d6570736575
-  let self.v[1] = 0z646f72616e646f6d
-  let self.v[2] = 0z6c7967656e657261
-  let self.v[3] = 0z7465646279746573
+  " TODO vint workaround
+  execute 'let self.v[0] = 0z736f6d6570736575'
+  execute 'let self.v[1] = 0z646f72616e646f6d'
+  execute 'let self.v[2] = 0z6c7967656e657261'
+  execute 'let self.v[3] = 0z7465646279746573'
 
   let self.k[0] = s:ByteArray.to_blob(s:ByteArray.endian_convert(self.key[0 :  7]))
   let self.k[1] = s:ByteArray.to_blob(s:ByteArray.endian_convert(self.key[8 : 15]))
@@ -210,6 +219,7 @@ function! s:siphash_state.hash(data) abort
       " debug
       call self.trace(len(data))
 
+      " @vimlint(EVL102, 1, l:j)
       for j in range(self.rounds.c)
         call self.round()
       endfor
