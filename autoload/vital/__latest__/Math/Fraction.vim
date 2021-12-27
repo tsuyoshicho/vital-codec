@@ -53,6 +53,7 @@ let s:R = {
 function! s:R.add(data) abort
   let data = s:_cast(a:data)
 
+  " @vimlint(EVL102, 1, l:selfsign)
   let selfsign = self.sign()
   let datasign = data.sign()
   " self or other is zero, ret other obj
@@ -63,6 +64,7 @@ function! s:R.add(data) abort
     return self
   endif
 
+  " @vimlint(EVL102, 1, l:selfnum)
   let selfnum = s:BigNum.mul(self._dict['numerator'], data._dict['denominator'])
   if selfsign < 0
     let selfnum = s:BigNum.neg(selfnum)
@@ -91,6 +93,7 @@ endfunction
 function! s:R.mul(data) abort
   let data = s:_cast(a:data)
 
+  " @vimlint(EVL102, 1, l:selfsign)
   let selfsign = self.sign()
   let datasign = data.sign()
   " self or other is zero, ret zero
@@ -183,6 +186,7 @@ function! s:R.compare(data) abort
   endif
 
   " both non zero
+  " @vimlint(EVL102, 1, l:selfnum)
   let selfnum = self._dict['numerator']
   let datanum = data._dict['numerator']
 
