@@ -60,6 +60,7 @@ endfunction
 function! s:Generator_core.seed(seeds) abort
   " not work
 endfunction
+" @vimlint(EVL103, 0, a:seeds)
 
 " Windows cmd
 let s:Generator_windows_cmd = extend({

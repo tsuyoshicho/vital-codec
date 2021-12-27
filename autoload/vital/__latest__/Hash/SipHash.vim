@@ -167,7 +167,9 @@ endfunction
 " trace disable
 " @vimlint(EVL103, 1, a:len)
 function! s:siphash_state.trace(len) abort
+  " not work
 endfunction
+" @vimlint(EVL103, 0, a:len)
 
 " " trace enable
 " function! s:siphash_state.trace(len) abort
@@ -217,7 +219,7 @@ function! s:siphash_state.hash(data) abort
       " debug
       call self.trace(len(data))
 
-      " @vimlint(EVL103, 1, l:j)
+      " @vimlint(EVL102, 1, l:j)
       for j in range(self.rounds.c)
         call self.round()
       endfor
