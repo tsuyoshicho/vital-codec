@@ -15,8 +15,7 @@ function! s:_vital_loaded(V) abort
           \            0xFFFF
           \)
 
-  " global tune flag: pure implement using is true fore built-in rand(xoshiro128** implement) not implements
-  if get(g:, 'vital#random#xoshiro128starstar#use_pure', v:false) || !exists('*rand')
+  if !exists('*rand')
     " vim script pure implement
     let s:Generator = s:Generator_xoshiro128starstar
   else
@@ -232,7 +231,14 @@ function! s:Generator_xoshiro128starstar.seed(seeds) abort
 endfunction
 
 function! s:new_generator() abort
-  let gen = deepcopy(s:Generator)
+  " When defined global tune flag: pure implement using is true, use pure implement
+  if get(g:, 'vital#random#xoshiro128starstar#use_pure', v:false)
+    " vim script pure implement
+    let gen = deepcopy(s:Generator_xoshiro128starstar)
+  else
+    let gen = deepcopy(s:Generator)
+  endif
+
   call gen.seed([])
   return gen
 endfunction
