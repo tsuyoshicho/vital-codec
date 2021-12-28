@@ -1,6 +1,5 @@
 Describe Random. Xoshiro128StarStar
   Before all
-    let X = vital#vital#new().import('Random.Xoshiro128StarStar')
     let assert = themis#helper('assert')
 
     let B = vital#vital#new().import('Bitwise')
@@ -13,6 +12,7 @@ Describe Random. Xoshiro128StarStar
   Describe Random. Xoshiro128StarStar native
     Before all
       let g:vital#random#xoshiro128starstar#use_pure = v:false
+      let X = vital#vital#new().import('Random.Xoshiro128StarStar')
     End
 
     Describe .rand() native
@@ -52,7 +52,8 @@ Describe Random. Xoshiro128StarStar
         call r.seed([123456789])
         Assert Equals(r.next(), 4284103975)
       End
-      It run instance RNG 16bit over and kick jump & longjump & overlap
+      It run instance RNG 32bit over and kick jump & longjump & overlap
+        " 2^32 calls count up high
         " 2^64 calls jump
         " 2^96 calls long jump
         " 2^128 calls overlap
@@ -86,6 +87,7 @@ Describe Random. Xoshiro128StarStar
   Describe Random. Xoshiro128StarStar pure implements
     Before all
       let g:vital#random#xoshiro128starstar#use_pure = v:true
+      let X = vital#vital#new().import('Random.Xoshiro128StarStar')
     End
 
     Describe .rand() pure implements
@@ -125,7 +127,7 @@ Describe Random. Xoshiro128StarStar
         call r.seed([123456789])
         Assert Equals(r.next(), 4284103975)
       End
-      It run instance RNG 16bit over
+      It run instance RNG 32bit over
         let r = X.new_generator()
         call r.seed([123456789])
         " 2^32 calls count up high
