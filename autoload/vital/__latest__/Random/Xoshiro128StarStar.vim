@@ -93,20 +93,18 @@ let s:Generator_xoshiro128starstar = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_xoshiro128starstar._next() abort
-
   let result = s:B.uint32(
         \ s:B.rotate32l(self.info.s[1] * 5, 7) * 9
         \)
 
-  let t = s:B.uint32(s:B.lshift(self.info.s[1], 9))
+  let l:t = s:B.uint32(s:B.lshift(self.info.s[1], 9))
 
   let self.info.s[2] = s:B.xor(self.info.s[2], self.info.s[0])
   let self.info.s[3] = s:B.xor(self.info.s[3], self.info.s[1])
   let self.info.s[1] = s:B.xor(self.info.s[1], self.info.s[2])
   let self.info.s[0] = s:B.xor(self.info.s[0], self.info.s[3])
 
-  let self.info.s[2] = s:B.xor(self.info.s[2],         t)
-
+  let self.info.s[2] = s:B.xor(self.info.s[2],            l:t)
 
   let self.info.s[3] = s:B.uint32(
         \ s:B.rotate32l(self.info.s[3], 11)
@@ -116,7 +114,6 @@ function! s:Generator_xoshiro128starstar._next() abort
  endfunction
 
 function! s:Generator_xoshiro128starstar._jump() abort
-
   let jump = [
         \ s:B.or(s:B.lshift(0x8764, 16), 0x000b),
         \ s:B.or(s:B.lshift(0xf542, 16), 0xd2d3),
@@ -142,7 +139,6 @@ function! s:Generator_xoshiro128starstar._jump() abort
 endfunction
 
 function! s:Generator_xoshiro128starstar._longjump() abort
-
   let longjump = [
         \ s:B.or(s:B.lshift(0xb523, 16), 0x952e),
         \ s:B.or(s:B.lshift(0x0b6f, 16), 0x099f),
