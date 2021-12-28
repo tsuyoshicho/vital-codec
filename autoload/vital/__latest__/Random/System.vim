@@ -7,7 +7,6 @@ function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:Prelude = s:V.import('Prelude')
   let s:Process = s:V.import('System.Process')
-  " Fallback
   let s:Xoshiro128StarStar = s:V.import('Random.Xoshiro128StarStar')
 
   " fallback
@@ -22,11 +21,14 @@ function! s:_vital_loaded(V) abort
     elseif executable('openssl')
       let s:Generator = deepcopy(s:Generator_unix_openssl)
     elseif executable('od')
-      let s:Generator = deepcopy(s:Generator_unix_od)
+      let od = deepcopy(s:Generator_unix_od)
       if filereadable('/dev/urandom')
-        let s:Generator.info.path = '/dev/urandom'
+        let od.info.path = '/dev/urandom'
       elseif filereadable('/dev/random')
-        let s:Generator.info.path = '/dev/random'
+        let od.info.path = '/dev/random'
+      endif
+      if !empty(od.info.path)
+        let s:Generator = od
       endif
     endif
   endif
