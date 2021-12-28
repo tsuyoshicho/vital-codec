@@ -59,43 +59,44 @@ Describe Random. Xoshiro128StarStar pure implements
       Assert NotEquals(r.next(), r.next())
       Assert NotEquals(r.info.highcount, 0)
     End
-    It run instance RNG kick jump
-      let r = X.new_generator()
-      call r.seed([123456789])
-      " 2^64 calls jump
-      let r.info.longjumpcount = 0
-      let r.info.jumpcount     = 0
-      let r.info.highcount     = mask32bit
-      let r.info.lowcount      = mask32bit
-      Assert NotEquals(r.next(), r.next())
-      Assert NotEquals(r.info.jumpcount, 0)
-    End
-    It run instance RNG kick longjump
-      let r = X.new_generator()
-      call r.seed([123456789])
-      " 2^96 calls long jump
-      let r.info.longjumpcount = 0
-      let r.info.jumpcount     = mask32bit
-      let r.info.highcount     = mask32bit
-      let r.info.lowcount      = mask32bit
-      Assert NotEquals(r.next(), r.next())
-      Assert NotEquals(r.info.longjumpcount, 0)
-    End
-    It run instance RNG kick overlap
-      let r = X.new_generator()
-      call r.seed([123456789])
-      " 2^128 calls overlap
-      let r.info.longjumpcount = mask32bit
-      let r.info.jumpcount     = mask32bit
-      let r.info.highcount     = mask32bit
-      let r.info.lowcount      = mask32bit
-      let r2 = X.new_generator()
-      call r2.seed([123456789])
-      Assert Equals(r.next(), r2.next())
-      Assert Equals(r.info.highcount, 0)
-      Assert Equals(r.info.jumpcount, 0)
-      Assert Equals(r.info.longjumpcount, 0)
-    End
+    " currently skip
+    " It run instance RNG kick jump
+    "   let r = X.new_generator()
+    "   call r.seed([123456789])
+    "   " 2^64 calls jump
+    "   let r.info.longjumpcount = 0
+    "   let r.info.jumpcount     = 0
+    "   let r.info.highcount     = mask32bit
+    "   let r.info.lowcount      = mask32bit
+    "   Assert NotEquals(r.next(), r.next())
+    "   Assert NotEquals(r.info.jumpcount, 0)
+    " End
+    " It run instance RNG kick longjump
+    "   let r = X.new_generator()
+    "   call r.seed([123456789])
+    "   " 2^96 calls long jump
+    "   let r.info.longjumpcount = 0
+    "   let r.info.jumpcount     = mask32bit
+    "   let r.info.highcount     = mask32bit
+    "   let r.info.lowcount      = mask32bit
+    "   Assert NotEquals(r.next(), r.next())
+    "   Assert NotEquals(r.info.longjumpcount, 0)
+    " End
+    " It run instance RNG kick overlap
+    "   let r = X.new_generator()
+    "   call r.seed([123456789])
+    "   " 2^128 calls overlap
+    "   let r.info.longjumpcount = mask32bit
+    "   let r.info.jumpcount     = mask32bit
+    "   let r.info.highcount     = mask32bit
+    "   let r.info.lowcount      = mask32bit
+    "   let r2 = X.new_generator()
+    "   call r2.seed([123456789])
+    "   Assert Equals(r.next(), r2.next())
+    "   Assert Equals(r.info.highcount, 0)
+    "   Assert Equals(r.info.jumpcount, 0)
+    "   Assert Equals(r.info.longjumpcount, 0)
+    " End
   End
 
   Describe Generator.min() pure implements
