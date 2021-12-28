@@ -33,7 +33,7 @@ Describe Random.System
     End
     It arg num error to assertion
       if has('patch-8.0.1630')
-        Throws /^vital: Random.System:/ X.srand(1,2)
+        Throws /^vital: Random.System:/ X.srand(1, 2)
       else
         Skip not support
       endif

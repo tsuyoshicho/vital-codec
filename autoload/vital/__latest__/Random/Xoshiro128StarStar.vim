@@ -81,7 +81,7 @@ endfunction
 " worldwide. This software is distributed without any warranty.
 "
 " See <http://creativecommons.org/publicdomain/zero/1.0/>. */
-"
+
 let s:Generator_xoshiro128starstar = extend({
       \ 'info' : {
       \   's'             : [0, 1, 2, 3],
