@@ -1,6 +1,7 @@
 Describe Random. Xoshiro128StarStar
   Before all
     let X = vital#vital#new().import('Random.Xoshiro128StarStar')
+    let assert = themis#helper('assert')
   End
 
   Describe Random. Xoshiro128StarStar native
@@ -17,6 +18,25 @@ Describe Random. Xoshiro128StarStar
         Assert Equals(X.rand(), 2701803082)
         Assert Equals(X.rand(), 2658065534)
         Assert Equals(X.rand(), 3104308804)
+      End
+    End
+
+    Describe .srand() native
+      It sets the seed with no arguments
+        " call no args and not throw exception
+        call X.srand()
+        Assert NotEquals(X.rand(), -1)
+      End
+      It sets the seed with many arguments, then throw exception
+        " call no args and not throw exception
+        Throw /^vital: Random.Xoshiro128StarStar:/ X.srand(1, 2)
+      End
+    End
+
+    Describe .new_generator() native
+      It generator constructer check
+        let r = X.new_generator()
+        call assert.is_dictionary(r)
       End
     End
 
@@ -75,12 +95,13 @@ Describe Random. Xoshiro128StarStar
       End
     End
 
-    Describe .srand() native
-      It sets the seed
-        Skip test, work with rand()
+    Describe Generator.seed() native
+      It instance RNG's seed list
+        let r = X.new_generator()
+        call r.seed([1, 2, 3, 4])
+        Assert NotEquals(r.next(), -1)
       End
     End
-
   End
 
   Describe Random. Xoshiro128StarStar pure implements
@@ -97,6 +118,25 @@ Describe Random. Xoshiro128StarStar
         Assert Equals(X.rand(), 2701803082)
         Assert Equals(X.rand(), 2658065534)
         Assert Equals(X.rand(), 3104308804)
+      End
+    End
+
+    Describe .srand() pure implements
+      It sets the seed with no arguments
+        " call no args and not throw exception
+        call X.srand()
+        Assert NotEquals(X.rand(), -1)
+      End
+      It sets the seed with many arguments, then throw exception
+        " call no args and not throw exception
+        Throw /^vital: Random.Xoshiro128StarStar:/ X.srand(1, 2)
+      End
+    End
+
+    Describe .new_generator() pure implements
+      It generator constructer check
+        let r = X.new_generator()
+        call assert.is_dictionary(r)
       End
     End
 
@@ -155,9 +195,11 @@ Describe Random. Xoshiro128StarStar
       End
     End
 
-    Describe .srand() pure implements
-      It sets the seed
-        Skip test, work with rand()
+    Describe Generator.seed() pure implements
+      It instance RNG's seed list
+        let r = X.new_generator()
+        call r.seed([1, 2, 3, 4])
+        Assert NotEquals(r.next(), -1)
       End
     End
   End
