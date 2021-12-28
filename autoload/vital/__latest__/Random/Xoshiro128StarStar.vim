@@ -164,32 +164,32 @@ function! s:Generator_xoshiro128starstar._longjump() abort
 endfunction
 
 function! s:Generator_xoshiro128starstar.next() abort
-  if self.info.longjumpcount     == s:mask32bit
-        \ && self.info.jumpcount == s:mask32bit
-        \ && self.info.highcount == s:mask32bit
-        \ && self.info.lowcount  == s:mask32bit
+  if s:mask32bit == s:B.and(self.info.longjumpcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.jumpcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.highcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.lowcount, s:mask32bit)
     " 2^128 calls overlap
     let self.info.longjumpcount = 0
     let self.info.jumpcount     = 0
     let self.info.highcount     = 0
     let self.info.lowcount      = 0
-  elseif self.info.jumpcount     == s:mask32bit
-        \ && self.info.highcount == s:mask32bit
-        \ && self.info.lowcount  == s:mask32bit
+  elseif s:mask32bit == s:B.and(self.info.jumpcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.highcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.lowcount, s:mask32bit)
     " 2^96 calls long jump
     let self.info.longjumpcount = self.info.longjumpcount + 1
     let self.info.jumpcount     = 0
     let self.info.highcount     = 0
     let self.info.lowcount      = 0
     call self._longjump()
-  elseif self.info.highcount    == s:mask32bit
-        \ && self.info.lowcount == s:mask32bit
+  elseif s:mask32bit == s:B.and(self.info.highcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.lowcount, s:mask32bit)
     " 2^64 calls jump
     let self.info.jumpcount = self.info.jumpcount + 1
     let self.info.highcount = 0
     let self.info.lowcount  = 0
     call self._jump()
-  elseif self.info.lowcount == s:mask32bit
+  elseif s:mask32bit == s:B.and(self.info.lowcount, s:mask32bit)
     " 2^32 calls
     let self.info.highcount = self.info.highcount + 1
     let self.info.lowcount  = 0
