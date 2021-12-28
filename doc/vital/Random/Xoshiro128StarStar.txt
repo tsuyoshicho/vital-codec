@@ -9,7 +9,7 @@ INTRODUCTION			|Vital.Random.Xoshiro128StarStar-introduction|
 INTERFACE			|Vital.Random.Xoshiro128StarStar-interface|
   FUNCTIONS			|Vital.Random.Xoshiro128StarStar-functions|
 SETTING				|Vital.Random.Xoshiro128StarStar-setting|
-VARIABLES			|Vital.Random.Xoshiro128StarStar-variables|
+  VARIABLES			|Vital.Random.Xoshiro128StarStar-variables|
 OBJECTS				|Vital.Random.Xoshiro128StarStar-objects|
 
 ==============================================================================
