@@ -15,14 +15,15 @@ function! s:_vital_loaded(V) abort
           \            0xFFFF
           \)
 
-  " built-in rand(xoshiro128** implement) and global tune flag: pure implement use are false
-  if exists('*rand') && !get(g:, 'vital#random#xoshiro128starstar#use_pure', v:false)
-    " vim native implement
-    let s:Generator = s:Generator_vim_rand
-  else
+  " global tune flag: pure implement using is true fore built-in rand(xoshiro128** implement) not implements
+  if get(g:, 'vital#random#xoshiro128starstar#use_pure', v:false) || !exists('*rand')
     " vim script pure implement
     let s:Generator = s:Generator_xoshiro128starstar
+  else
+    " vim native implement
+    let s:Generator = s:Generator_vim_rand
   endif
+
   " lock method,
   lockvar 1 s:Generator
 endfunction

@@ -75,7 +75,7 @@ g:vital#random#xoshiro128starstar#use_pure
     NOTE:When built-in rand not exists, this value are ignored it(force use
     pure implements).
     This value is affect to "vital library: Random.Xoshiro128StarStar" global
-    settings.
+    settings and affect timing at module loading.
 
 
 ==============================================================================
