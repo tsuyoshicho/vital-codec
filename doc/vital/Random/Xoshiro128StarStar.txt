@@ -56,7 +56,7 @@ rand()					*Vital.Random.Xoshiro128StarStar.rand()*
 	doesn't have an unsigned integer type.
 
 new_generator()				*Vital.Random.Xoshiro128StarStar.new_generator()*
-	Create a new Generator object(|Vital.Random.Xoshiro128StarStar-Generator|).
+	Create a new Generator object(|Vital.Random.Xoshiro128StarStar-objects|).
 
 
 ==============================================================================
@@ -72,8 +72,8 @@ g:vital#random#xoshiro128starstar#use_pure
     Default: v:false
 
     When set v:true to enable using pure Vim script implement using.
-    NOTE:When built-in rand not exists, this value are ignored it(force use
-    pure implements).
+    NOTE:When built-in |rand()| not exists, this value are ignored it(force
+    use pure implements).
     This value is affect to "vital library: Random.Xoshiro128StarStar" global
     settings and affect timing at
     |Vital.Random.Xoshiro128StarStar.new_generator()|.
