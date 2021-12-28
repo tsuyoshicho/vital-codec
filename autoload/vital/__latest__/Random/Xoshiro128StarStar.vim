@@ -124,7 +124,6 @@ function! s:Generator_xoshiro128starstar._jump() abort
   let l:s = [0, 0, 0, 0]
   for i in range(len(jump))
     for b in range(32)
-
       if s:B.and(jump[i], s:B.uint32(s:B.lshift(1, b)))
         for n in range(len(l:s))
           let l:s[n] = s:B.xor(l:s[n], self.info.s[n])
@@ -132,10 +131,10 @@ function! s:Generator_xoshiro128starstar._jump() abort
       endif
       call self._next()
     endfor
-
-    " @vimlint(EVL102, 1, l:self)
-    let self.info.s = l:s
   endfor
+
+  " @vimlint(EVL102, 1, l:self)
+  let self.info.s = l:s
 endfunction
 
 function! s:Generator_xoshiro128starstar._longjump() abort
@@ -147,20 +146,19 @@ function! s:Generator_xoshiro128starstar._longjump() abort
         \]
 
   let l:s = [0, 0, 0, 0]
-    for i in range(len(longjump))
-      for b in range(32)
-
-        if s:B.and(longjump[i], s:B.uint32(s:B.lshift(1, b)))
-         for n in range(len(l:s))
-           let l:s[n] = s:B.xor(l:s[n], self.info.s[n])
-         endfor
-       endif
-       call self._next()
-     endfor
-
-    " @vimlint(EVL102, 1, l:self)
-    let self.info.s = l:s
+  for i in range(len(longjump))
+    for b in range(32)
+      if s:B.and(longjump[i], s:B.uint32(s:B.lshift(1, b)))
+        for n in range(len(l:s))
+          let l:s[n] = s:B.xor(l:s[n], self.info.s[n])
+        endfor
+      endif
+      call self._next()
+    endfor
   endfor
+
+  " @vimlint(EVL102, 1, l:self)
+  let self.info.s = l:s
 endfunction
 
 function! s:Generator_xoshiro128starstar.next() abort
