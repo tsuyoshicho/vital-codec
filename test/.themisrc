@@ -2,7 +2,7 @@ set encoding=utf-8
 
 call themis#option('recursive', 1)
 if v:version < 820
-  call themis#option('exclude', ['test/Random/Xoshiro128StarStar.vimspec'])
+  call themis#option('exclude', ['test/Random/Xoshiro128StarStar_native.vimspec'])
 endif
 if !has('patch-8.1.1671')
   call themis#option('exclude', ['test/Vim/Type/Blob.vimspec'])

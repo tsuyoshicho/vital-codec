@@ -15,8 +15,7 @@ function! s:_vital_loaded(V) abort
           \            0xFFFF
           \)
 
-  " global tune flag: pure implement using is true fore built-in rand(xoshiro128** implement) not implements
-  if get(g:, 'vital#random#xoshiro128starstar#use_pure', v:false) || !exists('*rand')
+  if !exists('*rand')
     " vim script pure implement
     let s:Generator = s:Generator_xoshiro128starstar
   else
@@ -94,20 +93,18 @@ let s:Generator_xoshiro128starstar = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_xoshiro128starstar._next() abort
-
   let result = s:B.uint32(
         \ s:B.rotate32l(self.info.s[1] * 5, 7) * 9
         \)
 
-  let t = s:B.uint32(s:B.lshift(self.info.s[1], 9))
+  let l:t = s:B.uint32(s:B.lshift(self.info.s[1], 9))
 
   let self.info.s[2] = s:B.xor(self.info.s[2], self.info.s[0])
   let self.info.s[3] = s:B.xor(self.info.s[3], self.info.s[1])
   let self.info.s[1] = s:B.xor(self.info.s[1], self.info.s[2])
   let self.info.s[0] = s:B.xor(self.info.s[0], self.info.s[3])
 
-  let self.info.s[2] = s:B.xor(self.info.s[2],         t)
-
+  let self.info.s[2] = s:B.xor(self.info.s[2],            l:t)
 
   let self.info.s[3] = s:B.uint32(
         \ s:B.rotate32l(self.info.s[3], 11)
@@ -117,7 +114,6 @@ function! s:Generator_xoshiro128starstar._next() abort
  endfunction
 
 function! s:Generator_xoshiro128starstar._jump() abort
-
   let jump = [
         \ s:B.or(s:B.lshift(0x8764, 16), 0x000b),
         \ s:B.or(s:B.lshift(0xf542, 16), 0xd2d3),
@@ -125,25 +121,24 @@ function! s:Generator_xoshiro128starstar._jump() abort
         \ s:B.or(s:B.lshift(0x77f2, 16), 0xdb5b),
         \]
 
-  let s = [0, 0, 0, 0]
+  let l:s = [0, 0, 0, 0]
   for i in range(len(jump))
     for b in range(32)
 
       if s:B.and(jump[i], s:B.uint32(s:B.lshift(1, b)))
-        for n in range(len(s))
-          let s[n] = s:B.xor(s[n], self.info.s[n])
+        for n in range(len(l:s))
+          let l:s[n] = s:B.xor(l:s[n], self.info.s[n])
         endfor
       endif
       call self._next()
     endfor
 
     " @vimlint(EVL102, 1, l:self)
-    let self.info.s = s
+    let self.info.s = l:s
   endfor
 endfunction
 
 function! s:Generator_xoshiro128starstar._longjump() abort
-
   let longjump = [
         \ s:B.or(s:B.lshift(0xb523, 16), 0x952e),
         \ s:B.or(s:B.lshift(0x0b6f, 16), 0x099f),
@@ -151,50 +146,50 @@ function! s:Generator_xoshiro128starstar._longjump() abort
         \ s:B.or(s:B.lshift(0x1c58, 16), 0x0662),
         \]
 
-  let s = [0, 0, 0, 0]
+  let l:s = [0, 0, 0, 0]
     for i in range(len(longjump))
       for b in range(32)
 
         if s:B.and(longjump[i], s:B.uint32(s:B.lshift(1, b)))
-         for n in range(len(s))
-           let s[n] = s:B.xor(s[n], self.info.s[n])
+         for n in range(len(l:s))
+           let l:s[n] = s:B.xor(l:s[n], self.info.s[n])
          endfor
        endif
        call self._next()
      endfor
 
     " @vimlint(EVL102, 1, l:self)
-    let self.info.s = s
+    let self.info.s = l:s
   endfor
 endfunction
 
 function! s:Generator_xoshiro128starstar.next() abort
-  if self.info.longjumpcount     == s:mask32bit
-        \ && self.info.jumpcount == s:mask32bit
-        \ && self.info.highcount == s:mask32bit
-        \ && self.info.lowcount  == s:mask32bit
+  if s:mask32bit == s:B.and(self.info.longjumpcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.jumpcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.highcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.lowcount, s:mask32bit)
     " 2^128 calls overlap
     let self.info.longjumpcount = 0
     let self.info.jumpcount     = 0
     let self.info.highcount     = 0
     let self.info.lowcount      = 0
-  elseif self.info.jumpcount     == s:mask32bit
-        \ && self.info.highcount == s:mask32bit
-        \ && self.info.lowcount  == s:mask32bit
+  elseif s:mask32bit == s:B.and(self.info.jumpcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.highcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.lowcount, s:mask32bit)
     " 2^96 calls long jump
     let self.info.longjumpcount = self.info.longjumpcount + 1
     let self.info.jumpcount     = 0
     let self.info.highcount     = 0
     let self.info.lowcount      = 0
-    call self.info._longjump()
-  elseif self.info.highcount    == s:mask32bit
-        \ && self.info.lowcount == s:mask32bit
+    call self._longjump()
+  elseif s:mask32bit == s:B.and(self.info.highcount, s:mask32bit)
+        \ && s:mask32bit == s:B.and(self.info.lowcount, s:mask32bit)
     " 2^64 calls jump
     let self.info.jumpcount = self.info.jumpcount + 1
     let self.info.highcount = 0
     let self.info.lowcount  = 0
     call self._jump()
-  elseif self.info.lowcount == s:mask32bit
+  elseif s:mask32bit == s:B.and(self.info.lowcount, s:mask32bit)
     " 2^32 calls
     let self.info.highcount = self.info.highcount + 1
     let self.info.lowcount  = 0
@@ -232,7 +227,14 @@ function! s:Generator_xoshiro128starstar.seed(seeds) abort
 endfunction
 
 function! s:new_generator() abort
-  let gen = deepcopy(s:Generator)
+  " When defined global tune flag: pure implement using is true, use pure implement
+  if get(g:, 'vital#random#xoshiro128starstar#use_pure', v:false)
+    " vim script pure implement
+    let gen = deepcopy(s:Generator_xoshiro128starstar)
+  else
+    let gen = deepcopy(s:Generator)
+  endif
+
   call gen.seed([])
   return gen
 endfunction
