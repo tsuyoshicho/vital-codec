@@ -1,9 +1,8 @@
 set encoding=utf-8
 
 call themis#option('recursive', 1)
-call themis#option('exclude', ['test/_testdata/', 'test/README.md'])
-if !has('nvim') && v:version < 800
-  call themis#option('exclude', ['test/Async/Promise.vimspec'])
+if v:version < 820
+  call themis#option('exclude', ['test/Random/Xoshiro128StarStar.vimspec'])
 endif
 if !has('patch-8.1.1671')
   call themis#option('exclude', ['test/Vim/Type/Blob.vimspec'])
