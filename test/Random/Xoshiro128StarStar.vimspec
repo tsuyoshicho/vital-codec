@@ -1,6 +1,5 @@
 Describe Random. Xoshiro128StarStar
   Before all
-    let X = vital#vital#new().import('Random.Xoshiro128StarStar')
     let assert = themis#helper('assert')
 
     let B = vital#vital#new().import('Bitwise')
@@ -13,6 +12,7 @@ Describe Random. Xoshiro128StarStar
   Describe Random. Xoshiro128StarStar native
     Before all
       let g:vital#random#xoshiro128starstar#use_pure = v:false
+      let X = vital#vital#new().import('Random.Xoshiro128StarStar')
     End
 
     Describe .rand() native
@@ -52,18 +52,8 @@ Describe Random. Xoshiro128StarStar
         call r.seed([123456789])
         Assert Equals(r.next(), 4284103975)
       End
-      It run instance RNG high count start
-        let r = X.new_generator()
-        call r.seed([123456789])
-        " 2^32 calls
-        for byte in range(4)
-          for bit in range(8)
-            call r.next()
-          endfor
-        endfor
-        Assert NotEquals(r.next(), r.next())
-      End
-      It run instance RNG 16bit over and kick jump & longjump & overlap
+      It run instance RNG 32bit over and kick jump & longjump & overlap
+        " 2^32 calls count up high
         " 2^64 calls jump
         " 2^96 calls long jump
         " 2^128 calls overlap
@@ -97,6 +87,7 @@ Describe Random. Xoshiro128StarStar
   Describe Random. Xoshiro128StarStar pure implements
     Before all
       let g:vital#random#xoshiro128starstar#use_pure = v:true
+      let X = vital#vital#new().import('Random.Xoshiro128StarStar')
     End
 
     Describe .rand() pure implements
@@ -136,27 +127,16 @@ Describe Random. Xoshiro128StarStar
         call r.seed([123456789])
         Assert Equals(r.next(), 4284103975)
       End
-      It run instance RNG high count start
+      It run instance RNG 32bit over
         let r = X.new_generator()
         call r.seed([123456789])
-        " 2^32 calls
-        for byte in range(4)
-          for bit in range(8)
-            call r.next()
-          endfor
-        endfor
-        Assert NotEquals(r.next(), r.next())
-      End
-      It run instance RNG 16bit over
-        let r = X.new_generator()
-        call r.seed([123456789])
-        " 2^64 calls jump
+        " 2^32 calls count up high
         let r.info.longjumpcount = 0
         let r.info.jumpcount     = 0
         let r.info.highcount     = 0
         let r.info.lowcount      = mask32bit
         Assert NotEquals(r.next(), r.next())
-        " Assert NotEquals(r.info.highcount, 0)
+        Assert NotEquals(r.info.highcount, 0)
       End
       It run instance RNG kick jump
         let r = X.new_generator()
@@ -167,7 +147,7 @@ Describe Random. Xoshiro128StarStar
         let r.info.highcount     = mask32bit
         let r.info.lowcount      = mask32bit
         Assert NotEquals(r.next(), r.next())
-        " Assert NotEquals(r.info.jumpcount, 0)
+        Assert NotEquals(r.info.jumpcount, 0)
       End
       It run instance RNG kick longjump
         let r = X.new_generator()
@@ -178,7 +158,7 @@ Describe Random. Xoshiro128StarStar
         let r.info.highcount     = mask32bit
         let r.info.lowcount      = mask32bit
         Assert NotEquals(r.next(), r.next())
-        " Assert NotEquals(r.info.longjumpcount, 0)
+        Assert NotEquals(r.info.longjumpcount, 0)
       End
       It run instance RNG kick overlap
         let r = X.new_generator()
@@ -191,9 +171,9 @@ Describe Random. Xoshiro128StarStar
         let r2 = X.new_generator()
         call r2.seed([123456789])
         Assert Equals(r.next(), r2.next())
-        " Assert Equals(r.info.highcount, 0)
-        " Assert Equals(r.info.jumpcount, 0)
-        " Assert Equals(r.info.longjumpcount, 0)
+        Assert Equals(r.info.highcount, 0)
+        Assert Equals(r.info.jumpcount, 0)
+        Assert Equals(r.info.longjumpcount, 0)
       End
     End
 
