@@ -124,20 +124,20 @@ function! s:Generator_xoshiro128starstar._jump() abort
         \ s:B.or(s:B.lshift(0x77f2, 16), 0xdb5b),
         \]
 
-  let s = [0, 0, 0, 0]
+  let l:s = [0, 0, 0, 0]
   for i in range(len(jump))
     for b in range(32)
 
       if s:B.and(jump[i], s:B.uint32(s:B.lshift(1, b)))
-        for n in range(len(s))
-          let s[n] = s:B.xor(s[n], self.info.s[n])
+        for n in range(len(l:s))
+          let l:s[n] = s:B.xor(l:s[n], self.info.s[n])
         endfor
       endif
       call self._next()
     endfor
 
     " @vimlint(EVL102, 1, l:self)
-    let self.info.s = s
+    let self.info.s = l:s
   endfor
 endfunction
 
@@ -150,20 +150,20 @@ function! s:Generator_xoshiro128starstar._longjump() abort
         \ s:B.or(s:B.lshift(0x1c58, 16), 0x0662),
         \]
 
-  let s = [0, 0, 0, 0]
+  let l:s = [0, 0, 0, 0]
     for i in range(len(longjump))
       for b in range(32)
 
         if s:B.and(longjump[i], s:B.uint32(s:B.lshift(1, b)))
-         for n in range(len(s))
-           let s[n] = s:B.xor(s[n], self.info.s[n])
+         for n in range(len(l:s))
+           let l:s[n] = s:B.xor(l:s[n], self.info.s[n])
          endfor
        endif
        call self._next()
      endfor
 
     " @vimlint(EVL102, 1, l:self)
-    let self.info.s = s
+    let self.info.s = l:s
   endfor
 endfunction
 
@@ -185,7 +185,7 @@ function! s:Generator_xoshiro128starstar.next() abort
     let self.info.jumpcount     = 0
     let self.info.highcount     = 0
     let self.info.lowcount      = 0
-    call self.info._longjump()
+    call self._longjump()
   elseif self.info.highcount    == s:mask32bit
         \ && self.info.lowcount == s:mask32bit
     " 2^64 calls jump
