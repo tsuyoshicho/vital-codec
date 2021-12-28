@@ -52,17 +52,6 @@ Describe Random. Xoshiro128StarStar
         call r.seed([123456789])
         Assert Equals(r.next(), 4284103975)
       End
-      It run instance RNG high count start
-        let r = X.new_generator()
-        call r.seed([123456789])
-        " 2^32 calls
-        for byte in range(4)
-          for bit in range(8)
-            call r.next()
-          endfor
-        endfor
-        Assert NotEquals(r.next(), r.next())
-      End
       It run instance RNG 16bit over and kick jump & longjump & overlap
         " 2^64 calls jump
         " 2^96 calls long jump
@@ -136,21 +125,10 @@ Describe Random. Xoshiro128StarStar
         call r.seed([123456789])
         Assert Equals(r.next(), 4284103975)
       End
-      It run instance RNG high count start
-        let r = X.new_generator()
-        call r.seed([123456789])
-        " 2^32 calls
-        for byte in range(4)
-          for bit in range(8)
-            call r.next()
-          endfor
-        endfor
-        Assert NotEquals(r.next(), r.next())
-      End
       It run instance RNG 16bit over
         let r = X.new_generator()
         call r.seed([123456789])
-        " 2^64 calls jump
+        " 2^32 calls count up high
         let r.info.longjumpcount = 0
         let r.info.jumpcount     = 0
         let r.info.highcount     = 0
