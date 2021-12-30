@@ -10,6 +10,9 @@ function! s:_vital_loaded(V) abort
   let s:P = a:V.import('Prelude')
   let s:B = a:V.import('Bitwise')
 
+  " use pure flag
+  let s:use_pure_flag = v:false
+
   let s:mask32bit = s:B.or(
           \ s:B.lshift(0xFFFF, 16),
           \            0xFFFF
@@ -226,7 +229,7 @@ endfunction
 
 function! s:new_generator() abort
   " When defined global tune flag: pure implement using is true, use pure implement
-  if get(g:, 'vital#random#xoshiro128starstar#use_pure', v:false)
+  if s:use_pure_flag
     " vim script pure implement
     let gen = deepcopy(s:Generator_xoshiro128starstar)
   else
@@ -235,6 +238,11 @@ function! s:new_generator() abort
 
   call gen.seed([])
   return gen
+endfunction
+
+function! s:use_pure(flag) abort
+  " cast bool
+  let s:use_pure_flag = a:flag ? v:true : v:false
 endfunction
 
 function! s:_common_generator() abort

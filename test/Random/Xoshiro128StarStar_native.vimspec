@@ -1,7 +1,7 @@
 Describe Random. Xoshiro128StarStar native
   Before all
-    let g:vital#random#xoshiro128starstar#use_pure = v:false
     let X = vital#vital#new().import('Random.Xoshiro128StarStar')
+    call X.use_pure(v:false)
     let assert = themis#helper('assert')
 
     let B = vital#vital#new().import('Bitwise')

@@ -1,5 +1,4 @@
 set encoding=utf-8
-language C
 
 call themis#option('recursive', 1)
 call themis#option('exclude', ['test/_testdata/', 'test/README.md'])
@@ -27,6 +26,8 @@ if $THEMIS_PROFILE !=# ''
   execute 'profile' 'start' $THEMIS_PROFILE
   profile! file ./autoload/*
 endif
+
+language C
 
 " Show environmental information for debugging
 if $CI !=# ''
