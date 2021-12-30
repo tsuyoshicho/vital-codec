@@ -8,8 +8,6 @@ CONTENTS					*Vital.Random.Xoshiro128StarStar-contents*
 INTRODUCTION			|Vital.Random.Xoshiro128StarStar-introduction|
 INTERFACE			|Vital.Random.Xoshiro128StarStar-interface|
   FUNCTIONS			|Vital.Random.Xoshiro128StarStar-functions|
-SETTING				|Vital.Random.Xoshiro128StarStar-setting|
-  VARIABLES			|Vital.Random.Xoshiro128StarStar-variables|
 OBJECTS				|Vital.Random.Xoshiro128StarStar-objects|
 
 ==============================================================================
@@ -58,25 +56,13 @@ rand()					*Vital.Random.Xoshiro128StarStar.rand()*
 new_generator()				*Vital.Random.Xoshiro128StarStar.new_generator()*
 	Create a new Generator object(|Vital.Random.Xoshiro128StarStar-objects|).
 
-
-==============================================================================
-SETTING					*Vital.Random.Xoshiro128StarStar-setting*
-
-------------------------------------------------------------------------------
-VARIABLES				  *Vital.Random.Xoshiro128StarStar-variables*
-
-
-					*g:vital#random#xoshiro128starstar#use_pure*
-g:vital#random#xoshiro128starstar#use_pure
-    Type: |Boolean|
-    Default: v:false
-
-    When set v:true to enable using pure Vim script implement using.
-    NOTE:When built-in |rand()| not exists, this value are ignored it(force
-    use pure implements).
-    This value is affect to "vital library: Random.Xoshiro128StarStar" global
-    settings and affect timing at
-    |Vital.Random.Xoshiro128StarStar.new_generator()|.
+use_pure({bool})			*Vital.Random.Xoshiro128StarStar.use_pure()*
+	Generator type flag set method.
+	When {bool} is v:true,
+	|Vital.Random.Xoshiro128StarStar.new_generator()| return pure Vim
+	script implemented xoshiro128** generator. Otherwise return Vim native
+	`rand()` used generator if `rand()` exists, or else return pure Vim
+	script implemented.
 
 
 ==============================================================================
