@@ -29,6 +29,14 @@ Describe Random. Xoshiro128StarStar native
       call X.srand()
       Assert NotEquals(X.rand(), -1)
     End
+    It sets the seed number
+      call X.srand(1)
+      Assert NotEquals(X.rand(), -1)
+    End
+    It sets the seed list
+      call X.srand([1, 2, 3, 4])
+      Assert NotEquals(X.rand(), -1)
+    End
     It sets the seed with many arguments, then throw exception
       " call no args and not throw exception
       Throw /^vital: Random.Xoshiro128StarStar:/ X.srand(1, 2)
