@@ -7,6 +7,7 @@ function! s:_vital_loaded(V) abort
   let s:V = a:V
   let s:Prelude = s:V.import('Prelude')
   let s:Process = s:V.import('System.Process')
+  let s:Type     = s:V.import('Vim.Type')
   let s:Xoshiro128StarStar = s:V.import('Random.Xoshiro128StarStar')
 
   " fallback
@@ -34,10 +35,11 @@ function! s:_vital_loaded(V) abort
   endif
 
   lockvar 3 s:Generator
+  unlet! s:Prelude
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Prelude', 'System.Process', 'Random.Xoshiro128StarStar']
+  return ['Prelude', 'Vim.Type', 'System.Process', 'Random.Xoshiro128StarStar']
 endfunction
 
 " core
@@ -144,12 +146,18 @@ endfunction
 function! s:srand(...) abort
   if a:0 == 0
     let x = has('reltime') ? reltime()[1] : localtime()
+    let arg = [x]
   elseif a:0 == 1
     let x = a:1
+    if type(x) == s:Type.types.list
+      let arg = x
+    else
+      let arg = [x]
+    endif
   else
     throw 'vital: Random.System: srand(): too many arguments'
   endif
-  call s:_common_generator().seed([x])
+  call s:_common_generator().seed(arg)
 endfunction
 
 function! s:rand() abort
