@@ -66,12 +66,12 @@ function! s:Generator_core.seed(seeds) abort
 endfunction
 " @vimlint(EVL103, 0, a:seeds)
 
-function! s:Generator_core._exec(cmd, hexcount) abort
+function! s:Generator_core._exec(cmd, base, prefix) abort
   let value = 0
 
   let result = s:Process.execute(a:cmd)
   if result.success
-    let value = str2nr('0x' . trim(result.content[0]), a:hexcount)
+    let value = str2nr(a:prefix . trim(result.content[0]), a:base)
   endif
   return value
 endfunction
@@ -85,7 +85,7 @@ let s:Generator_windows_cmd = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_windows_cmd.next() abort
-  return self._exec(['cmd', '/c', 'echo %random%'], 10)
+  return self._exec(['cmd', '/c', 'echo %random%'], 10, '')
 endfunction
 
 " Unix bash
@@ -97,7 +97,7 @@ let s:Generator_unix_bash = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_unix_bash.next() abort
-  return self._exec(['bash', '-c', 'echo $RANDOM'], 10)
+  return self._exec(['bash', '-c', 'echo $RANDOM'], 10, '')
 endfunction
 
 " Unix openssl
@@ -109,7 +109,7 @@ let s:Generator_unix_openssl = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_unix_openssl.next() abort
-  return self._exec(['openssl', 'rand', '-hex', '4'], 16)
+  return self._exec(['openssl', 'rand', '-hex', '4'], 16, '0x')
 endfunction
 
 " Unix od
@@ -124,7 +124,7 @@ let s:Generator_unix_od = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_unix_od.next() abort
-  return self._exec(['od', '-vAn', '--width=4', '-tx4', '-N4', self.info.path], 16)
+  return self._exec(['od', '-vAn', '--width=4', '-tx4', '-N4', self.info.path], 16, '0x')
 endfunction
 
 " --------------------------------------------------
