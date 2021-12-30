@@ -7,8 +7,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:_vital_loaded(V) abort
-  let s:P = a:V.import('Prelude')
-  let s:B = a:V.import('Bitwise')
+  let s:V    = a:V
+  let s:B    = s:V.import('Bitwise')
+  let s:Type = s:V.import('Vim.Type')
 
   " use pure flag
   let s:use_pure_flag = v:false
@@ -31,7 +32,7 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Prelude', 'Bitwise']
+  return ['Bitwise', 'Vim.Type']
 endfunction
 
 " core
@@ -255,12 +256,18 @@ endfunction
 function! s:srand(...) abort
   if a:0 == 0
     let x = has('reltime') ? reltime()[1] : localtime()
+    let arg = [x]
   elseif a:0 == 1
     let x = a:1
+    if type(x) == s:Type.types.list
+      let arg = x
+    else
+      let arg = [x]
+    endif
   else
     throw 'vital: Random.Xoshiro128StarStar: srand(): too many arguments'
   endif
-  call s:_common_generator().seed([x])
+  call s:_common_generator().seed(arg)
 endfunction
 
 function! s:rand() abort

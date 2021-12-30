@@ -31,6 +31,14 @@ Describe Random.System
         Skip not support
       endif
     End
+    It sets the seed list
+      if has('patch-8.0.1630')
+        call X.srand([1, 2, 3, 4])
+        Assert NotEquals(X.rand(), -1)
+      else
+        Skip not support
+      endif
+    End
     It arg num error to assertion
       if has('patch-8.0.1630')
         Throws /^vital: Random.System:/ X.srand(1, 2)
