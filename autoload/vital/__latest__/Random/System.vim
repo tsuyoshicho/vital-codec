@@ -64,6 +64,16 @@ function! s:Generator_core.seed(seeds) abort
 endfunction
 " @vimlint(EVL103, 0, a:seeds)
 
+function! s:Generator_core._exec(cmd, hexcount) abort
+  let value = 0
+
+  let result = s:Process.execute(a:cmd)
+  if result.success
+    let value = str2nr('0x' . trim(result.content[0]), a:hexcount)
+  endif
+  return value
+endfunction
+
 " Windows cmd
 let s:Generator_windows_cmd = extend({
       \ 'core' : {
@@ -73,14 +83,7 @@ let s:Generator_windows_cmd = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_windows_cmd.next() abort
-  let value = 0
-
-  let cmd = ['cmd', '/c', 'echo %random%']
-  let result = s:Process.execute(cmd)
-  if result.success
-    let value = str2nr('0x' . trim(result.content[0]), 10)
-  endif
-  return value
+  return self._exec(['cmd', '/c', 'echo %random%'], 10)
 endfunction
 
 " Unix bash
@@ -92,14 +95,7 @@ let s:Generator_unix_bash = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_unix_bash.next() abort
-  let value = 0
-
-  let cmd = ['bash', '-c', 'echo $RANDOM']
-  let result = s:Process.execute(cmd)
-  if result.success
-    let value = str2nr('0x' . trim(result.content[0]), 10)
-  endif
-  return value
+  return self._exec(['bash', '-c', 'echo $RANDOM'], 10)
 endfunction
 
 " Unix openssl
@@ -111,14 +107,7 @@ let s:Generator_unix_openssl = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_unix_openssl.next() abort
-  let value = 0
-
-  let cmd = ['openssl', 'rand', '-hex', '4']
-  let result = s:Process.execute(cmd)
-  if result.success
-    let value = str2nr('0x' . trim(result.content[0]), 16)
-  endif
-  return value
+  return self._exec(['openssl', 'rand', '-hex', '4'], 16)
 endfunction
 
 " Unix od
@@ -133,14 +122,7 @@ let s:Generator_unix_od = extend({
       \}, s:Generator_core, 'keep')
 
 function! s:Generator_unix_od.next() abort
-  let value = 0
-
-  let cmd = ['od', '-vAn', '--width=4', '-tx4', '-N4', self.info.path]
-  let result = s:Process.execute(cmd)
-  if result.success
-    let value = str2nr('0x' . trim(result.content[0]), 16)
-  endif
-  return value
+  return self._exec(['od', '-vAn', '--width=4', '-tx4', '-N4', self.info.path], 16)
 endfunction
 
 " --------------------------------------------------
