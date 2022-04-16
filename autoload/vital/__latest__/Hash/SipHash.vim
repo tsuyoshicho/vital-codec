@@ -310,7 +310,7 @@ function! s:siphash_state.hash(data) abort
 endfunction
 
 function! s:_throw(message) abort
-  throw 'vital: Hash.SipHash: ' . a:message
+  throw 'vital: Hash.Sipping: ' . a:message
 endfunction
 
 let &cpo = s:save_cpo
