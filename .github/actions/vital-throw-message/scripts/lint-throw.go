@@ -14,7 +14,7 @@ import (
 
 const usageMessage = "" +
 	`Usage:	go run ./scripts/lint-throw.go [flags] files...
-	# Files must be vital module files under autoload/vital/__vital__/
+	# Files must be vital module files under autoload/vital/__latest__/
 	# Working directory must be the root of vital.vim repository.
 
 	lint-throw.go checks throw error message format. The messages must be start
@@ -98,7 +98,7 @@ func lintThrowMsg(w io.Writer, node ast.Expr, filename, wantPrefix, warningMsg s
 
 func toModuleName(path string) string {
 	const (
-		prefix = "autoload/vital/__vital__/"
+		prefix = "autoload/vital/__latest__/"
 		suffix = ".vim"
 	)
 	n := path
