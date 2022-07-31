@@ -45,7 +45,7 @@ function! s:HMAC.key(key) abort
     let self._dict.key = a:key
   elseif keytype == s:Type.types.string
     let self._dict.key = s:ByteArray.from_string(a:key)
-  elseif has('patch-8.1.0735') && keytype == s:Type.types.blob
+  elseif keytype == s:Type.types.blob
     let self._dict.key = s:ByteArray.from_blob(a:key)
   else
     call s:_throw('given argument is not key data')
@@ -69,7 +69,7 @@ function! s:HMAC.calc(data) abort
     let data = a:data
   elseif datatype == s:Type.types.string
     let data = s:ByteArray.from_string(a:data)
-  elseif has('patch-8.1.0735') && datatype == s:Type.types.blob
+  elseif datatype == s:Type.types.blob
     let data = s:ByteArray.from_blog(a:data)
   else
     call s:_throw('given argument is not valid data')

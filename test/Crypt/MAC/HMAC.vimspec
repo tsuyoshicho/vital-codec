@@ -175,14 +175,10 @@ Describe Crypt.MAC.HMAC
       Assert Equals(test_case_md5[1].digest_str, hmacmd5.hmac(test_case_md5[1].data))
     End
     It add after construction add normal only algo new (Blob)
-      if has('patch-8.1.0735')
-        let hmacmd5 = HMAC.new(MD5)
-        let blobkey = B.to_blob(test_case_md5[0].key)
-        call hmacmd5.key(blobkey)
-        Assert Equals(test_case_md5[0].digest_str, hmacmd5.hmac(test_case_md5[0].data))
-      else
-        Skip no available blob type.
-      endif
+      let hmacmd5 = HMAC.new(MD5)
+      let blobkey = B.to_blob(test_case_md5[0].key)
+      call hmacmd5.key(blobkey)
+      Assert Equals(test_case_md5[0].digest_str, hmacmd5.hmac(test_case_md5[0].data))
     End
 
     It add after construction add normal no arg new
