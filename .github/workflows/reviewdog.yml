@@ -59,7 +59,6 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: ${{ steps.reporter.outputs.value }}
-          locale: "US"
   vital-throw-message:
     name: runner / vital-throw-message
     runs-on: ubuntu-latest
