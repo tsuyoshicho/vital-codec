@@ -102,7 +102,6 @@ function! s:_set_prime(val, is_prime) abort
   let box = get(s:calculated_status, idx, v:none)
   if box is v:none
     call s:_throw('Do not calculated')
-    " call s:_throw(join(['Do not calculated', string(a:val), string(idx), string(offset), string(s:calculated_maximum), string(s:calculated_status)], ' '))
   endif
 
   if a:is_prime
@@ -134,7 +133,7 @@ endfunction
 
 function! s:_int_ceil(val, step) abort
   if a:val < 0
-    throw 'under zero'
+    call s:_throw('under zero')
   endif
   if a:val == 0
     return 0
