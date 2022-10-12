@@ -140,11 +140,11 @@ jobs:
         shell: pwsh
         run: |
           $lua_url = 'https://sourceforge.net/projects/luabinaries/files/' + ${Env:LUA_VERSION} + '/Windows%20Libraries/Dynamic/lua-' + ${Env:LUA_VERSION} + '_Win64_dllw6_lib.zip/download'
-          Write-Host "url=$($lua_url)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "url=$($lua_url)" >> ${Env:GITHUB_OUTPUT}
           Write-Output $lua_url | Out-File url.txt
           $dir = ${Env:GITHUB_WORKSPACE} + '\lib'
           New-Item $dir -ItemType Directory
-          Write-Host "dir=$($dir)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "dir=$($dir)" >> ${Env:GITHUB_OUTPUT}
       - name: Set files cache
         uses: actions/cache@v3
         with:
@@ -173,7 +173,7 @@ jobs:
         shell: pwsh
         id: pip-cache
         run: |
-          python3 -c "from pip._internal.locations import USER_CACHE_DIR; print('dir=' + USER_CACHE_DIR)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          python3 -c "from pip._internal.locations import USER_CACHE_DIR; print('dir=' + USER_CACHE_DIR)" >> ${Env:GITHUB_OUTPUT}
       - name: Set pip cache
         uses: actions/cache@v3
         with:
