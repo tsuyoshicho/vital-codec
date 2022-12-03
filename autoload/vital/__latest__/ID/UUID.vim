@@ -70,6 +70,7 @@ endfunction
 " hex string xxxxxxxx-xxxx-xxxx-Nxxx-xxxxxxxxxxxx
 
 let s:uuidregex = '\<{\?\x\{8}-\x\{4}-\x\{4}-\x\{4}-\x\{12}}\?\>'
+lockvar 3 s:uuidregex
 let s:UUID = {}
 
 " variant
