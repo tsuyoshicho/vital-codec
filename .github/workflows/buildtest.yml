@@ -39,7 +39,10 @@ jobs:
       - name: Setup apt
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo apt-get update
+          # Ubuntu (>= 22.04):
+          # sudo add-apt-repository universe
+          sudo apt update
+          sudo apt install -y libfuse2
       - name: Setup lua
         if: matrix.type == 'macvim'
         run: |
