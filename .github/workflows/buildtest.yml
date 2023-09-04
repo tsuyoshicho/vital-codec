@@ -32,7 +32,7 @@ jobs:
       VIMVER: ${{ matrix.type }}-${{ matrix.vim }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup env
         run: |
           cat ENVFILE >> $GITHUB_ENV
@@ -74,18 +74,18 @@ jobs:
         run: |
           echo "set luadll=$(brew --prefix lua)/lib/liblua.dylib" > ${GITHUB_WORKSPACE}/.themisrc
       - name: Setup vital.vim
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: vim-jp/vital.vim
           path: ${{ github.workspace }}/vital.vim
       - name: Setup vim-themis
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: thinca/vim-themis
           ref: ${{ env.THEMIS_VERSION }}
           path: ${{ github.workspace }}/vim-themis
       - name: Setup vimproc
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: Shougo/vimproc.vim
           path: ${{ github.workspace }}/vimproc
@@ -130,7 +130,7 @@ jobs:
         run: |
           git config --global core.autocrlf input
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup env
         shell: bash
         run: |
@@ -189,18 +189,18 @@ jobs:
           vim_type: '${{ matrix.type }}'
           download: '${{ matrix.vim_download || matrix.download }}'
       - name: Setup vital.vim
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: vim-jp/vital.vim
           path: ${{ github.workspace }}/vital.vim
       - name: Setup vim-themis
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: thinca/vim-themis
           ref: ${{ env.THEMIS_VERSION }}
           path: ${{ github.workspace }}/vim-themis
       - name: Setup vimproc
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: Shougo/vimproc.vim
           ref: ${{ env.VIMPROC_VERSION }}
