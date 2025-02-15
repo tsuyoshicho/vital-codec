@@ -55,7 +55,7 @@ jobs:
           source venv/bin/activate
       - name: Install pip
         run: |
-          pip3 install -U pip
+          python3 -m pip install -U pip
       - name: Get pip cache
         id: pip-cache
         run: |
@@ -69,7 +69,7 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Setup cached item
         run: |
-          pip3 install -r requirements.txt
+          python3 -m pip install -r requirements.txt
       - name: Setup Vim
         id: 'vim'
         uses: thinca/action-setup-vim@v2
