@@ -55,7 +55,11 @@ jobs:
           source venv/bin/activate
       - name: Install pip
         run: |
-          python3 -m pip install -U pip
+          if [ "${{ matrix.os }}" = "macos-latest" ]; then
+            pip3 install -U pip --break-system-packages
+          else
+            pip3 install -U pip
+          fi
       - name: Get pip cache
         id: pip-cache
         run: |
@@ -69,7 +73,11 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Setup cached item
         run: |
-          python3 -m pip install -r requirements.txt
+          if [ "${{ matrix.os }}" = "macos-latest" ]; then
+            pip3 install --user -r requirements.txt --break-system-packages
+          else
+            pip3 install --user -r requirements.txt
+          fi
       - name: Setup Vim
         id: 'vim'
         uses: thinca/action-setup-vim@v2
