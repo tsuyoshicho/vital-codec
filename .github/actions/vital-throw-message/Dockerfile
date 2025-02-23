@@ -1,4 +1,4 @@
-FROM golang:1.23
+FROM golang:1.24
 
 ENV REVIEWDOG_VERSION=v0.20.3
 
