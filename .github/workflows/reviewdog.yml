@@ -38,7 +38,7 @@ jobs:
           if_true: "github-pr-review"
           if_false: "github-check"
       - name: vimlint
-        uses: tsuyoshicho/action-vimlint@v1.12.1
+        uses: tsuyoshicho/action-vimlint@73515ed80ed7a95548ae3222498865302ead94f0 # v1.12.1
         with:
           github_token: ${{ secrets.github_token }}
           reporter: ${{ steps.reporter.outputs.value }}
