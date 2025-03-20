@@ -21,7 +21,7 @@ jobs:
           if_true: "github-pr-review"
           if_false: "github-check"
       - name: vint
-        uses: reviewdog/action-vint@v1.17.2
+        uses: reviewdog/action-vint@b249164f0c17d7a24aecccea84f2c7e132072731 # v1.17.2
         with:
           github_token: ${{ secrets.github_token }}
           reporter: ${{ steps.reporter.outputs.value }}
