@@ -66,7 +66,7 @@ jobs:
         run: |
           python3 -c "from pip._internal.locations import USER_CACHE_DIR; print('dir=' + USER_CACHE_DIR)" >> $GITHUB_OUTPUT
       - name: Set pip cache
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -170,7 +170,7 @@ jobs:
           New-Item $dir -ItemType Directory
           "dir=$($dir)" >> ${Env:GITHUB_OUTPUT}
       - name: Set files cache
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ${{ steps.files.outputs.dir }}
           key: ${{ runner.os }}-64-files-${{ hashFiles('**/url.txt') }}
@@ -209,7 +209,7 @@ jobs:
         run: |
           python3 -c "from pip._internal.locations import USER_CACHE_DIR; print('dir=' + USER_CACHE_DIR)" >> ${Env:GITHUB_OUTPUT}
       - name: Set pip cache
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
