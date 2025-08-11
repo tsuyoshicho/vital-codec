@@ -32,7 +32,7 @@ jobs:
       VIMVER: ${{ matrix.type }}-${{ matrix.vim }}
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Setup env
         run: |
           cat ENVFILE >> $GITHUB_ENV
@@ -90,18 +90,18 @@ jobs:
         run: |
           echo "set luadll=$(brew --prefix lua)/lib/liblua.dylib" > ${GITHUB_WORKSPACE}/.themisrc
       - name: Setup vital.vim
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: vim-jp/vital.vim
           path: ${{ github.workspace }}/vital.vim
       - name: Setup vim-themis
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: thinca/vim-themis
           ref: ${{ env.THEMIS_VERSION }}
           path: ${{ github.workspace }}/vim-themis
       - name: Setup vimproc
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: Shougo/vimproc.vim
           path: ${{ github.workspace }}/vimproc
@@ -154,7 +154,7 @@ jobs:
         run: |
           git config --global core.autocrlf input
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Setup env
         shell: bash
         run: |
@@ -229,18 +229,18 @@ jobs:
           vim_type: '${{ matrix.type }}'
           download: '${{ matrix.vim_download || matrix.download }}'
       - name: Setup vital.vim
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: vim-jp/vital.vim
           path: ${{ github.workspace }}/vital.vim
       - name: Setup vim-themis
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: thinca/vim-themis
           ref: ${{ env.THEMIS_VERSION }}
           path: ${{ github.workspace }}/vim-themis
       - name: Setup vimproc
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: Shougo/vimproc.vim
           ref: ${{ env.VIMPROC_VERSION }}
