@@ -80,7 +80,7 @@ jobs:
           echo '::endgroup::'
       - name: Setup Vim
         id: 'vim'
-        uses: thinca/action-setup-vim@8bad74f0ca8ededf719c670b3887024eafe3594e # v2.1.2
+        uses: thinca/action-setup-vim@b67a08146286e6e6aa53cb596526e6fdae00e86b # v3.0.0
         with:
           vim_version: '${{ matrix.vim }}'
           vim_type: '${{ matrix.type }}'
@@ -223,7 +223,7 @@ jobs:
           echo '::endgroup::'
       - name: Setup Vim
         id: 'vim'
-        uses: thinca/action-setup-vim@8bad74f0ca8ededf719c670b3887024eafe3594e # v2.1.2
+        uses: thinca/action-setup-vim@b67a08146286e6e6aa53cb596526e6fdae00e86b # v3.0.0
         with:
           vim_version: '${{ matrix.vim }}'
           vim_type: '${{ matrix.type }}'
