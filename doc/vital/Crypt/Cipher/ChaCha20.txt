@@ -101,6 +101,19 @@ Crypt.Cipher.ChaCha20#encrypt_raw({data})     *ChaCha20#encrypt_raw()*
 	decryption are the same operation. The operation modifies internal
 	counter state.
 
+Crypt.Cipher.ChaCha20#decrypt_raw({data})     *ChaCha20#decrypt_raw()*
+	Decrypts the given byte list (alias for encrypt_raw, since ChaCha20
+	is symmetric).
+
+	Parameters:
+		{data} - Byte list to decrypt (integer array 0-255)
+
+	Returns:
+		Byte list of decrypted data
+
+	Note: This is an alias for encrypt_raw since ChaCha20 is a symmetric
+	stream cipher.
+
 Crypt.Cipher.ChaCha20#encrypt({data})         *ChaCha20#encrypt()*
 	Encrypts string data.
 
