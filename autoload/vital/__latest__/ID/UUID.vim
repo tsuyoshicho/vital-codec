@@ -138,15 +138,19 @@ function! s:v7(...) abort
   return uuid.uuid_hex
 endfunction
 
+function! s:_mac_to_node(mac) abort
+  let mac_hex = substitute(a:mac, ':', '', 'g')
+  if len(mac_hex) != 12 || mac_hex !~? '^[0-9a-f]\{12}$'
+    call s:_throw('invalid mac')
+  endif
+  return s:ByteArray.from_hexstring(mac_hex)
+endfunction
+
 " ===== UUID v1..v5 generate
 function! s:UUID.generatev1(mac) dict abort
   " MAC
   if type(a:mac) == type("")
-    let mac_hex = substitute(a:mac, ':', '', 'g')
-    if len(mac_hex) != 12 || mac_hex !~? '^[0-9a-f]\{12}$'
-      call s:_throw('invalid mac')
-    endif
-    let node = s:ByteArray.from_hexstring(mac_hex)
+    let node = s:_mac_to_node(a:mac)
   elseif (type(a:mac) == type([]))
       \ && (6 == len(a:mac))
       \ && s:ByteArray.validate(a:mac)
@@ -191,11 +195,7 @@ endfunction
 function! s:UUID.generatev6(mac) dict abort
   " MAC
   if type(a:mac) == type("")
-    let mac_hex = substitute(a:mac, ':', '', 'g')
-    if len(mac_hex) != 12 || mac_hex !~? '^[0-9a-f]\{12}$'
-      call s:_throw('invalid mac')
-    endif
-    let node = s:ByteArray.from_hexstring(mac_hex)
+    let node = s:_mac_to_node(a:mac)
   elseif (type(a:mac) == type([]))
       \ && (6 == len(a:mac))
       \ && s:ByteArray.validate(a:mac)
@@ -240,15 +240,10 @@ function! s:UUID.generatev7(...) dict abort
   let unix_ts_ms = s:_generate_unix_timestamp_ms()
 
   " rand_a: 12 bits random
-  let r = call(s:Random.new, a:000)
+  let r = s:Random.new()
   let rand_a = r.range(0x1000)  " 0-4095
 
-  " rand_b: 62 bits random (split into two parts for ease)
-  let rand_b_high = r.range(0x1000000)  " 24 bits
-  let rand_b_low = r.range(0x1000000)   " 24 bits more, total 48, but need 62
-  " Actually, rand_b is 62 bits, so need to generate 62 bits
-  let rand_b = s:Bitwise.or(s:Bitwise.lshift(rand_b_high, 24), rand_b_low)  " 48 bits, extend to 62
-  " For simplicity, generate 8 bytes random for rand_b
+  " rand_b: 62 bits random
   let rand_b_bytes = s:List.new(8, { i,v -> r.range(256)})
   let rand_b = 0
   for i in range(8)
