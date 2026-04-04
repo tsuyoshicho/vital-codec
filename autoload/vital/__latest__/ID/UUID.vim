@@ -130,7 +130,7 @@ endfunction
 function! s:UUID.generatev1(mac) dict abort
   " MAC
   if type(a:mac) == type("")
-    let node = s:ByteArray.from_hexstring(a:mac)
+    let node = s:ByteArray.from_hexstring(substitute(a:mac, ':', '', 'g'))
   elseif (type(a:mac) == type([]))
       \ && (6 == len(a:mac))
       \ && s:ByteArray.validate(a:mac)
