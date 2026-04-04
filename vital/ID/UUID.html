@@ -22,6 +22,7 @@ a { color: inherit; }
 .Statement { color: #d73a49; }
 .PreProc { color: #d73a49; }
 .String { color: #032f62; }
+.Todo { color: #6f42c1; text-decoration: underline; }
 -->
 </style>
 </head>
@@ -50,9 +51,9 @@ OBJECTS                                 <a class="Identifier" href="./../../vita
 <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID" name="Vital.ID.UUID">Vital.ID.UUID</a> is an UUID:Universally Unique Identifier library.
 It provides functions manipulate UUID data object.
 
-UUID defined in RFC 4122
+UUID defined in RFC 9562
 
-<span class="String"><a href="https://tools.ietf.org/html/rfc4122">https://tools.ietf.org/html/rfc4122</a></span>
+<span class="String"><a href="https://www.rfc-editor.org/rfc/rfc9562">https://www.rfc-editor.org/rfc/rfc9562</a></span>
 
 
 <span class="PreProc">==============================================================================</span>
@@ -102,8 +103,25 @@ v5(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)     
 <span class="helpExample">        let result = uuid.uuid_hex</span>
 
 
+v6(<span class="Special">{mac}</span>)                                 <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v6()" name="Vital.ID.UUID.v6()">Vital.ID.UUID.v6()</a>
+        Return UUID version 6 value.
+        This function wrapped <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev6()">Vital.ID.UUID-UUID.generatev6()</a> .
+        Also known as:
+<span class="helpExample">        let uuid = UUID.new()</span>
+<span class="helpExample">        call uuid.generatev6({mac})</span>
+<span class="helpExample">        let result = uuid.uuid_hex</span>
 
-<span class="PreProc">==============================================================================</span>
+
+v7()                                      <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v7()" name="Vital.ID.UUID.v7()">Vital.ID.UUID.v7()</a>
+        Return UUID version 7 value.
+        This function wrapped <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev7()">Vital.ID.UUID-UUID.generatev7()</a> .
+        Also known as:
+<span class="helpExample">        let uuid = UUID.new()</span>
+<span class="helpExample">        call uuid.generatev7()</span>
+<span class="helpExample">        let result = uuid.uuid_hex</span>
+
+
+<span class="Todo">Note:</span> UUID version 8 is defined in RFC 9562 as a custom UUID format for experimental or vendor-specific use cases. It is not implemented in this library as it requires application-specific customization and is outside the scope of standard UUID generation.
 <span class="Statement">OBJECTS</span>                                 <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-objects" name="Vital.ID.UUID-objects">Vital.ID.UUID-objects</a>
 <span class="PreProc">------------------------------------------------------------------------------</span>
 UUID Object                             <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID" name="Vital.ID.UUID-UUID">Vital.ID.UUID-UUID</a>
@@ -143,7 +161,6 @@ UUID Object                             <a class="String" href="./../../vital/ID
 
 
 UUID.generatev1(<span class="Special">{mac}</span>)                    <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev1()" name="Vital.ID.UUID-UUID.generatev1()">Vital.ID.UUID-UUID.generatev1()</a>
-        {NOT IMPLEMENTED YET}.
         Generate and fill version 1 UUID data.
         Version 1 is time-based, generated from mac identified value.
 
@@ -165,6 +182,14 @@ UUID.generatev5(<span class="Special">{ns}</span>, <span class="Special">{value}
         <span class="Special">{ns}</span> as <a class="Identifier" href="./../../vital/ID/UUID/Namespace.html#Vital.ID.UUID.Namespace">Vital.ID.UUID.Namespace</a> defined value or other namespace UUID object or
         hex string.
         <span class="Special">{value}</span> as unique value.
+
+UUID.generatev6(<span class="Special">{mac}</span>)                    <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev6()" name="Vital.ID.UUID-UUID.generatev6()">Vital.ID.UUID-UUID.generatev6()</a>
+        Generate and fill version 6 UUID data.
+        Version 6 is reordered time-based, generated from mac identified value.
+
+UUID.generatev7()                         <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev7()" name="Vital.ID.UUID-UUID.generatev7()">Vital.ID.UUID-UUID.generatev7()</a>
+        Generate and fill version 7 UUID data.
+        Version 7 is Unix Epoch time-based, generated from Unix timestamp.
 
 
 UUID.hex_decode()                         <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.hex_decode()" name="Vital.ID.UUID-UUID.hex_decode()">Vital.ID.UUID-UUID.hex_decode()</a>
