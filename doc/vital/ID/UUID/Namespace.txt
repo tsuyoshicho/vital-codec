@@ -14,9 +14,9 @@ INTRODUCTION				*Vital.ID.UUID.Namespace-introduction*
 
 *Vital.ID.UUID.Namespace* is an UUID v3/v5 used Namespace defined library.
 
-UUID defined in RFC 4122
+UUID defined in RFC 9562
 
-https://tools.ietf.org/html/rfc4122
+https://www.rfc-editor.org/rfc/rfc9562
 
 
 ==============================================================================

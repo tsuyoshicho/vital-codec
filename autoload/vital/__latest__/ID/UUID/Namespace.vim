@@ -1,5 +1,5 @@
 " Utilities for UUID Namespace
-" RFC 4122 - A Universally Unique IDentifier (UUID) URN Namespace https://tools.ietf.org/html/rfc4122
+" RFC 9562 - A Universally Unique IDentifier (UUID) URN Namespace https://www.rfc-editor.org/rfc/rfc9562
 
 let s:save_cpo = &cpo
 set cpo&vim
