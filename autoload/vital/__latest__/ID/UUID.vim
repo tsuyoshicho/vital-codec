@@ -144,20 +144,20 @@ function! s:UUID.generatev1(mac) dict abort
   let ts_num = str2nr(s:BigNum.to_string(timestamp), 10)
 
   " split timestamp: 60 bits -> time_low(32), time_mid(16), time_hi(16)
-  let time_low = ts_num % (1 << 32)
-  let ts_num = ts_num / (1 << 32)
-  let time_mid = ts_num % (1 << 16)
-  let ts_num = ts_num / (1 << 16)
-  let time_hi = ts_num % (1 << 16)
+  let time_low = s:Bitwise.and(ts_num, 0xFFFFFFFF)
+  let ts_num = s:Bitwise.rshift(ts_num, 32)
+  let time_mid = s:Bitwise.and(ts_num, 0xFFFF)
+  let ts_num = s:Bitwise.rshift(ts_num, 16)
+  let time_hi = s:Bitwise.and(ts_num, 0xFFFF)
 
   " set version in time_hi_and_version
-  let time_hi_and_version = (time_hi & 0x0FFF) | (1 << 12)
+  let time_hi_and_version = s:Bitwise.or(s:Bitwise.and(time_hi, 0x0FFF), s:Bitwise.lshift(1, 12))
 
   " clock sequence: 14 bits random
   let clock_seq_bytes = s:Random.rand_bytes(2)
-  let clk_seq = (clock_seq_bytes[0] * 256) + clock_seq_bytes[1]
-  let clk_seq_low = clk_seq % 256
-  let clk_seq_hi_res = ((clk_seq / 256) & 0x3F) | 0x80  " variant 0b10
+  let clk_seq = s:Bitwise.or(s:Bitwise.lshift(clock_seq_bytes[0], 8), clock_seq_bytes[1])
+  let clk_seq_low = s:Bitwise.and(clk_seq, 0xFF)
+  let clk_seq_hi_res = s:Bitwise.or(s:Bitwise.and(s:Bitwise.rshift(clk_seq, 8), 0x3F), 0x80)
 
   let self.value.time_low = s:_num_to_bytes(time_low, 4, 1)
   let self.value.time_mid = s:_num_to_bytes(time_mid, 2, 1)
