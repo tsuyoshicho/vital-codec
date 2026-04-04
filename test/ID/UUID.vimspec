@@ -25,7 +25,15 @@ Describe ID.UUID
 
   Describe .v1()
     It timestamp and mac UUID generate.
-      Skip currently, not implement yet.
+      let mac = '00:11:22:33:44:55'
+      let uuid_str = UUID.v1(mac)
+      Assert Equals(len(uuid_str), 36)
+      " Check format
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-1[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      " Decode and check version and variant
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 1)
+      Assert Equals(uuid_obj.variant, 0b100)
     End
   End
   " Type 3 and 5 GUIDs | Water Juice https://waterjuiceweb.wordpress.com/2013/06/16/type-3-and-5-guids/
@@ -66,7 +74,12 @@ Describe ID.UUID
   Context UUID object
     Describe .generatev1()
       It generate UUID v1 string.
-        Skip currently, test data nothing.
+        let uuid = UUID.new()
+        let mac = [0x00, 0x11, 0x22, 0x33, 0x44, 0x55]
+        call uuid.generatev1(mac)
+        Assert Equals(uuid.version, 1)
+        Assert Equals(uuid.variant, 0b100)
+        Assert Equals(len(uuid.uuid_hex), 36)
       End
     End
     Describe .generatev3()

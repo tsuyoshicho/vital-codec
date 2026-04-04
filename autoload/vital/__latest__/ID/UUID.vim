@@ -13,6 +13,8 @@ function! s:_vital_loaded(V) abort
   let s:SHA1      = s:V.import('Hash.SHA1')
   let s:Random    = s:V.import('Random')
   let s:Type      = s:V.import('Vim.Type')
+  let s:DateTime  = s:V.import('DateTime')
+  let s:BigNum    = s:V.import('Data.BigNum')
 
   let s:UUID = extend(s:UUID, {
         \ 'uuid_hex': '',
@@ -39,7 +41,17 @@ function! s:_vital_loaded(V) abort
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Bitwise', 'Data.List', 'Data.List.Byte', 'Hash.MD5', 'Hash.SHA1', 'Random', 'Vim.Type']
+  return [
+    \ 'Bitwise',
+    \ 'Data.List',
+    \ 'Data.List.Byte',
+    \ 'Hash.MD5',
+    \ 'Hash.SHA1',
+    \ 'Random',
+    \ 'Vim.Type',
+    \ 'DateTime',
+    \ 'Data.BigNum',
+    \]
 endfunction
 
 "  UUID
@@ -58,6 +70,7 @@ endfunction
 " hex string xxxxxxxx-xxxx-xxxx-Nxxx-xxxxxxxxxxxx
 
 let s:uuidregex = '\<{\?\x\{8}-\x\{4}-\x\{4}-\x\{4}-\x\{12}}\?\>'
+lockvar 3 s:uuidregex
 let s:UUID = {}
 
 " variant
@@ -115,7 +128,48 @@ endfunction
 
 " ===== UUID v1..v5 generate
 function! s:UUID.generatev1(mac) dict abort
-  " TODO
+  " MAC
+  if type(a:mac) == type("")
+    let node = s:ByteArray.from_hexstring(substitute(a:mac, ':', '', 'g'))
+  elseif (type(a:mac) == type([]))
+      \ && (6 == len(a:mac))
+      \ && s:ByteArray.validate(a:mac)
+    let node = a:mac
+  else
+    call s:_throw('invalid mac')
+  endif
+
+  " timestamp
+  let timestamp = s:_generate_timestamp_now()
+  let ts_num = str2nr(s:BigNum.to_string(timestamp), 10)
+
+  " split timestamp: 60 bits -> time_low(32), time_mid(16), time_hi(16)
+  let time_low = s:Bitwise.and(ts_num, 0xFFFFFFFF)
+  let ts_num = s:Bitwise.rshift(ts_num, 32)
+  let time_mid = s:Bitwise.and(ts_num, 0xFFFF)
+  let ts_num = s:Bitwise.rshift(ts_num, 16)
+  let time_hi = s:Bitwise.and(ts_num, 0xFFFF)
+
+  " set version in time_hi_and_version
+  let time_hi_and_version = s:Bitwise.or(s:Bitwise.and(time_hi, 0x0FFF), s:Bitwise.lshift(1, 12))
+
+  " clock sequence: 14 bits random
+  let r = s:Random.new()
+  let clock_seq_bytes = [r.range(256), r.range(256)]
+  let clk_seq = s:Bitwise.or(s:Bitwise.lshift(clock_seq_bytes[0], 8), clock_seq_bytes[1])
+  let clk_seq_low = s:Bitwise.and(clk_seq, 0xFF)
+  let clk_seq_hi_res = s:Bitwise.or(s:Bitwise.and(s:Bitwise.rshift(clk_seq, 8), 0x3F), 0x80)
+
+  let self.value.time_low = s:_num_to_bytes(time_low, 4, 1)
+  let self.value.time_mid = s:_num_to_bytes(time_mid, 2, 1)
+  let self.value.time_hi_and_version = s:_num_to_bytes(time_hi_and_version, 2, 1)
+  let self.value.clk_seq_hi_res = [clk_seq_hi_res]
+  let self.value.clk_seq_low = [clk_seq_low]
+  let self.value.node = node
+  let self.endian  = 1
+  let self.variant = 0b100
+  let self.version = 1
+  call self.value_encode()
 endfunction
 
 function! s:UUID.generatev3(ns, data) dict abort
@@ -357,6 +411,36 @@ function! s:_variant_detect(uuid) abort
           \ uuid.value.time_hi_and_version[0], 4), 0xf)
     " 0xf 0b1111
   endif
+endfunction
+
+" time code  1582/10/15 00:00:00 UTC start : 100ns unit
+" unix epoch 1970/01/01 00:00:00 UTC start : 1sec  unit
+" diff 141427 days = 141427 * 24 * 60 * 60 sec = 12219292800 sec
+let s:_epoch_offset_sec = '12219292800'
+lockvar s:_epoch_offset_sec
+function! s:_generate_timestamp_now()  abort
+  let timestamp_sec = s:BigNum.add(
+    \ s:_epoch_offset_sec,
+    \ s:DateTime.now().unix_time())
+  " unit convert sec to 100ns(1sec = 1000(ms to s) * 1000(us to ms) * 10(us to 100ns)
+  let timestamp_ms   = s:BigNum.mul(timestamp_sec, s:BigNum.from_num(1000))
+  let timestamp_us   = s:BigNum.mul(timestamp_ms,  s:BigNum.from_num(1000))
+  let timestamp_unit = s:BigNum.mul(timestamp_us,  s:BigNum.from_num(10)  )
+
+  return  timestamp_unit
+endfunction
+
+function! s:_num_to_bytes(num, len, big_endian) abort
+  let bytes = []
+  let n = a:num
+  for i in range(a:len)
+    call add(bytes, n % 256)
+    let n = n / 256
+  endfor
+  if a:big_endian
+    call reverse(bytes)
+  endif
+  return bytes
 endfunction
 
 function! s:_throw(msg) abort
