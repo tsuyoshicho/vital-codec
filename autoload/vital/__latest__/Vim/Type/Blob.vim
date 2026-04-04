@@ -100,7 +100,7 @@ function! s:invert(x) abort
   let length = len(a:x)
   let retval = s:new(length)
   for i in range(length)
-    let retval[i] = s:Bitwise.invert(a:x[i])
+    let retval[i] = s:Bitwise.and(s:Bitwise.invert(a:x[i]), 0xff)
   endfor
   return retval
 endfunction
