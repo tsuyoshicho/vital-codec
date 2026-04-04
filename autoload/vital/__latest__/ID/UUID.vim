@@ -68,6 +68,24 @@ endfunction
 " +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 "
 " hex string xxxxxxxx-xxxx-xxxx-Nxxx-xxxxxxxxxxxx
+"
+" UUID version layout (RFC 9562):
+"   v1: time-based, Gregorian epoch timestamp plus node identifier
+"   v2: DCE security, local domain / local user with timestamp
+"   v3: namespace name-based MD5 hash
+"   v4: random
+"   v5: namespace name-based SHA1 hash
+"   v6: reordered time-based for lexicographic sortability
+"   v7: Unix epoch millisecond timestamp plus random data
+"   v8: custom / experimental application-defined formats
+"
+" Reordered / timestamp-ordered variants:
+"   v6 encodes the conventional 60-bit timestamp in a reordered field
+"     sequence so that the high-order time bits appear first.
+"   v7 encodes a 48-bit unix-ms timestamp in time_low/time_mid,
+"     with the version field in time_hi_and_version and random
+"     / custom data in the clock/node fields.
+"   v8 is reserved for vendor-defined or experimental UUID formats.
 
 let s:uuidregex = '\<{\?\x\{8}-\x\{4}-\x\{4}-\x\{4}-\x\{12}}\?\>'
 lockvar 3 s:uuidregex
