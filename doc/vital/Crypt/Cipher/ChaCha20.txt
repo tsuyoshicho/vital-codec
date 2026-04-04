@@ -1,0 +1,182 @@
+*vital-chacha20.txt*	ChaCha20 Stream Cipher
+
+Maintainer: Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
+
+==============================================================================
+CONTENTS                                        *vital-chacha20-contents*
+
+	Introduction			|vital-chacha20-introduction|
+	RFC Compliance			|vital-chacha20-rfc|
+	Module				|vital-chacha20-module|
+	Functions			|vital-chacha20-functions|
+	Usage Examples			|vital-chacha20-usage|
+
+==============================================================================
+INTRODUCTION                                    *vital-chacha20-introduction*
+
+ChaCha20 is a stream cipher developed by Daniel J. Bernstein. This module
+provides an implementation of ChaCha20 as specified in RFC 7539.
+
+This module is part of vital-codec: a cryptographic library for Vim Script.
+
+Reference: https://tools.ietf.org/html/rfc7539
+
+==============================================================================
+RFC COMPLIANCE                                  *vital-chacha20-rfc*
+
+This implementation adheres to RFC 7539 specification with the following
+characteristics:
+
+	256-bit (32-byte) key
+	96-bit (12-byte) nonce (AEAD construction per RFC 7539)
+	Counter-based operation with 32-bit counter
+	Little-endian byte ordering
+
+The implementation uses the ChaCha20 block function as defined in RFC 7539
+Section 2.1, performing 20 rounds (hence the name ChaCha20).
+
+==============================================================================
+MODULE: Crypt.Cipher.ChaCha20                   *vital-chacha20-module*
+
+Usage: >
+	let V = vital#vital#new()
+	let ChaCha20 = V.import('Crypt.Cipher.ChaCha20')
+<
+
+==============================================================================
+FUNCTIONS                                       *vital-chacha20-functions*
+
+Crypt.Cipher.ChaCha20.new([{key}, {nonce}])   *ChaCha20#new()*
+	Creates a new ChaCha20 cipher object.
+
+	Parameters:
+		{key}   - Optional 32-byte key as byte list (integer array 0-255)
+		{nonce} - Optional 12-byte nonce as byte list
+
+	Returns:
+		ChaCha20 cipher object with methods
+
+	Example: >
+		let key = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+		          16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+		let nonce = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+		let cipher = ChaCha20.new(key, nonce)
+<
+
+Crypt.Cipher.ChaCha20#set_key({key})          *ChaCha20#set_key()*
+	Sets the encryption key for this cipher instance.
+
+	Parameters:
+		{key} - 32-byte key as byte list (integer array 0-255)
+
+	The key must be exactly 32 bytes.
+
+Crypt.Cipher.ChaCha20#set_nonce({nonce})      *ChaCha20#set_nonce()*
+	Sets the nonce for this cipher instance.
+
+	Parameters:
+		{nonce} - 12-byte nonce as byte list (integer array 0-255)
+
+	The nonce must be exactly 12 bytes. Setting a new nonce resets the
+	counter to 1 (per RFC 7539).
+
+Crypt.Cipher.ChaCha20#set_counter({counter})  *ChaCha20#set_counter()*
+	Sets the initial counter value.
+
+	Parameters:
+		{counter} - Counter value (typically 0 or 1, default is 1)
+
+	This should be called before encryption to set the starting counter.
+
+Crypt.Cipher.ChaCha20#encrypt_raw({data})     *ChaCha20#encrypt_raw()*
+	Encrypts or decrypts the given byte list (ChaCha20 is symmetric).
+
+	Parameters:
+		{data} - Byte list to encrypt/decrypt (integer array 0-255)
+
+	Returns:
+		Byte list of encrypted/decrypted data
+
+	Note: ChaCha20 XORs data with a keystream, so encryption and
+	decryption are the same operation. The operation modifies internal
+	counter state.
+
+Crypt.Cipher.ChaCha20#encrypt({data})         *ChaCha20#encrypt()*
+	Encrypts string data.
+
+	Parameters:
+		{data} - String to encrypt
+
+	Returns:
+		Hex string of encrypted data
+
+Crypt.Cipher.ChaCha20#decrypt({data})         *ChaCha20#decrypt()*
+	Decrypts string data (alias for encrypt, since operation is symmetric).
+
+	Parameters:
+		{data} - Hex string to decrypt
+
+	Returns:
+		Decrypted string
+
+Crypt.Cipher.ChaCha20#keystream_raw({length}) *ChaCha20#keystream_raw()*
+	Generates raw keystream bytes without XORing plaintext.
+
+	Parameters:
+		{length} - Number of bytes to generate
+
+	Returns:
+		Byte list of keystream bytes
+
+==============================================================================
+USAGE EXAMPLES                                  *vital-chacha20-usage*
+
+Basic encryption: >
+	let V = vital#vital#new()
+	let ChaCha20 = V.import('Crypt.Cipher.ChaCha20')
+
+	let key = ChaCha20.bytes_from_hex('00010203...1f')  " 32-byte key
+	let nonce = ChaCha20.bytes_from_hex('000000000000000000000001')  " 12-byte nonce
+	let plaintext = 'Hello, World!'
+
+	let cipher = ChaCha20.new(key, nonce)
+	let ciphertext_hex = cipher.encrypt(plaintext)
+
+	" To decrypt, create new cipher with same key/nonce and encrypt again
+	let cipher2 = ChaCha20.new(key, nonce)
+	let decrypted = cipher2.decrypt(ciphertext_hex)
+<
+
+Working with byte arrays: >
+	let data = [72, 101, 108, 108, 111]  " "Hello"
+	let key = repeat([0], 32)  " All-zero key
+	let nonce = repeat([0], 12)  " All-zero nonce
+
+	let cipher = ChaCha20.new(key, nonce)
+	let encrypted = cipher.encrypt_raw(data)
+	let encrypted_hex = ChaCha20.bytes_to_hex(encrypted)
+<
+
+Key rotation: >
+	let cipher = ChaCha20.new()
+
+	" Change key for new encryption
+	let new_key = [1, 2, 3, ...]  " 32 bytes
+	let new_nonce = [0, 0, ...]  " 12 bytes
+
+	call cipher.set_key(new_key)
+	call cipher.set_nonce(new_nonce)
+	call cipher.set_counter(1)  " Reset counter
+<
+
+==============================================================================
+REFERENCES                                     *vital-chacha20-references*
+
+RFC 7539: ChaCha20 and Poly1305 for IETF Protocols
+	https://tools.ietf.org/html/rfc7539
+
+ChaCha20 by D. J. Bernstein
+	https://cr.yp.to/chacha.html
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
