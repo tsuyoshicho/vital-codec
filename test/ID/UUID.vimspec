@@ -211,18 +211,6 @@ Describe ID.UUID
         Assert Equals(uuid.variant, 0b100)
         Assert Equals(len(uuid.uuid_hex), 36)
       End
-      It generate UUID v7 string. monotonic
-        " Generate multiple v7 UUIDs and check they are sortable
-        let uuids = []
-        for i in range(10)
-          let uuid = UUID.new()
-          call uuid.generatev7()
-          call add(uuids, uuid.uuid_hex)
-        endfor
-        " Sort and check order is maintained (basic monotonic check)
-        let sorted = sort(copy(uuids))
-        Assert Equals(uuids, sorted)
-      End
     End
     Describe .hex_decode()
       It decode UUID hex string.

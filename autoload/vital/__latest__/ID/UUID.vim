@@ -142,7 +142,11 @@ endfunction
 function! s:UUID.generatev1(mac) dict abort
   " MAC
   if type(a:mac) == type("")
-    let node = s:ByteArray.from_hexstring(substitute(a:mac, ':', '', 'g'))
+    let mac_hex = substitute(a:mac, ':', '', 'g')
+    if len(mac_hex) != 12 || mac_hex !~? '^[0-9a-f]\{12}$'
+      call s:_throw('invalid mac')
+    endif
+    let node = s:ByteArray.from_hexstring(mac_hex)
   elseif (type(a:mac) == type([]))
       \ && (6 == len(a:mac))
       \ && s:ByteArray.validate(a:mac)
@@ -187,7 +191,11 @@ endfunction
 function! s:UUID.generatev6(mac) dict abort
   " MAC
   if type(a:mac) == type("")
-    let node = s:ByteArray.from_hexstring(substitute(a:mac, ':', '', 'g'))
+    let mac_hex = substitute(a:mac, ':', '', 'g')
+    if len(mac_hex) != 12 || mac_hex !~? '^[0-9a-f]\{12}$'
+      call s:_throw('invalid mac')
+    endif
+    let node = s:ByteArray.from_hexstring(mac_hex)
   elseif (type(a:mac) == type([]))
       \ && (6 == len(a:mac))
       \ && s:ByteArray.validate(a:mac)
