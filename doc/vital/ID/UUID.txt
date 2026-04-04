@@ -34,7 +34,6 @@ decode({uuid-str})			  *Vital.ID.UUID.decode()*
 	Return UUID {uuid-str} decoded object.
 
 v1({mac})				  *Vital.ID.UUID.v1()*
-	{NOT IMPLEMENTED YET}.
 	Return UUID version 1 value.
 	This function wrapped |Vital.ID.UUID-UUID.generatev1()| .
         Also known as: >

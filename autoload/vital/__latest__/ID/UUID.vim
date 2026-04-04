@@ -136,23 +136,39 @@ function! s:UUID.generatev1(mac) dict abort
       \ && s:ByteArray.validate(a:mac)
     let node = a:mac
   else
-    " throw
+    call s:_throw('invalid mac')
   endif
 
   " timestamp
   let timestamp = s:_generate_timestamp_now()
-  let timestamp_list = s:ByteArray.from_string()
+  let ts_num = str2nr(s:BigNum.to_string(timestamp), 10)
 
-  let self.value.time_hi_and_version = [] " 1byte low only
-  let self.value.time_mid = []
-  let self.value.time_low = []
-  let self.value.cloc     = []
+  " split timestamp: 60 bits -> time_low(32), time_mid(16), time_hi(16)
+  let time_low = ts_num % (1 << 32)
+  let ts_num = ts_num / (1 << 32)
+  let time_mid = ts_num % (1 << 16)
+  let ts_num = ts_num / (1 << 16)
+  let time_hi = ts_num % (1 << 16)
+
+  " set version in time_hi_and_version
+  let time_hi_and_version = (time_hi & 0x0FFF) | (1 << 12)
+
+  " clock sequence: 14 bits random
+  let clock_seq_bytes = s:Random.rand_bytes(2)
+  let clk_seq = (clock_seq_bytes[0] * 256) + clock_seq_bytes[1]
+  let clk_seq_low = clk_seq % 256
+  let clk_seq_hi_res = ((clk_seq / 256) & 0x3F) | 0x80  " variant 0b10
+
+  let self.value.time_low = s:_num_to_bytes(time_low, 4, 1)
+  let self.value.time_mid = s:_num_to_bytes(time_mid, 2, 1)
+  let self.value.time_hi_and_version = s:_num_to_bytes(time_hi_and_version, 2, 1)
+  let self.value.clk_seq_hi_res = [clk_seq_hi_res]
+  let self.value.clk_seq_low = [clk_seq_low]
   let self.value.node = node
   let self.endian  = 1
   let self.variant = 0b100
   let self.version = 1
   call self.value_encode()
-
 endfunction
 
 function! s:UUID.generatev3(ns, data) dict abort
@@ -411,6 +427,19 @@ function! s:_generate_timestamp_now()  abort
   let timestamp_unit = s:BigNum.mul(timestamp_us,  s:BigNum.from_num(10)  )
 
   return  timestamp_unit
+endfunction
+
+function! s:_num_to_bytes(num, len, big_endian) abort
+  let bytes = []
+  let n = a:num
+  for i in range(a:len)
+    call add(bytes, n % 256)
+    let n = n / 256
+  endfor
+  if a:big_endian
+    call reverse(bytes)
+  endif
+  return bytes
 endfunction
 
 function! s:_throw(msg) abort
