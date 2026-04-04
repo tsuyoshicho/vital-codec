@@ -1,0 +1,15 @@
+Describe Crypt.Cipher.ChaCha20
+  Before all
+    let ChaCha20 = vital#vital#new().import('Crypt.Cipher.ChaCha20')
+
+  It should initialize with key and nonce
+    Skip 'not implemented'
+
+  It should encrypt data
+    Skip 'not implemented'
+
+  It should decrypt data
+    Skip 'not implemented'
+
+  It should match RFC 7539 test vectors
+    Skip 'not implemented'
