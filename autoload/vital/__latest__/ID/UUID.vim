@@ -154,7 +154,8 @@ function! s:UUID.generatev1(mac) dict abort
   let time_hi_and_version = s:Bitwise.or(s:Bitwise.and(time_hi, 0x0FFF), s:Bitwise.lshift(1, 12))
 
   " clock sequence: 14 bits random
-  let clock_seq_bytes = s:Random.rand_bytes(2)
+  let r = s:Random.new()
+  let clock_seq_bytes = [r.range(256), r.range(256)]
   let clk_seq = s:Bitwise.or(s:Bitwise.lshift(clock_seq_bytes[0], 8), clock_seq_bytes[1])
   let clk_seq_low = s:Bitwise.and(clk_seq, 0xFF)
   let clk_seq_hi_res = s:Bitwise.or(s:Bitwise.and(s:Bitwise.rshift(clk_seq, 8), 0x3F), 0x80)
