@@ -86,6 +86,8 @@ v7()					  *Vital.ID.UUID.v7()*
         call uuid.generatev7()
         let result = uuid.uuid_hex
 <
+
+Note: UUID version 8 is defined in RFC 9562 as a custom UUID format for experimental or vendor-specific use cases. It is not implemented in this library as it requires application-specific customization and is outside the scope of standard UUID generation.
 OBJECTS					*Vital.ID.UUID-objects*
 ------------------------------------------------------------------------------
 UUID Object				*Vital.ID.UUID-UUID*
