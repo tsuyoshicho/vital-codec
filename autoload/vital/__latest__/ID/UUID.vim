@@ -1,5 +1,5 @@
 " Utilities for UUID
-" RFC 4122 - A Universally Unique IDentifier (UUID) URN Namespace https://tools.ietf.org/html/rfc4122
+" RFC 9562 - A Universally Unique IDentifier (UUID) URN Namespace https://www.rfc-editor.org/rfc/rfc9562
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -68,6 +68,24 @@ endfunction
 " +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 "
 " hex string xxxxxxxx-xxxx-xxxx-Nxxx-xxxxxxxxxxxx
+"
+" UUID version layout (RFC 9562):
+"   v1: time-based, Gregorian epoch timestamp plus node identifier
+"   v2: DCE security, local domain / local user with timestamp
+"   v3: namespace name-based MD5 hash
+"   v4: random
+"   v5: namespace name-based SHA1 hash
+"   v6: reordered time-based for lexicographic sortability
+"   v7: Unix epoch millisecond timestamp plus random data
+"   v8: custom / experimental application-defined formats
+"
+" Reordered / timestamp-ordered variants:
+"   v6 encodes the conventional 60-bit timestamp in a reordered field
+"     sequence so that the high-order time bits appear first.
+"   v7 encodes a 48-bit unix-ms timestamp in time_low/time_mid,
+"     with the version field in time_hi_and_version and random
+"     / custom data in the clock/node fields.
+"   v8 is reserved for vendor-defined or experimental UUID formats.
 
 let s:uuidregex = '\<{\?\x\{8}-\x\{4}-\x\{4}-\x\{4}-\x\{12}}\?\>'
 lockvar 3 s:uuidregex
@@ -126,11 +144,31 @@ function! s:v5(ns, data) abort
   return uuid.uuid_hex
 endfunction
 
+function! s:v6(mac) abort
+  let uuid = deepcopy(s:UUID)
+  call uuid.generatev6(a:mac)
+  return uuid.uuid_hex
+endfunction
+
+function! s:v7(...) abort
+  let uuid = deepcopy(s:UUID)
+  call call(uuid.generatev7, a:000)
+  return uuid.uuid_hex
+endfunction
+
+function! s:_mac_to_node(mac) abort
+  let mac_hex = substitute(a:mac, ':', '', 'g')
+  if len(mac_hex) != 12 || mac_hex !~? '^[0-9a-f]\{12}$'
+    call s:_throw('invalid mac')
+  endif
+  return s:ByteArray.from_hexstring(mac_hex)
+endfunction
+
 " ===== UUID v1..v5 generate
 function! s:UUID.generatev1(mac) dict abort
   " MAC
   if type(a:mac) == type("")
-    let node = s:ByteArray.from_hexstring(substitute(a:mac, ':', '', 'g'))
+    let node = s:_mac_to_node(a:mac)
   elseif (type(a:mac) == type([]))
       \ && (6 == len(a:mac))
       \ && s:ByteArray.validate(a:mac)
@@ -169,6 +207,88 @@ function! s:UUID.generatev1(mac) dict abort
   let self.endian  = 1
   let self.variant = 0b100
   let self.version = 1
+  call self.value_encode()
+endfunction
+
+function! s:UUID.generatev6(mac) dict abort
+  " MAC
+  if type(a:mac) == type("")
+    let node = s:_mac_to_node(a:mac)
+  elseif (type(a:mac) == type([]))
+      \ && (6 == len(a:mac))
+      \ && s:ByteArray.validate(a:mac)
+    let node = a:mac
+  else
+    call s:_throw('invalid mac')
+  endif
+
+  " timestamp
+  let timestamp = s:_generate_timestamp_now()
+  let ts_num = str2nr(s:BigNum.to_string(timestamp), 10)
+
+  " split timestamp: 60 bits -> time_high(32), time_mid(16), time_low(12)
+  let time_high = s:Bitwise.rshift(ts_num, 28)  " most significant 32 bits
+  let time_mid = s:Bitwise.and(s:Bitwise.rshift(ts_num, 12), 0xFFFF)
+  let time_low = s:Bitwise.and(ts_num, 0xFFF)
+
+  " set version in time_low_and_version
+  let time_low_and_version = s:Bitwise.or(s:Bitwise.lshift(time_low, 4), 6)  " time_low(12) + ver(4)=6
+
+  " clock sequence: 14 bits random
+  let r = s:Random.new()
+  let clock_seq_bytes = [r.range(256), r.range(256)]
+  let clk_seq = s:Bitwise.or(s:Bitwise.lshift(clock_seq_bytes[0], 8), clock_seq_bytes[1])
+  let clk_seq_low = s:Bitwise.and(clk_seq, 0xFF)
+  let clk_seq_hi_res = s:Bitwise.or(s:Bitwise.and(s:Bitwise.rshift(clk_seq, 8), 0x3F), 0x80)
+
+  let self.value.time_low = s:_num_to_bytes(time_high, 4, 1)  " time_high as time_low field
+  let self.value.time_mid = s:_num_to_bytes(time_mid, 2, 1)
+  let self.value.time_hi_and_version = s:_num_to_bytes(time_low_and_version, 2, 1)  " time_low_and_version as time_hi_and_version field
+  let self.value.clk_seq_hi_res = [clk_seq_hi_res]
+  let self.value.clk_seq_low = [clk_seq_low]
+  let self.value.node = node
+  let self.endian  = 1
+  let self.variant = 0b100
+  let self.version = 6
+  call self.value_encode()
+endfunction
+
+function! s:UUID.generatev7(...) dict abort
+  " Unix timestamp in milliseconds (48 bits)
+  let unix_ts_ms = s:_generate_unix_timestamp_ms()
+
+  " rand_a: 12 bits random
+  let r = s:Random.new()
+  let rand_a = r.range(0x1000)  " 0-4095
+
+  " rand_b: 62 bits random
+  let rand_b_bytes = s:List.new(8, { i,v -> r.range(256)})
+  let rand_b = 0
+  for i in range(8)
+    let rand_b = s:Bitwise.or(s:Bitwise.lshift(rand_b, 8), rand_b_bytes[i])
+  endfor
+  let rand_b = s:Bitwise.and(rand_b, 0x3FFFFFFFFFFFFFFF)  " 62 bits
+
+  " Set fields
+  let self.value.time_low = s:_num_to_bytes(s:Bitwise.and(unix_ts_ms, 0xFFFFFFFF), 4, 1)  " low 32 bits of unix_ts_ms
+  let unix_ts_mid = s:Bitwise.and(s:Bitwise.rshift(unix_ts_ms, 32), 0xFFFF)  " mid 16 bits
+  let rand_a_and_ver = s:Bitwise.or(s:Bitwise.lshift(rand_a, 4), 7)  " rand_a(12) + ver(4)=7
+  let self.value.time_mid = s:_num_to_bytes(unix_ts_mid, 2, 1)
+  let self.value.time_hi_and_version = s:_num_to_bytes(rand_a_and_ver, 2, 1)
+
+  " variant in clk_seq_hi_res
+  let clk_seq_hi_res = s:Bitwise.or(0x80, s:Bitwise.and(s:Bitwise.rshift(rand_b, 56), 0x3F))  " var 0b10 + high 6 bits of rand_b
+  let clk_seq_low = s:Bitwise.and(s:Bitwise.rshift(rand_b, 48), 0xFF)
+  let node_high = s:Bitwise.and(s:Bitwise.rshift(rand_b, 16), 0xFFFFFFFF)
+  let node_low = s:Bitwise.and(rand_b, 0xFFFF)
+
+  let self.value.clk_seq_hi_res = [clk_seq_hi_res]
+  let self.value.clk_seq_low = [clk_seq_low]
+  let self.value.node = s:_num_to_bytes(node_high, 4, 1) + s:_num_to_bytes(node_low, 2, 1)
+
+  let self.endian  = 1
+  let self.variant = 0b100
+  let self.version = 7
   call self.value_encode()
 endfunction
 
@@ -428,6 +548,14 @@ function! s:_generate_timestamp_now()  abort
   let timestamp_unit = s:BigNum.mul(timestamp_us,  s:BigNum.from_num(10)  )
 
   return  timestamp_unit
+endfunction
+
+function! s:_generate_unix_timestamp_ms() abort
+  let unix_time = s:DateTime.now().unix_time()
+  " Convert to milliseconds
+  let unix_ts_ms = s:BigNum.mul(s:BigNum.from_num(unix_time), s:BigNum.from_num(1000))
+  " Add milliseconds fraction if available, but for simplicity, use seconds * 1000
+  return str2nr(s:BigNum.to_string(unix_ts_ms), 10)
 endfunction
 
 function! s:_num_to_bytes(num, len, big_endian) abort

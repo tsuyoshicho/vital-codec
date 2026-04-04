@@ -17,9 +17,9 @@ INTRODUCTION				*Vital.ID.UUID-introduction*
 *Vital.ID.UUID* is an UUID:Universally Unique Identifier library.
 It provides functions manipulate UUID data object.
 
-UUID defined in RFC 4122
+UUID defined in RFC 9562
 
-https://tools.ietf.org/html/rfc4122
+https://www.rfc-editor.org/rfc/rfc9562
 
 
 ==============================================================================
@@ -69,8 +69,25 @@ v5({ns}, {value})			  *Vital.ID.UUID.v5()*
         let result = uuid.uuid_hex
 <
 
+v6({mac})				  *Vital.ID.UUID.v6()*
+	Return UUID version 6 value.
+	This function wrapped |Vital.ID.UUID-UUID.generatev6()| .
+        Also known as: >
+        let uuid = UUID.new()
+        call uuid.generatev6({mac})
+        let result = uuid.uuid_hex
+<
 
-==============================================================================
+v7()					  *Vital.ID.UUID.v7()*
+	Return UUID version 7 value.
+	This function wrapped |Vital.ID.UUID-UUID.generatev7()| .
+        Also known as: >
+        let uuid = UUID.new()
+        call uuid.generatev7()
+        let result = uuid.uuid_hex
+<
+
+Note: UUID version 8 is defined in RFC 9562 as a custom UUID format for experimental or vendor-specific use cases. It is not implemented in this library as it requires application-specific customization and is outside the scope of standard UUID generation.
 OBJECTS					*Vital.ID.UUID-objects*
 ------------------------------------------------------------------------------
 UUID Object				*Vital.ID.UUID-UUID*
@@ -110,7 +127,6 @@ UUID Object				*Vital.ID.UUID-UUID*
 
 
 UUID.generatev1({mac})			  *Vital.ID.UUID-UUID.generatev1()*
-	{NOT IMPLEMENTED YET}.
         Generate and fill version 1 UUID data.
         Version 1 is time-based, generated from mac identified value.
 
@@ -132,6 +148,14 @@ UUID.generatev5({ns}, {value})		  *Vital.ID.UUID-UUID.generatev5()*
 	{ns} as |Vital.ID.UUID.Namespace| defined value or other namespace UUID object or
         hex string.
 	{value} as unique value.
+
+UUID.generatev6({mac})			  *Vital.ID.UUID-UUID.generatev6()*
+        Generate and fill version 6 UUID data.
+        Version 6 is reordered time-based, generated from mac identified value.
+
+UUID.generatev7()			  *Vital.ID.UUID-UUID.generatev7()*
+        Generate and fill version 7 UUID data.
+        Version 7 is Unix Epoch time-based, generated from Unix timestamp.
 
 
 UUID.hex_decode()			  *Vital.ID.UUID-UUID.hex_decode()*

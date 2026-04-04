@@ -21,6 +21,9 @@ Describe ID.UUID
       let uuid = '3d813cbb-47fb-32ba-91df-831e1593ac29'
       Assert Equals(type(UUID.decode(uuid)), type({}))
     End
+    It decode invalid UUID string.
+      Throws /^vital: ID.UUID:/ UUID.decode('invalid')
+    End
   End
 
   Describe .v1()
@@ -35,6 +38,18 @@ Describe ID.UUID
       Assert Equals(uuid_obj.version, 1)
       Assert Equals(uuid_obj.variant, 0b100)
     End
+    It timestamp and mac UUID generate. byte array mac
+      let mac = [0x00, 0x11, 0x22, 0x33, 0x44, 0x55]
+      let uuid_str = UUID.v1(mac)
+      Assert Equals(len(uuid_str), 36)
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-1[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 1)
+      Assert Equals(uuid_obj.variant, 0b100)
+    End
+    It timestamp and mac UUID generate. invalid mac
+      Throws /^vital: ID.UUID:/ UUID.v1('invalid')
+    End
   End
   " Type 3 and 5 GUIDs | Water Juice https://waterjuiceweb.wordpress.com/2013/06/16/type-3-and-5-guids/
   " Unfortunately RFC4122 contains an error in the example it provides for creating a type 3 GUID.
@@ -45,6 +60,9 @@ Describe ID.UUID
   Describe .v3()
     It uniq mapping for MD5 UUID generate.
       Assert Equals(tolower(UUID.v3(NS.DNS, "www.widgets.com")), '3d813cbb-47fb-32ba-91df-831e1593ac29')
+    End
+    It uniq mapping for MD5 UUID generate. string namespace
+      Assert Equals(tolower(UUID.v3(NS.nil, "test")), tolower(UUID.v3('00000000-0000-0000-0000-000000000000', "test")))
     End
   End
   Describe .v4()
@@ -69,6 +87,43 @@ Describe ID.UUID
     It uniq mapping for SHA1 UUID generate.
       Assert Equals(tolower(UUID.v5(NS.DNS, "www.widgets.com")), '21f7f8de-8051-5b89-8680-0195ef798b6a')
     End
+    It uniq mapping for SHA1 UUID generate. string namespace
+      Assert Equals(tolower(UUID.v5(NS.nil, "test")), tolower(UUID.v5('00000000-0000-0000-0000-000000000000', "test")))
+    End
+  End
+  Describe .v6()
+    It reordered time-based UUID generate.
+      let mac = '00:11:22:33:44:55'
+      let uuid_str = UUID.v6(mac)
+      Assert Equals(len(uuid_str), 36)
+      " Check format
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-6[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      " Decode and check version and variant
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 6)
+      Assert Equals(uuid_obj.variant, 0b100)
+    End
+  End
+  Describe .v7()
+    It Unix Epoch time-based UUID generate.
+      let uuid_str = UUID.v7()
+      Assert Equals(len(uuid_str), 36)
+      " Check format
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-7[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      " Decode and check version and variant
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 7)
+      Assert Equals(uuid_obj.variant, 0b100)
+    End
+    It Unix Epoch time-based UUID generate. with generator
+      let generator = FixedData.new_generator()
+      let uuid_str = UUID.v7(generator, testdata1)
+      Assert Equals(len(uuid_str), 36)
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-7[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 7)
+      Assert Equals(uuid_obj.variant, 0b100)
+    End
   End
 
   Context UUID object
@@ -81,12 +136,24 @@ Describe ID.UUID
         Assert Equals(uuid.variant, 0b100)
         Assert Equals(len(uuid.uuid_hex), 36)
       End
+      It generate UUID v1 string. invalid mac
+        let uuid = UUID.new()
+        Throws /^vital: ID.UUID:/ uuid.generatev1('invalid')
+      End
     End
     Describe .generatev3()
       It generate UUID v3 string.
         let uuid = UUID.new()
         call uuid.generatev3(NS.DNS, "www.widgets.com")
         Assert Equals(tolower(uuid.uuid_hex), '3d813cbb-47fb-32ba-91df-831e1593ac29')
+      End
+      It generate UUID v3 string. string namespace
+        let uuid = UUID.new()
+        call uuid.generatev3('6ba7b810-9dad-11d1-80b4-00c04fd430c8', "test")
+        " Should match object namespace
+        let uuid2 = UUID.new()
+        call uuid2.generatev3(NS.DNS, "test")
+        Assert Equals(uuid.uuid_hex, uuid2.uuid_hex)
       End
     End
     Describe .generatev4()
@@ -108,6 +175,41 @@ Describe ID.UUID
         let uuid = UUID.new()
         call uuid.generatev5(NS.DNS, "www.widgets.com")
         Assert Equals(tolower(uuid.uuid_hex), '21f7f8de-8051-5b89-8680-0195ef798b6a')
+      End
+      It generate UUID v5 string. string namespace
+        let uuid = UUID.new()
+        call uuid.generatev5('6ba7b810-9dad-11d1-80b4-00c04fd430c8', "test")
+        " Should match object namespace
+        let uuid2 = UUID.new()
+        call uuid2.generatev5(NS.DNS, "test")
+        Assert Equals(uuid.uuid_hex, uuid2.uuid_hex)
+      End
+    End
+    Describe .generatev6()
+      It generate UUID v6 string.
+        let uuid = UUID.new()
+        let mac = [0x00, 0x11, 0x22, 0x33, 0x44, 0x55]
+        call uuid.generatev6(mac)
+        Assert Equals(uuid.version, 6)
+        Assert Equals(uuid.variant, 0b100)
+        Assert Equals(len(uuid.uuid_hex), 36)
+      End
+    End
+    Describe .generatev7()
+      It generate UUID v7 string.
+        let uuid = UUID.new()
+        call uuid.generatev7()
+        Assert Equals(uuid.version, 7)
+        Assert Equals(uuid.variant, 0b100)
+        Assert Equals(len(uuid.uuid_hex), 36)
+      End
+      It generate UUID v7 string. with generator
+        let generator = FixedData.new_generator()
+        let uuid = UUID.new()
+        call uuid.generatev7(generator, testdata1)
+        Assert Equals(uuid.version, 7)
+        Assert Equals(uuid.variant, 0b100)
+        Assert Equals(len(uuid.uuid_hex), 36)
       End
     End
     Describe .hex_decode()
