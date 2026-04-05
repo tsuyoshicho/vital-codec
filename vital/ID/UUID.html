@@ -42,6 +42,7 @@ Maintainer: Tsuyoshi CHO &lt;Tsuyoshi.CHO+develop@Gmail.com&gt;
 INTRODUCTION                            <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-introduction">Vital.ID.UUID-introduction</a>
 INTERFACE                               <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-interface">Vital.ID.UUID-interface</a>
   Functions                             <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-functions">Vital.ID.UUID-functions</a>
+MAC ADDRESS                             <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-mac">Vital.ID.UUID-mac</a>
 OBJECTS                                 <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-objects">Vital.ID.UUID-objects</a>
   UUID Object                           <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID">Vital.ID.UUID-UUID</a>
 
@@ -70,6 +71,7 @@ decode(<span class="Special">{uuid-str}</span>)                        <a class=
 v1(<span class="Special">{mac}</span>)                                 <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v1()" name="Vital.ID.UUID.v1()">Vital.ID.UUID.v1()</a>
         Return UUID version 1 value.
         This function wrapped <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev1()">Vital.ID.UUID-UUID.generatev1()</a> .
+        See <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-mac">Vital.ID.UUID-mac</a> for MAC address formats.
         Also known as:
 <span class="helpExample">        let uuid = UUID.new()</span>
 <span class="helpExample">        call uuid.generatev1({mac})</span>
@@ -106,6 +108,7 @@ v5(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)     
 v6(<span class="Special">{mac}</span>)                                 <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID.v6()" name="Vital.ID.UUID.v6()">Vital.ID.UUID.v6()</a>
         Return UUID version 6 value.
         This function wrapped <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev6()">Vital.ID.UUID-UUID.generatev6()</a> .
+        See <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-mac">Vital.ID.UUID-mac</a> for MAC address formats.
         Also known as:
 <span class="helpExample">        let uuid = UUID.new()</span>
 <span class="helpExample">        call uuid.generatev6({mac})</span>
@@ -122,6 +125,39 @@ v7()                                      <a class="String" href="./../../vital/
 
 
 <span class="Todo">Note:</span> UUID version 8 is defined in RFC 9562 as a custom UUID format for experimental or vendor-specific use cases. It is not implemented in this library as it requires application-specific customization and is outside the scope of standard UUID generation.
+<span class="PreProc">==============================================================================</span>
+<span class="Statement">MAC ADDRESS</span>                             <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-mac" name="Vital.ID.UUID-mac">Vital.ID.UUID-mac</a>
+
+MAC address is a 48-bit (6-octet) identifier used in network interfaces,
+defined in IEEE 802 standards. In UUID generation, it serves as a node
+identifier for time-based UUIDs (versions 1 and 6).
+
+Accepted formats for <span class="Special">{mac}</span> parameter:
+
+- String with colons: &quot;aa:bb:cc:dd:ee:ff&quot;
+- String with dashes: &quot;aa-bb-cc-dd-ee-ff&quot;
+- List of integers: [0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff]
+- Vim blob: 0zaabbccddeeff
+
+Hex string format (e.g., &quot;aabbccddeeff&quot;) is NOT accepted.
+
+Examples:
+<span class="helpExample">        &quot; Generate v1 UUID with colon-separated MAC</span>
+<span class="helpExample">        let uuid1 = UUID.v1(&quot;00:11:22:33:44:55&quot;)</span>
+
+<span class="helpExample">        &quot; Generate v1 UUID with dash-separated MAC</span>
+<span class="helpExample">        let uuid2 = UUID.v1(&quot;00-11-22-33-44-55&quot;)</span>
+
+<span class="helpExample">        &quot; Generate v1 UUID with byte list</span>
+<span class="helpExample">        let uuid3 = UUID.v1([0x00, 0x11, 0x22, 0x33, 0x44, 0x55])</span>
+
+<span class="helpExample">        &quot; Generate v1 UUID with blob</span>
+<span class="helpExample">        let uuid4 = UUID.v1(0z001122334455)</span>
+
+<span class="helpExample">        &quot; Same applies to v6</span>
+<span class="helpExample">        let uuid5 = UUID.v6(&quot;00:11:22:33:44:55&quot;)</span>
+
+<span class="PreProc">==============================================================================</span>
 <span class="Statement">OBJECTS</span>                                 <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-objects" name="Vital.ID.UUID-objects">Vital.ID.UUID-objects</a>
 <span class="PreProc">------------------------------------------------------------------------------</span>
 UUID Object                             <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID" name="Vital.ID.UUID-UUID">Vital.ID.UUID-UUID</a>
@@ -163,6 +199,7 @@ UUID Object                             <a class="String" href="./../../vital/ID
 UUID.generatev1(<span class="Special">{mac}</span>)                    <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev1()" name="Vital.ID.UUID-UUID.generatev1()">Vital.ID.UUID-UUID.generatev1()</a>
         Generate and fill version 1 UUID data.
         Version 1 is time-based, generated from mac identified value.
+        See <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-mac">Vital.ID.UUID-mac</a> for MAC address formats.
 
 UUID.generatev3(<span class="Special">{ns}</span>, <span class="Special">{value}</span>)            <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev3()" name="Vital.ID.UUID-UUID.generatev3()">Vital.ID.UUID-UUID.generatev3()</a>
         Generate and fill version 3 UUID data.
@@ -186,6 +223,7 @@ UUID.generatev5(<span class="Special">{ns}</span>, <span class="Special">{value}
 UUID.generatev6(<span class="Special">{mac}</span>)                    <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev6()" name="Vital.ID.UUID-UUID.generatev6()">Vital.ID.UUID-UUID.generatev6()</a>
         Generate and fill version 6 UUID data.
         Version 6 is reordered time-based, generated from mac identified value.
+        See <a class="Identifier" href="./../../vital/ID/UUID.html#Vital.ID.UUID-mac">Vital.ID.UUID-mac</a> for MAC address formats.
 
 UUID.generatev7()                         <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.generatev7()" name="Vital.ID.UUID-UUID.generatev7()">Vital.ID.UUID-UUID.generatev7()</a>
         Generate and fill version 7 UUID data.
@@ -194,20 +232,24 @@ UUID.generatev7()                         <a class="String" href="./../../vital/
 
 UUID.hex_decode()                         <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.hex_decode()" name="Vital.ID.UUID-UUID.hex_decode()">Vital.ID.UUID-UUID.hex_decode()</a>
         Decode UUID.uuid_hex, then fill UUID data.
-        Need UUID.uuid_hex fill legal string data.
+        Requires uuid_hex to be a valid UUID hex string (e.g., &quot;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&quot;).
+        Throws &quot;format unmatch error&quot; if invalid.
 
 UUID.byte_encode()                        <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.byte_encode()" name="Vital.ID.UUID-UUID.byte_encode()">Vital.ID.UUID-UUID.byte_encode()</a>
         Encode UUID.bytes, then fill UUID data.
-        Need UUID.bytes fill legal bytes-list data.
+        Requires bytes to be a list of exactly 16 integers (0-255).
+        Throws &quot;bytes length error&quot; if invalid length.
 
 UUID.value_encode()                       <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.value_encode()" name="Vital.ID.UUID-UUID.value_encode()">Vital.ID.UUID-UUID.value_encode()</a>
         Encode UUID.value.*, then fill UUID data.
-        Need UUID.value.* fill legal bytes-list data.
+        Requires value.* fields to be valid byte lists.
+        Throws &quot;undefined variant&quot; if variant is invalid.
 
 UUID.build()                              <a class="String" href="./../../vital/ID/UUID.html#Vital.ID.UUID-UUID.build()" name="Vital.ID.UUID-UUID.build()">Vital.ID.UUID-UUID.build()</a>
-        Encode UUID internal methods.
+        Build UUID hex string from internal value fields.
+        Requires value.* fields to be properly set with valid byte lists.
+        Updates uuid_hex and string fields based on value fields.
         Use only Vital module creators.
-        See direct code.
 
 <span class="PreProc">==============================================================================</span>
 vim&#0058;tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
