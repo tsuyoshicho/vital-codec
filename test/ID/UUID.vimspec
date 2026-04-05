@@ -47,6 +47,24 @@ Describe ID.UUID
       Assert Equals(uuid_obj.version, 1)
       Assert Equals(uuid_obj.variant, 0b100)
     End
+    It timestamp and mac UUID generate. string mac with dashes
+      let mac = '00-11-22-33-44-55'
+      let uuid_str = UUID.v1(mac)
+      Assert Equals(len(uuid_str), 36)
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-1[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 1)
+      Assert Equals(uuid_obj.variant, 0b100)
+    End
+    It timestamp and mac UUID generate. blob mac
+      let mac = 0z001122334455
+      let uuid_str = UUID.v1(mac)
+      Assert Equals(len(uuid_str), 36)
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-1[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 1)
+      Assert Equals(uuid_obj.variant, 0b100)
+    End
     It timestamp and mac UUID generate. invalid mac
       Throws /^vital: ID.UUID:/ UUID.v1('invalid')
     End
@@ -103,6 +121,43 @@ Describe ID.UUID
       Assert Equals(uuid_obj.version, 6)
       Assert Equals(uuid_obj.variant, 0b100)
     End
+    It reordered time-based UUID generate. string mac with dashes
+      let mac = '00-11-22-33-44-55'
+      let uuid_str = UUID.v6(mac)
+      Assert Equals(len(uuid_str), 36)
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-6[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 6)
+      Assert Equals(uuid_obj.variant, 0b100)
+    End
+    It reordered time-based UUID generate. byte array mac
+      let mac = [0x00, 0x11, 0x22, 0x33, 0x44, 0x55]
+      let uuid_str = UUID.v6(mac)
+      Assert Equals(len(uuid_str), 36)
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-6[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 6)
+      Assert Equals(uuid_obj.variant, 0b100)
+    End
+    It reordered time-based UUID generate. blob mac
+      let mac = 0z001122334455
+      let uuid_str = UUID.v6(mac)
+      Assert Equals(len(uuid_str), 36)
+      Assert Match(uuid_str, '^[0-9a-f]\{8\}-[0-9a-f]\{4\}-6[0-9a-f]\{3\}-[89ab][0-9a-f]\{3\}-[0-9a-f]\{12\}$')
+      let uuid_obj = UUID.decode(uuid_str)
+      Assert Equals(uuid_obj.version, 6)
+      Assert Equals(uuid_obj.variant, 0b100)
+    End
+    It reordered time-based UUID generate. sortable
+      " Generate two v6 UUIDs with time difference and check they are sortable
+      let mac = '00:11:22:33:44:55'
+      let uuid1 = UUID.v6(mac)
+      sleep 1
+      let uuid2 = UUID.v6(mac)
+      let uuids = [uuid1, uuid2]
+      let sorted = sort(copy(uuids))
+      Assert Equals(uuids, sorted)
+    End
   End
   Describe .v7()
     It Unix Epoch time-based UUID generate.
@@ -123,6 +178,15 @@ Describe ID.UUID
       let uuid_obj = UUID.decode(uuid_str)
       Assert Equals(uuid_obj.version, 7)
       Assert Equals(uuid_obj.variant, 0b100)
+    End
+    It Unix Epoch time-based UUID generate. sortable
+      " Generate two v7 UUIDs with time difference and check they are sortable
+      let uuid1 = UUID.v7()
+      sleep 1
+      let uuid2 = UUID.v7()
+      let uuids = [uuid1, uuid2]
+      let sorted = sort(copy(uuids))
+      Assert Equals(uuids, sorted)
     End
   End
 
