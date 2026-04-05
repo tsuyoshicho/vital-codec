@@ -175,7 +175,7 @@ function! s:_mac_to_node(mac) abort
     endif
     return s:ByteArray.from_blob(a:mac)
   elseif type(a:mac) ==  s:Type.types.list
-    " List format: validate as byte array and lenght
+    " List format: validate as byte array and length
     if len(a:mac) != 6 || !s:ByteArray.validate(a:mac)
       call s:_throw('invalid mac')
     endif
