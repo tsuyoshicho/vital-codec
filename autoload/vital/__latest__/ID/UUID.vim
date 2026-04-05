@@ -160,25 +160,35 @@ function! s:v7(...) abort
 endfunction
 
 function! s:_mac_to_node(mac) abort
-  let mac_hex = substitute(a:mac, ':', '', 'g')
-  if len(mac_hex) != 12 || mac_hex !~? '^[0-9a-f]\{12}$'
+  if type(a:mac) ==  s:Type.types.string
+    " String format: "aa:bb:cc:dd:ee:ff" or "aa-bb-cc-dd-ee-ff"
+    let mac_hex = substitute(a:mac, '[:-]', '', 'g')
+    if len(mac_hex) != 12 || mac_hex !~? '^[0-9a-f]\{12}$'
+      call s:_throw('invalid mac')
+    endif
+    " String mac_hex: convert to list
+    return s:ByteArray.from_hexstring(mac_hex)
+  elseif type(a:mac) == s:Type.types.blob
+    " Blob format: validate length and convert to list
+    if len(a:mac) != 6
+      call s:_throw('invalid mac')
+    endif
+    return s:ByteArray.from_blob(a:mac)
+  elseif type(a:mac) ==  s:Type.types.list
+    " List format: validate as byte array and lenght
+    if len(a:mac) != 6 || !s:ByteArray.validate(a:mac)
+      call s:_throw('invalid mac')
+    endif
+    return a:mac
+  else
     call s:_throw('invalid mac')
   endif
-  return s:ByteArray.from_hexstring(mac_hex)
 endfunction
 
 " ===== UUID v1..v7 generate
 function! s:UUID.generatev1(mac) dict abort
   " MAC
-  if type(a:mac) == type("")
-    let node = s:_mac_to_node(a:mac)
-  elseif (type(a:mac) == type([]))
-      \ && (6 == len(a:mac))
-      \ && s:ByteArray.validate(a:mac)
-    let node = a:mac
-  else
-    call s:_throw('invalid mac')
-  endif
+  let node = s:_mac_to_node(a:mac)
 
   " timestamp
   let timestamp = s:_generate_timestamp_now()
@@ -215,15 +225,7 @@ endfunction
 
 function! s:UUID.generatev6(mac) dict abort
   " MAC
-  if type(a:mac) == type("")
-    let node = s:_mac_to_node(a:mac)
-  elseif (type(a:mac) == type([]))
-      \ && (6 == len(a:mac))
-      \ && s:ByteArray.validate(a:mac)
-    let node = a:mac
-  else
-    call s:_throw('invalid mac')
-  endif
+  let node = s:_mac_to_node(a:mac)
 
   " timestamp
   let timestamp = s:_generate_timestamp_now()
