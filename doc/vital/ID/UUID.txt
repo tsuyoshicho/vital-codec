@@ -8,6 +8,7 @@ CONTENTS				*Vital.ID.UUID-contents*
 INTRODUCTION				|Vital.ID.UUID-introduction|
 INTERFACE				|Vital.ID.UUID-interface|
   Functions				|Vital.ID.UUID-functions|
+MAC ADDRESS				|Vital.ID.UUID-mac|
 OBJECTS					|Vital.ID.UUID-objects|
   UUID Object				|Vital.ID.UUID-UUID|
 
@@ -36,6 +37,7 @@ decode({uuid-str})			  *Vital.ID.UUID.decode()*
 v1({mac})				  *Vital.ID.UUID.v1()*
 	Return UUID version 1 value.
 	This function wrapped |Vital.ID.UUID-UUID.generatev1()| .
+        See |Vital.ID.UUID-mac| for MAC address formats.
         Also known as: >
         let uuid = UUID.new()
         call uuid.generatev1({mac})
@@ -72,6 +74,7 @@ v5({ns}, {value})			  *Vital.ID.UUID.v5()*
 v6({mac})				  *Vital.ID.UUID.v6()*
 	Return UUID version 6 value.
 	This function wrapped |Vital.ID.UUID-UUID.generatev6()| .
+        See |Vital.ID.UUID-mac| for MAC address formats.
         Also known as: >
         let uuid = UUID.new()
         call uuid.generatev6({mac})
@@ -88,6 +91,39 @@ v7()					  *Vital.ID.UUID.v7()*
 <
 
 Note: UUID version 8 is defined in RFC 9562 as a custom UUID format for experimental or vendor-specific use cases. It is not implemented in this library as it requires application-specific customization and is outside the scope of standard UUID generation.
+==============================================================================
+MAC ADDRESS				*Vital.ID.UUID-mac*
+
+MAC address is a 48-bit (6-octet) identifier used in network interfaces,
+defined in IEEE 802 standards. In UUID generation, it serves as a node
+identifier for time-based UUIDs (versions 1 and 6).
+
+Accepted formats for {mac} parameter:
+
+- String with colons: "aa:bb:cc:dd:ee:ff"
+- String with dashes: "aa-bb-cc-dd-ee-ff"
+- List of integers: [0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff]
+- Vim blob: 0zaabbccddeeff
+
+Hex string format (e.g., "aabbccddeeff") is NOT accepted.
+
+Examples: >
+        " Generate v1 UUID with colon-separated MAC
+        let uuid1 = UUID.v1("00:11:22:33:44:55")
+
+        " Generate v1 UUID with dash-separated MAC
+        let uuid2 = UUID.v1("00-11-22-33-44-55")
+
+        " Generate v1 UUID with byte list
+        let uuid3 = UUID.v1([0x00, 0x11, 0x22, 0x33, 0x44, 0x55])
+
+        " Generate v1 UUID with blob
+        let uuid4 = UUID.v1(0z001122334455)
+
+        " Same applies to v6
+        let uuid5 = UUID.v6("00:11:22:33:44:55")
+<
+==============================================================================
 OBJECTS					*Vital.ID.UUID-objects*
 ------------------------------------------------------------------------------
 UUID Object				*Vital.ID.UUID-UUID*
@@ -129,6 +165,7 @@ UUID Object				*Vital.ID.UUID-UUID*
 UUID.generatev1({mac})			  *Vital.ID.UUID-UUID.generatev1()*
         Generate and fill version 1 UUID data.
         Version 1 is time-based, generated from mac identified value.
+        See |Vital.ID.UUID-mac| for MAC address formats.
 
 UUID.generatev3({ns}, {value})		  *Vital.ID.UUID-UUID.generatev3()*
         Generate and fill version 3 UUID data.
@@ -152,6 +189,7 @@ UUID.generatev5({ns}, {value})		  *Vital.ID.UUID-UUID.generatev5()*
 UUID.generatev6({mac})			  *Vital.ID.UUID-UUID.generatev6()*
         Generate and fill version 6 UUID data.
         Version 6 is reordered time-based, generated from mac identified value.
+        See |Vital.ID.UUID-mac| for MAC address formats.
 
 UUID.generatev7()			  *Vital.ID.UUID-UUID.generatev7()*
         Generate and fill version 7 UUID data.
@@ -160,20 +198,24 @@ UUID.generatev7()			  *Vital.ID.UUID-UUID.generatev7()*
 
 UUID.hex_decode()			  *Vital.ID.UUID-UUID.hex_decode()*
         Decode UUID.uuid_hex, then fill UUID data.
-        Need UUID.uuid_hex fill legal string data.
+        Requires uuid_hex to be a valid UUID hex string (e.g., "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx").
+        Throws "format unmatch error" if invalid.
 
 UUID.byte_encode()			  *Vital.ID.UUID-UUID.byte_encode()*
         Encode UUID.bytes, then fill UUID data.
-        Need UUID.bytes fill legal bytes-list data.
+        Requires bytes to be a list of exactly 16 integers (0-255).
+        Throws "bytes length error" if invalid length.
 
 UUID.value_encode()			  *Vital.ID.UUID-UUID.value_encode()*
         Encode UUID.value.*, then fill UUID data.
-        Need UUID.value.* fill legal bytes-list data.
+        Requires value.* fields to be valid byte lists.
+        Throws "undefined variant" if variant is invalid.
 
 UUID.build()				  *Vital.ID.UUID-UUID.build()*
-        Encode UUID internal methods.
+        Build UUID hex string from internal value fields.
+        Requires value.* fields to be properly set with valid byte lists.
+        Updates uuid_hex and string fields based on value fields.
         Use only Vital module creators.
-        See direct code.
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl:noet:fen:
