@@ -73,7 +73,7 @@ jobs:
           if_true: "github-pr-review"
           if_false: "github-check"
       - name: misspell
-        uses: reviewdog/action-misspell@840bfbe9f804da9afb0bd739dc4689012f3fdd2d # v1.30.4
+        uses: reviewdog/action-misspell@ebdfc4655a67997a255a63b9e4b71abf32c98e6b # v1.31.1
         with:
           github_token: ${{ secrets.github_token }}
           reporter: ${{ steps.reporter.outputs.value }}
